@@ -1,0 +1,61 @@
+﻿@model Planner.Models.User
+@{
+    ViewBag.Title = "Kayıt Olun";
+    Layout = "~/Views/Shared/_LayoutRegister.cshtml";
+}
+
+<div class="page vertical-align text-center" data-animsition-in="fade-in" data-animsition-out="fade-out">
+    <div class="page-content vertical-align-middle animation-slide-top animation-duration-1">
+        <div class="brand">
+
+            <a href="/Home"><img class="brand-img" src="~/Content/Site/classic/iconbar/assets/images/ci_tech.png" alt="PROJE SEPETİ" style="max-height:55px; max-width:55px"></a>
+            <h2 class="brand-text">PROJE SEPETİ</h2>
+        </div>
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-group", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            <div class="form-group">
+                <label class="sr-only" for="EMail">E-Posta</label>
+                <input type="email" class="form-control" id="EMail" name="EMail" placeholder="E-Postanızı Giriniz">
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="Name">Adınız</label>
+                <input type="text" class="form-control" id="Name" name="Name" placeholder="Adınızı Giriniz">
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="Surname">Soyadınız</label>
+                <input type="text" class="form-control" id="Surname" name="Surname" placeholder="Soyadınızı Giriniz">
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="BirthDate">Doğum Gününüz</label>
+                <input type="date" class="form-control" id="BirthDate" name="BirthDate" placeholder="Doğum Tarihiniz">
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="Password">Şifreniz</label>
+                <input type="password" class="form-control" id="Password" name="Password" placeholder="Şifrenizi Giriniz">
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="CitizenshipNo">T.C. Kimlik Numaranız</label>
+                <input type="text" class="form-control" id="CitizenshipNo" name="CitizenshipNo" placeholder="T.C. Kimlik Numaranızı Giriniz">
+            </div>
+            <input type="submit" value="Kayıt Ol" class="btn btn-info btn-block" formaction="/Account/Register" />
+        }
+        <br />
+        <p style="min-width:350px">Hesabınız varsa <a href="~/Account/Login">giriş yapın</a></p>
+        <footer class="page-copyright page-copyright-inverse">
+            <p>© @DateTime.Now.Year - TÜM HAKLARI SAKLIDIR</p>
+            <div class="social">
+                <a class="btn btn-icon btn-pure" href="javascript:void(0)">
+                    <i class="icon bd-twitter" aria-hidden="true"></i>
+                </a>
+                <a class="btn btn-icon btn-pure" href="javascript:void(0)">
+                    <i class="icon bd-facebook" aria-hidden="true"></i>
+                </a>
+                <a class="btn btn-icon btn-pure" href="javascript:void(0)">
+                    <i class="icon bd-dribbble" aria-hidden="true"></i>
+                </a>
+            </div>
+        </footer>
+    </div>
+</div>

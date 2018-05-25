@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Planner.Models.vwUsersCVs>
+
+@{
+    ViewBag.Title = "UserIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (Convert.ToBoolean(Session["UserIsAdmin"]) == true)
+{
+    <div class="panel">
+        <header class="panel-heading">
+            <div class="panel-actions"></div>
+            <h3 class="panel-title">Tüm Projeler</h3>
+        </header>
+        <div class="panel-body">
+            <table class="table table-hover dataTable table-striped w-full" data-plugin="dataTable">
+                <thead>
+                    <tr>
+                        <th>E-Posta</th>
+                        <th>Ad</th>
+                        <th>Soyad</th>
+                        <th>T.C. Kimlik No</th>
+                        <th>CV İndir</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.EMail)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Surname)</td>
+                            <td>@Html.DisplayFor(modelItem => item.CitizenshipNo)</td>
+                            <td><a href="@Url.Action("Download", "User", new { id = item.UserCVId })" class="btn btn-block btn-danger">İndir</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

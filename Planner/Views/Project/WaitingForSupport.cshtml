@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Planner.Models.vwUsersProjects>
+
+@{
+    ViewBag.Title = "Destek İçin Bekleyen Projeler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.ReturnUrl = "/Project/WaitingForSupport";
+}
+
+<div class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions"></div>
+        <h3 class="panel-title">Destek İçin Bekleyen Projeler</h3>
+    </header>
+    <div class="panel-body">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Ad</th>
+                    <th>Soyad</th>
+                    <th>E-Posta</th>
+                    <th>T.C. Kimlik No</th>
+                    <th>Proje Adı</th>
+                    <th>İndir</th>
+                    <th>Destekle</th>
+                    <th>Reddet</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.UserName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.UserSurname)</td>
+                        <td>@Html.DisplayFor(modelItem => item.UserEMail)</td>
+                        <td>@Html.DisplayFor(modelItem => item.UserCitizenshipNo)</td>
+                        <td>@Html.DisplayFor(modelItem => item.ProjectName)</td>
+                        <td><a href="@Url.Action("Download", "Project", new { id = item.ProjectId })" class="btn btn-block btn-info">İndir</a></td>
+                        <td><a href="@Url.Action("ApproveProject", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-success">Projeyi Onayla</a></td>
+                        <td><a href="@Url.Action("DeclineProject", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-danger">Projeyi Reddet</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

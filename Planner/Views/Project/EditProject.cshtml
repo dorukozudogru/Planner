@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewBag.Title = "EditProject";
+    Layout = "~/Views/Shared/_LayoutLogged.cshtml";
+    ViewBag.ReturnUrl = "/Project/EditProject";
+}
+
+<div class="container text-center">
+    <section class="text-white" id="loginapprovment">
+        <h5 class="alert alert-danger">@ViewBag.Message</h5>
+        <a class="btn btn-dark" href="@ViewBag.ReturnUrl">Yeniden Güncelle</a>
+    </section>
+</div>

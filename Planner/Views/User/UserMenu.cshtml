@@ -1,0 +1,31 @@
+﻿@model IEnumerable<Planner.Models.User>
+
+@{
+    ViewBag.Title = "UserMenu";
+    Layout = "~/Views/Shared/_LayoutLogged.cshtml";
+}
+
+@if (Convert.ToInt32(Session["UserId"]) != 0)
+{
+    <div class="container text-center">
+        <h1>Hoşgeldin @Session["UserName"] @Session["UserSurname"]</h1>
+        @*@if (Session["UserEMail"] != null)
+        {
+            var itemId = Session["UserId"];
+            <section class="text-white" id="usermenu">
+                @if (!Convert.ToBoolean(Session["UserIsCvUploaded"]))
+                {
+                    <a class="btn btn-dark btn-xl" href="~/User/UserCV">CV Yükle</a>
+                }
+                else
+                {
+                    <a href="@Url.Action("UserProjectIndex", new { loggedUserId = itemId })" class="btn btn-dark btn-xl">Projelerim</a>
+                    <br /><br />
+                    <a class="btn btn-dark btn-xl" href="~/Project/CreateProject">Proje Yükle</a>
+                    <br /><br />
+                    <a class="btn btn-dark btn-xl" href="@Url.Action("UserCV", new { loggedUserId = itemId })">CV Güncelle</a>
+                }
+            </section>
+        }*@
+    </div>
+}

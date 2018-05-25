@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Planner.Models.vwUsersProjects>
+
+@{
+    ViewBag.Title = "Desteklenmiş Projeler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.ReturnUrl = "/Project/SupportedProjects";
+}
+
+<div class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions"></div>
+        <h3 class="panel-title">Desteklenmiş Projeler</h3>
+    </header>
+    <div class="panel-body">
+        <table class="table table-hover dataTable table-striped w-full" data-plugin="dataTable">
+            <thead>
+                <tr>
+                    <th>Ad</th>
+                    <th>Soyad</th>
+                    <th>E-Posta</th>
+                    <th>T.C. Kimlik No</th>
+                    <th>Proje Adı</th>
+                    <th>Projeyi İndir</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.UserName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.UserSurname)</td>
+                        <td>@Html.DisplayFor(modelItem => item.UserEMail)</td>
+                        <td>@Html.DisplayFor(modelItem => item.UserCitizenshipNo)</td>
+                        <td>@Html.DisplayFor(modelItem => item.ProjectName)</td>
+                        <td><a href="@Url.Action("Download", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-danger">İndir</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
