@@ -82,6 +82,24 @@ namespace Planner.Controllers
             }
         }
 
+        public ActionResult ChangeUserToAdmin(int? Id, string returnUrl)
+        {
+            User userModel = db.User.FirstOrDefault(a => a.Id == Id);
+            userModel.IsAdmin = true;
+            db.SaveChanges();
+            return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Admin Olarak Ayarlanmıştır.", returnUrl });
+        }
+
+        #region Views
+        public ActionResult UserMenu(int? loggedUserId)
+        {
+            if (Convert.ToBoolean(Session["UserIsAdmin"]) == true)
+            {
+                return RedirectToAction("AdminUserMenu", "User");
+            }
+            return View();
+        }
+
         [AllowAnonymous]
         public ActionResult Rejected()
         {
@@ -117,6 +135,7 @@ namespace Planner.Controllers
             }
             return View(user);
         }
+        #endregion
 
         #region Approvement
         public ActionResult ApproveUser(int? id, string returnUrl)
@@ -250,29 +269,57 @@ namespace Planner.Controllers
         #region ListUsers (Yapılmadı - Kullanıcıları Admin Ekranında Gruplama)
         public ActionResult ApprovedUsers()
         {
-            //if (Convert.ToBoolean(Session["UserIsAdmin"]) != false)
-            //{
-            //    List<User> ulist = new List<User>();
-            //    User usermodel = new User();
-
-            //    foreach (var item in db.User)
-            //    {
-
-            //    }
-            //    return View(db.User.ToList());
-            //}
-            return RedirectToAction("UserMenu");
-        }
-        #endregion
-
-        public ActionResult UserMenu(int? loggedUserId)
-        {
-            if (Convert.ToBoolean(Session["UserIsAdmin"]) == true)
+            try
             {
-                return RedirectToAction("AdminUserMenu", "User");
+                User userModel = new User();
+                List<User> lstUser = new List<User>();
+
+                foreach (var item in db.User)
+                {
+                    if (item.IsApproved == Convert.ToInt32(UserApproveEnum.Approved))
+                    {
+                        lstUser.Add(new User
+                        {
+                            BirthDate = item.BirthDate,
+                            CitizenshipNo = item.CitizenshipNo,
+                            EMail = item.EMail,
+                            Id = item.Id,
+                            IsAdmin = item.IsAdmin,
+                            IsApproved = item.IsApproved,
+                            IsCvUploaded = item.IsCvUploaded,
+                            LastEditBy = item.LastEditBy,
+                            LastEditDate = item.LastEditDate,
+                            Name = item.Name,
+                            Password = item.Password,
+                            RegisterDate = item.RegisterDate,
+                            Surname = item.Surname
+                        });
+                    }
+                }
+                lstUser.ToList();
+                return View(lstUser);
+            }
+            catch (Exception ex)
+            {
+                List<User> lstUser = new List<User>();
+                lstUser.ToList();
+                return View(lstUser);
+            }
+
+            if (Convert.ToBoolean(Session["UserIsAdmin"]) != false)
+            {
+                List<User> ulist = new List<User>();
+                User usermodel = new User();
+
+                foreach (var item in db.User)
+                {
+
+                }
+                return View(db.User.ToList());
             }
             return View();
         }
+        #endregion
 
         #region Edit User (Yapılmadı)
         //public ActionResult Edit(int? id)

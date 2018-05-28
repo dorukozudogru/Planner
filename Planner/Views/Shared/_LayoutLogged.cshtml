@@ -578,6 +578,27 @@
                                     </div>
                                 </a>
                             </li>
+                            <li class="site-menu-item has-sub">
+                                <a href="javascript:void(0)">
+                                    <i class="site-menu-icon fa-file-text" aria-hidden="true"></i>
+                                    <span class="site-menu-title">Projeler</span>
+                                    <div class="site-menu-badge">
+                                        <span class="badge badge-pill badge-success"><!--Buraya Kaç Tane Olduğu Yazılabilir--></span>
+                                    </div>
+                                </a>
+                                <ul class="site-menu-sub">
+                                    <li class="site-menu-item">
+                                        <a class="animsition-link" href="@Url.Action("ApprovedProjects", "Project")">
+                                            <span class="site-menu-title">Onaylanmış Projeler</span>
+                                        </a>
+                                    </li>
+                                    <li class="site-menu-item">
+                                        <a class="animsition-link" href="@Url.Action("SupportedProjects", "Project")">
+                                            <span class="site-menu-title">Desteklenmiş Projeler</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -587,13 +608,6 @@
     }
     <!-------------------------------------------------------------------------------------------------------->
     <div class="page">
-        <div class="page-header">
-            @*<h1 class="page-title">@ViewBag.Title</h1>*@
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/User/UserMenu">Ana Sayfa</a></li>
-                <li class="breadcrumb-item active">@ViewBag.Title</li>
-            </ol>
-        </div>
         <div class="page-content">
             @RenderBody()
         </div>

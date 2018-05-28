@@ -22,6 +22,7 @@
                         <th>T.C. Kimlik No</th>
                         <th>Onayla</th>
                         <th>Reddet</th>
+                        <th>Admin Yap</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,6 +52,14 @@
                             {
                                 <td><a href="@Url.Action("ApproveUser", "User", new { id = item.Id, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-success">Onayla</a></td>
                                 <td><a href="@Url.Action("DeclineUser", "User", new { id = item.Id, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-danger">Reddet</a></td>
+                            }
+                            @if (item.IsAdmin != true)
+                            {
+                                <td><a href="@Url.Action("ChangeUserToAdmin", "User", new { id = item.Id, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-warning">Admin Yap</a></td>
+                            }
+                            else
+                            {
+                                <td style="text-align:center">Admin Kullanıcı</td>
                             }
                         </tr>
                     }

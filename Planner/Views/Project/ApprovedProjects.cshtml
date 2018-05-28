@@ -2,7 +2,14 @@
 
 @{
     ViewBag.Title = "Onaylanmış Projeler";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    if (Convert.ToBoolean(Session["UserIsAdmin"]) != true)
+    {
+        Layout = "~/Views/Shared/_LayoutLogged.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
     ViewBag.ReturnUrl = "/Project/ApprovedProjects";
 }
 
