@@ -1,4 +1,4 @@
-﻿@if (Convert.ToInt32(Session["UserId"]) != -1)
+﻿@if (Convert.ToString(Session["UserId"]) != "")
 {
     @model Planner.Models.User
 

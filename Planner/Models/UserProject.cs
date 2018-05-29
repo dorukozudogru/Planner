@@ -1,16 +1,16 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Planner.Models
 {
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-
     [Table("UserProject")]
     public partial class UserProject
     {
         public int Id { get; set; }
 
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
-        public int ProjectId { get; set; }
+        public string ProjectId { get; set; }
 
         [Display(Name = "Onaylandý Mý?")]
         public int IsApproved { get; set; }

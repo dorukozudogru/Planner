@@ -8,7 +8,7 @@ namespace Planner.Models
     [Table("Project")]
     public partial class Project
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Display(Name = "Proje Adı")]
         [Required]

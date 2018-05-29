@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.Linq;
 using Planner.Enums;
 using Planner.Helpers;
+using System.Net.Mime;
 
 namespace Planner.Controllers
 {
@@ -14,7 +15,7 @@ namespace Planner.Controllers
     public class ProjectController : Controller
     {
         DBContext db = new DBContext();
-        
+
         public ActionResult Index()
         {
             return View();
@@ -28,181 +29,216 @@ namespace Planner.Controllers
         #region ListProjects
         public ActionResult AllProjects()
         {
-            try
+            if (Convert.ToBoolean(Session["UserIsAdmin"]) != false)
             {
-                User userModel = new User();
-                List<User> lstUser = new List<User>();
-
-                Project pModel = new Project();
-                List<Project> lstProject = new List<Project>();
-
-                UserProject upModel = new UserProject();
-                List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
-
-                foreach (var item in db.UserProject)
+                try
                 {
-                    int upId = item.Id;
-                    upModel = db.UserProject.First(z => z.Id == upId);
-                    pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                    userModel = db.User.First(z => z.Id == upModel.UserId);
+                    User userModel = new User();
+                    List<User> lstUser = new List<User>();
 
-                    vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported });
+                    Project pModel = new Project();
+                    List<Project> lstProject = new List<Project>();
 
+                    UserProject upModel = new UserProject();
+                    List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+
+                    foreach (var item in db.UserProject)
+                    {
+                        int upId = item.Id;
+                        upModel = db.UserProject.First(z => z.Id == upId);
+                        pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
+                        userModel = db.User.First(z => z.Id == upModel.UserId);
+
+                        vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported });
+
+                    }
+                    vwLstUp.ToList();
+                    return View(vwLstUp);
                 }
-                vwLstUp.ToList();
-                return View(vwLstUp);
+                catch (Exception ex)
+                {
+                    List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+                    vwLstUp.ToList();
+                    return View(vwLstUp);
+                }
             }
-            catch (Exception ex)
+            else
             {
-                List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
-                vwLstUp.ToList();
-                return View(vwLstUp);
+                return RedirectToAction("Login", "Account");
             }
         }
 
         public ActionResult ApprovedProjects()
         {
-            try
+            if (Convert.ToBoolean(Session["UserIsAdmin"]) != false)
             {
-                User userModel = new User();
-                List<User> lstUser = new List<User>();
-
-                Project pModel = new Project();
-                List<Project> lstProject = new List<Project>();
-
-                UserProject upModel = new UserProject();
-                List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
-
-                foreach (var item in db.UserProject)
+                try
                 {
-                    int upId = item.Id;
-                    upModel = db.UserProject.First(z => z.Id == upId);
-                    pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                    userModel = db.User.First(z => z.Id == upModel.UserId);
-                    if (pModel.IsApproved == Convert.ToInt32(ProjectApproveEnum.Approved) && pModel.IsSupported != Convert.ToInt32(ProjectSupportEnum.Supported))
+                    User userModel = new User();
+                    List<User> lstUser = new List<User>();
+
+                    Project pModel = new Project();
+                    List<Project> lstProject = new List<Project>();
+
+                    UserProject upModel = new UserProject();
+                    List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+
+                    foreach (var item in db.UserProject)
                     {
-                        vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported });
+                        int upId = item.Id;
+                        upModel = db.UserProject.First(z => z.Id == upId);
+                        pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
+                        userModel = db.User.First(z => z.Id == upModel.UserId);
+                        if (pModel.IsApproved == Convert.ToInt32(ProjectApproveEnum.Approved) && pModel.IsSupported != Convert.ToInt32(ProjectSupportEnum.Supported))
+                        {
+                            vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported });
+                        }
                     }
+                    vwLstUp.ToList();
+                    return View(vwLstUp);
                 }
-                vwLstUp.ToList();
-                return View(vwLstUp);
+                catch (Exception ex)
+                {
+                    List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+                    vwLstUp.ToList();
+                    return View(vwLstUp);
+                }
             }
-            catch (Exception ex)
+            else
             {
-                List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
-                vwLstUp.ToList();
-                return View(vwLstUp);
+                return RedirectToAction("Login", "Account");
             }
         }
 
         public ActionResult SupportedProjects()
         {
-            try
+            if (Convert.ToBoolean(Session["UserIsAdmin"]) != false)
             {
-                User userModel = new User();
-                List<User> lstUser = new List<User>();
-
-                Project pModel = new Project();
-                List<Project> lstProject = new List<Project>();
-
-                UserProject upModel = new UserProject();
-                List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
-
-                foreach (var item in db.UserProject)
+                try
                 {
-                    int upId = item.Id;
-                    upModel = db.UserProject.First(z => z.Id == upId);
-                    pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                    userModel = db.User.First(z => z.Id == upModel.UserId);
-                    if (pModel.IsSupported == Convert.ToInt32(ProjectSupportEnum.Supported) && pModel.IsApproved == Convert.ToInt32(ProjectApproveEnum.Approved))
+                    User userModel = new User();
+                    List<User> lstUser = new List<User>();
+
+                    Project pModel = new Project();
+                    List<Project> lstProject = new List<Project>();
+
+                    UserProject upModel = new UserProject();
+                    List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+
+                    foreach (var item in db.UserProject)
                     {
-                        vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported });
+                        int upId = item.Id;
+                        upModel = db.UserProject.First(z => z.Id == upId);
+                        pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
+                        userModel = db.User.First(z => z.Id == upModel.UserId);
+                        if (pModel.IsSupported == Convert.ToInt32(ProjectSupportEnum.Supported) && pModel.IsApproved == Convert.ToInt32(ProjectApproveEnum.Approved))
+                        {
+                            vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported });
+                        }
                     }
+                    vwLstUp.ToList();
+                    return View(vwLstUp);
                 }
-                vwLstUp.ToList();
-                return View(vwLstUp);
+                catch (Exception ex)
+                {
+                    List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+                    vwLstUp.ToList();
+                    return View(vwLstUp);
+                }
             }
-            catch (Exception ex)
+            else
             {
-                List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
-                vwLstUp.ToList();
-                return View(vwLstUp);
+                return RedirectToAction("Login", "Account");
             }
         }
 
         public ActionResult WaitingForApprove()
         {
-            try
+            if (Convert.ToBoolean(Session["UserIsAdmin"]) != false)
             {
-                User userModel = new User();
-                List<User> lstUser = new List<User>();
-
-                Project pModel = new Project();
-                List<Project> lstProject = new List<Project>();
-
-                UserProject upModel = new UserProject();
-                List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
-
-                foreach (var item in db.UserProject)
+                try
                 {
-                    int upId = item.Id;
-                    upModel = db.UserProject.First(z => z.Id == upId);
-                    pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                    userModel = db.User.First(z => z.Id == upModel.UserId);
-                    if (pModel.IsApproved == Convert.ToInt32(ProjectApproveEnum.WaitingToApprove))
+                    User userModel = new User();
+                    List<User> lstUser = new List<User>();
+
+                    Project pModel = new Project();
+                    List<Project> lstProject = new List<Project>();
+
+                    UserProject upModel = new UserProject();
+                    List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+
+                    foreach (var item in db.UserProject)
                     {
-                        vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported });
+                        int upId = item.Id;
+                        upModel = db.UserProject.First(z => z.Id == upId);
+                        pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
+                        userModel = db.User.First(z => z.Id == upModel.UserId);
+                        if (pModel.IsApproved == Convert.ToInt32(ProjectApproveEnum.WaitingToApprove))
+                        {
+                            vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported });
+                        }
                     }
+                    vwLstUp.ToList();
+                    return View(vwLstUp);
                 }
-                vwLstUp.ToList();
-                return View(vwLstUp);
+                catch (Exception ex)
+                {
+                    List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+                    vwLstUp.ToList();
+                    return View(vwLstUp);
+                }
             }
-            catch (Exception ex)
+            else
             {
-                List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
-                vwLstUp.ToList();
-                return View(vwLstUp);
+                return RedirectToAction("Login", "Account");
             }
         }
 
         public ActionResult WaitingForSupport()
         {
-            try
+            if (Convert.ToBoolean(Session["UserIsAdmin"]) != false)
             {
-                User userModel = new User();
-                List<User> lstUser = new List<User>();
-
-                Project pModel = new Project();
-                List<Project> lstProject = new List<Project>();
-
-                UserProject upModel = new UserProject();
-                List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
-
-                foreach (var item in db.UserProject)
+                try
                 {
-                    int upId = item.Id;
-                    upModel = db.UserProject.First(z => z.Id == upId);
-                    pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                    userModel = db.User.First(z => z.Id == upModel.UserId);
-                    if (pModel.IsSupported == Convert.ToInt32(ProjectSupportEnum.WaitingToSupport))
+                    User userModel = new User();
+                    List<User> lstUser = new List<User>();
+
+                    Project pModel = new Project();
+                    List<Project> lstProject = new List<Project>();
+
+                    UserProject upModel = new UserProject();
+                    List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+
+                    foreach (var item in db.UserProject)
                     {
-                        vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported });
+                        int upId = item.Id;
+                        upModel = db.UserProject.First(z => z.Id == upId);
+                        pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
+                        userModel = db.User.First(z => z.Id == upModel.UserId);
+                        if (pModel.IsSupported == Convert.ToInt32(ProjectSupportEnum.WaitingToSupport))
+                        {
+                            vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported });
+                        }
                     }
+                    vwLstUp.ToList();
+                    return View(vwLstUp);
                 }
-                vwLstUp.ToList();
-                return View(vwLstUp);
+                catch (Exception ex)
+                {
+                    List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+                    vwLstUp.ToList();
+                    return View(vwLstUp);
+                }
             }
-            catch (Exception ex)
+            else
             {
-                List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
-                vwLstUp.ToList();
-                return View(vwLstUp);
+                return RedirectToAction("Login", "Account");
             }
         }
         #endregion
 
         #region Approve&SupportProjects
-        public ActionResult ApproveProject(int? Id, string returnUrl)
+        public ActionResult ApproveProject(string Id, string returnUrl)
         {
             try
             {
@@ -228,7 +264,7 @@ namespace Planner.Controllers
             }
         }
 
-        public ActionResult DeclineProject(int? Id, string returnUrl)
+        public ActionResult DeclineProject(string Id, string returnUrl)
         {
             try
             {
@@ -254,7 +290,7 @@ namespace Planner.Controllers
             }
         }
 
-        public ActionResult SupportProject(int? Id, string returnUrl)
+        public ActionResult SupportProject(string Id, string returnUrl)
         {
             try
             {
@@ -287,7 +323,7 @@ namespace Planner.Controllers
             }
         }
 
-        public ActionResult DeclineSupportProject(int? Id, string returnUrl)
+        public ActionResult DeclineSupportProject(string Id, string returnUrl)
         {
             try
             {
@@ -347,15 +383,27 @@ namespace Planner.Controllers
             }
         }
 
-        public FileResult Download(int? Id)
+        public virtual ActionResult Download(string Id)
         {
-            Project pmodel = db.Projects.FirstOrDefault(m => m.Id == Id);
-
-            byte[] fileBytes = System.IO.File.ReadAllBytes(pmodel.FilePath);
-
-            string fileName = pmodel.FileName;
-
-            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+            try
+            {
+                Project pmodel = db.Projects.FirstOrDefault(m => m.Id == Id);
+                byte[] fileBytes = System.IO.File.ReadAllBytes(pmodel.FilePath);
+                var file = pmodel.FilePath;
+                var cd = new ContentDisposition
+                {
+                    Inline = true,
+                    FileName = pmodel.Name
+                };
+                Response.AddHeader("Content-Disposition", cd.ToString());
+                //return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, pmodel.FileName); //For Download
+                return File(fileBytes, pmodel.FileExtension); // For New Tab
+            }
+            catch (Exception)
+            {
+                string returnUrl = "";
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Dosya Bulunamadı", returnUrl });
+            }
         }
 
         [HttpPost]
@@ -367,6 +415,7 @@ namespace Planner.Controllers
                 UserProject up = new UserProject();
                 try
                 {
+                    project.Id = Guid.NewGuid().ToString();
                     project.IsApproved = Convert.ToInt32(ProjectApproveEnum.NotApproved);
                     project.IsSupported = Convert.ToInt32(ProjectSupportEnum.NotSupported);
                     project.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.NotChanged);
@@ -376,7 +425,7 @@ namespace Planner.Controllers
                     db.Projects.Add(project);
                     db.SaveChanges();
                     up.ProjectId = project.Id;
-                    up.UserId = Convert.ToInt32(Session["UserId"]);
+                    up.UserId = Convert.ToString(Session["UserId"]);
                     up.IsApproved = Convert.ToInt32(ProjectApproveEnum.NotApproved);
                     up.IsSupported = Convert.ToInt32(ProjectSupportEnum.NotSupported);
                     up.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.NotChanged);
@@ -393,7 +442,7 @@ namespace Planner.Controllers
         }
 
         #region SendToAdminForApprove&Support
-        public ActionResult SendProjectToApprove(int? Id)
+        public ActionResult SendProjectToApprove(string Id)
         {
             try
             {
@@ -413,7 +462,7 @@ namespace Planner.Controllers
             return RedirectToAction("UserMenu", "User");
         }
 
-        public ActionResult SendProjectToSupport(int? Id)
+        public ActionResult SendProjectToSupport(string Id)
         {
             try
             {

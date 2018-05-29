@@ -20,7 +20,7 @@
                     <th>E-Posta</th>
                     <th>T.C. Kimlik No</th>
                     <th>Proje Adı</th>
-                    <th>Projeyi İndir</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -32,7 +32,7 @@
                         <td>@Html.DisplayFor(modelItem => item.UserEMail)</td>
                         <td>@Html.DisplayFor(modelItem => item.UserCitizenshipNo)</td>
                         <td>@Html.DisplayFor(modelItem => item.ProjectName)</td>
-                        <td><a href="@Url.Action("Download", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-danger">İndir</a></td>
+                        <td><a href="@Url.Action("Download", "Project", new { id = item.ProjectId })" target="_blank" class="btn btn-info"><span class="fa fa-search"></span></a></td>
                     </tr>
                 }
             </tbody>

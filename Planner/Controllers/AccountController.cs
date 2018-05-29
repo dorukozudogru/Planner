@@ -120,6 +120,7 @@ namespace Planner.Controllers
                 bool controlCitizenshipno = HomeController.ControlCitizenshipNo(model.CitizenshipNo);
                 if (controlCitizenshipno)
                 {
+                    model.Id = Guid.NewGuid().ToString();
                     model.Password = HomeController.Encrypt(model.Password);
                     model.IsCvUploaded = false;
                     model.IsApproved = Convert.ToInt32(UserApproveEnum.WaitingToApprove);

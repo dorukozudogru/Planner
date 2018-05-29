@@ -7,7 +7,7 @@ namespace Planner.Models
     [Table("User")]
     public partial class User
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Display (Name = "E-Posta")]
         [Required]

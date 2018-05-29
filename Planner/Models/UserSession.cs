@@ -20,15 +20,15 @@ namespace Planner.Models
             }
         }
 
-        public static int UserId
+        public static string UserId
         {
             get
             {
-                return SessionWrapper.GetSessionItem<int>("UserId");
+                return SessionWrapper.GetSessionItem<string>("UserId");
             }
             set
             {
-                SessionWrapper.SetSessionItem<int>("UserId", value);
+                SessionWrapper.SetSessionItem<string>("UserId", value);
             }
         }
         public static string UserEMail

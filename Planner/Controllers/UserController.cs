@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Mime;
 using System.Web;
 using System.Web.Mvc;
 
@@ -56,7 +57,7 @@ namespace Planner.Controllers
             }
         }
 
-        public ActionResult UserCV(int? loggedUserId)
+        public ActionResult UserCV(string loggedUserId)
         {
             try
             {
@@ -82,7 +83,7 @@ namespace Planner.Controllers
             }
         }
 
-        public ActionResult ChangeUserToAdmin(int? Id, string returnUrl)
+        public ActionResult ChangeUserToAdmin(string Id, string returnUrl)
         {
             User userModel = db.User.FirstOrDefault(a => a.Id == Id);
             userModel.IsAdmin = true;
@@ -93,11 +94,18 @@ namespace Planner.Controllers
         #region Views
         public ActionResult UserMenu(int? loggedUserId)
         {
-            if (Convert.ToBoolean(Session["UserIsAdmin"]) == true)
+            if (Convert.ToString(Session["UserId"]) != "")
             {
-                return RedirectToAction("AdminUserMenu", "User");
+                if (Convert.ToBoolean(Session["UserIsAdmin"]) == true)
+                {
+                    return RedirectToAction("AdminUserMenu", "User");
+                }
+                return View();
             }
-            return View();
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
         }
 
         [AllowAnonymous]
@@ -138,9 +146,9 @@ namespace Planner.Controllers
         #endregion
 
         #region Approvement
-        public ActionResult ApproveUser(int? id, string returnUrl)
+        public ActionResult ApproveUser(string id, string returnUrl)
         {
-            if (id == null || id == 0)
+            if (id == null || id == "")
             {
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Id'si Bulunamadı", returnUrl });
             }
@@ -170,9 +178,9 @@ namespace Planner.Controllers
             return View();
         }
 
-        public ActionResult DeclineUser(int? id, string returnUrl)
+        public ActionResult DeclineUser(string id, string returnUrl)
         {
-            if (id == null || id == 0)
+            if (id == null || id == "")
             {
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Id'si Bulunamadı", returnUrl });
             }
@@ -201,9 +209,9 @@ namespace Planner.Controllers
             return View();
         }
 
-        public ActionResult BlockUser(int? id, string returnUrl)
+        public ActionResult BlockUser(string id, string returnUrl)
         {
-            if (id == null || id == 0)
+            if (id == null || id == "")
             {
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Id'si Bulunamadı", returnUrl });
             }
@@ -233,9 +241,9 @@ namespace Planner.Controllers
             return View();
         }
 
-        public ActionResult ApproveAfterBlockUser(int? id, string returnUrl)
+        public ActionResult ApproveAfterBlockUser(string id, string returnUrl)
         {
-            if (id == null || id == 0)
+            if (id == null || id == "")
             {
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Id'si Bulunamadı", returnUrl });
             }
@@ -269,55 +277,49 @@ namespace Planner.Controllers
         #region ListUsers (Yapılmadı - Kullanıcıları Admin Ekranında Gruplama)
         public ActionResult ApprovedUsers()
         {
-            try
-            {
-                User userModel = new User();
-                List<User> lstUser = new List<User>();
-
-                foreach (var item in db.User)
-                {
-                    if (item.IsApproved == Convert.ToInt32(UserApproveEnum.Approved))
-                    {
-                        lstUser.Add(new User
-                        {
-                            BirthDate = item.BirthDate,
-                            CitizenshipNo = item.CitizenshipNo,
-                            EMail = item.EMail,
-                            Id = item.Id,
-                            IsAdmin = item.IsAdmin,
-                            IsApproved = item.IsApproved,
-                            IsCvUploaded = item.IsCvUploaded,
-                            LastEditBy = item.LastEditBy,
-                            LastEditDate = item.LastEditDate,
-                            Name = item.Name,
-                            Password = item.Password,
-                            RegisterDate = item.RegisterDate,
-                            Surname = item.Surname
-                        });
-                    }
-                }
-                lstUser.ToList();
-                return View(lstUser);
-            }
-            catch (Exception ex)
-            {
-                List<User> lstUser = new List<User>();
-                lstUser.ToList();
-                return View(lstUser);
-            }
-
             if (Convert.ToBoolean(Session["UserIsAdmin"]) != false)
             {
-                List<User> ulist = new List<User>();
-                User usermodel = new User();
-
-                foreach (var item in db.User)
+                try
                 {
+                    User userModel = new User();
+                    List<User> lstUser = new List<User>();
 
+                    foreach (var item in db.User)
+                    {
+                        if (item.IsApproved == Convert.ToInt32(UserApproveEnum.Approved))
+                        {
+                            lstUser.Add(new User
+                            {
+                                BirthDate = item.BirthDate,
+                                CitizenshipNo = item.CitizenshipNo,
+                                EMail = item.EMail,
+                                Id = item.Id,
+                                IsAdmin = item.IsAdmin,
+                                IsApproved = item.IsApproved,
+                                IsCvUploaded = item.IsCvUploaded,
+                                LastEditBy = item.LastEditBy,
+                                LastEditDate = item.LastEditDate,
+                                Name = item.Name,
+                                Password = item.Password,
+                                RegisterDate = item.RegisterDate,
+                                Surname = item.Surname
+                            });
+                        }
+                    }
+                    lstUser.ToList();
+                    return View(lstUser);
                 }
-                return View(db.User.ToList());
+                catch (Exception ex)
+                {
+                    List<User> lstUser = new List<User>();
+                    lstUser.ToList();
+                    return View(lstUser);
+                }
             }
-            return View();
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
         }
         #endregion
 
@@ -359,11 +361,11 @@ namespace Planner.Controllers
             base.Dispose(disposing);
         }
 
-        public ActionResult UserProjectIndex(int? loggedUserId)
+        public ActionResult UserProjectIndex(string loggedUserId)
         {
             try
             {
-                if (loggedUserId == Convert.ToInt32(Session["UserId"]))
+                if (loggedUserId == Convert.ToString(Session["UserId"]))
                 {
                     User userModel = db.User.First(a => a.Id == loggedUserId);
                     Project pModel = new Project();
@@ -372,7 +374,7 @@ namespace Planner.Controllers
                     {
                         if (userModel.Id == item.UserId)
                         {
-                            int pId = item.ProjectId;
+                            string pId = item.ProjectId;
                             pModel = db.Projects.First(z => z.Id == pId);
                             lstUp.Add(new Project { Id = pModel.Id, Name = pModel.Name, Description = pModel.Description, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported });
                         }
@@ -426,7 +428,7 @@ namespace Planner.Controllers
                     }
                     else
                     {
-                        cv.UserId = Convert.ToInt32(Session["UserId"]);
+                        cv.UserId = Convert.ToString(Session["UserId"]);
                         cv.FileName = fileName;
                         cv.FilePath = path;
                         cv.CreationDate = DateTime.Now;
@@ -447,15 +449,27 @@ namespace Planner.Controllers
             }
         }
 
-        public FileResult Download(int? Id)
+        public ActionResult Download(int? Id)
         {
-            UserCV ucmodel = db.UserCV.FirstOrDefault(m => m.Id == Id);
-
-            byte[] fileBytes = System.IO.File.ReadAllBytes(ucmodel.FilePath);
-
-            string fileName = ucmodel.FileName;
-
-            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+            try
+            {
+                UserCV ucmodel = db.UserCV.FirstOrDefault(m => m.Id == Id);
+                byte[] fileBytes = System.IO.File.ReadAllBytes(ucmodel.FilePath);
+                var file = ucmodel.FilePath;
+                var cd = new ContentDisposition
+                {
+                    Inline = true,
+                    FileName = ucmodel.FileName
+                };
+                Response.AddHeader("Content-Disposition", cd.ToString());
+                //return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, pmodel.FileName); //For Download
+                return File(fileBytes, ".pdf"); // For New Tab
+            }
+            catch (Exception)
+            {
+                string returnUrl = "";
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Dosya Bulunamadı", returnUrl });
+            }
         }
     }
 }
