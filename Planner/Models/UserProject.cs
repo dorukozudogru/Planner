@@ -18,7 +18,7 @@ namespace Planner.Models
         [Display(Name = "Desteklendi Mi?")]
         public int IsSupported { get; set; }
 
-        public string SupportMount { get; set; }
+        public string SupportRequest { get; set; }
 
         [Display(Name = "Onayý Deðiþtirildi Mi?")]
         public int IsApproveChanged { get; set; }

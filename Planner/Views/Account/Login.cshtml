@@ -7,27 +7,17 @@
 
 <html class="no-js css-menubar" lang="tr">
 <body class="animsition page-login-v2 layout-full page-dark">
-    <style>
-
-        body {
-            background: transparent;
-        }
-    </style>
-    <!-- Page -->
     <div class="page" data-animsition-in="fade-in" data-animsition-out="fade-out">
         <div class="page-content">
             <div class="page-brand-info">
                 <div class="brand">
-                    <img class="brand-img" src="~/Content/Site/classic/iconbar/assets/images/ci_tech.png" style="max-height:45px;max-width:45px" alt="Proje Sepeti">
+                    <a href="/Home"><img class="brand-img" src="~/Content/Site/classic/iconbar/assets/images/ci_tech.png" style="max-height:45px;max-width:45px" alt="Proje Sepeti"></a>
                     <h2 class="brand-text font-size-30">Proje Sepeti</h2>
                 </div>
             </div>
             <div class="page-login-main animation-slide-right animation-duration-1">
-                <div class="brand hidden-md-up">
-                    <img class="brand-img" src="~/Content/Site/classic/iconbar/assets/images/ci_tech.png" style="max-height:45px;max-width:45px" alt="Proje Sepeti">
-                    <h3 class="brand-text font-size-40">Proje Sepeti</h3>
-                </div>
                 <h3 class="font-size-24">Giriş Yap</h3>
+                <h6 style="color:red">@ViewBag.Message</h6>
                 @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
                 {
                     @Html.AntiForgeryToken()
@@ -55,7 +45,6 @@
                 }
                 <p>Hesabınız yoksa <a href="Register">buradan kayıt olun</a></p>
                 <footer class="page-copyright">
-                    @*<p>WEBSITE BY Doruk Özüdoğru</p>*@
                     <p>© @DateTime.Now.Year Tüm Hakları Saklıdır.</p>
                     <div class="social">
                         <a class="btn btn-icon btn-round social-twitter mx-5" href="javascript:void(0)">

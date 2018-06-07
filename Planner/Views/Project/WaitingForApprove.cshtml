@@ -1,45 +1,54 @@
 ﻿@model IEnumerable<Planner.Models.vwUsersProjects>
 
 @{
-    ViewBag.Title = "Onay İçin Bekleyen Projeler";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.ReturnUrl = "/Project/WaitingForApprove";
+    ViewBag.Title = "Onaylanmış Projeler";
+    if (Convert.ToBoolean(Session["UserIsAdmin"]) != true)
+    {
+        Layout = "~/Views/Shared/_LayoutLogged.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    ViewBag.ReturnUrl = "/Project/ApprovedProjects";
 }
 
-<div class="panel">
+<div class="panel" style="background-color:lightgrey">
     <header class="panel-heading">
-        <div class="panel-actions"></div>
-        <h3 class="panel-title">Onay İçin Bekleyen Projeler</h3>
+        <h3 class="panel-title">Onay Bekleyen Projeler</h3>
     </header>
-    <div class="panel-body">
-        <table class="table table-hover dataTable table-striped w-full" data-plugin="dataTable">
-            <thead>
-                <tr>
-                    <th>Ad</th>
-                    <th>Soyad</th>
-                    <th>E-Posta</th>
-                    <th>T.C. Kimlik No</th>
-                    <th>Proje Adı</th>
-                    <th>Görüntüle</th>
-                    <th>Onayla</th>
-                    <th>Reddet</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@Html.DisplayFor(modelItem => item.UserName)</td>
-                        <td>@Html.DisplayFor(modelItem => item.UserSurname)</td>
-                        <td>@Html.DisplayFor(modelItem => item.UserEMail)</td>
-                        <td>@Html.DisplayFor(modelItem => item.UserCitizenshipNo)</td>
-                        <td>@Html.DisplayFor(modelItem => item.ProjectName)</td>
-                        <td><a href="@Url.Action("Download", "Project", new { id = item.ProjectId })" target="_blank" class="btn btn-info"><span class="fa fa-search"></span></a></td>
-                        <td><a href="@Url.Action("ApproveProject", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-success">Projeyi Onayla</a></td>
-                        <td><a href="@Url.Action("DeclineProject", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-danger">Projeyi Reddet</a></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+</div>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="panel-body panel-info col-md-4">
+            <div class="panel nav-tabs-horizontal">
+                <div class="panel-heading">
+                    <h3 class="panel-title">@Html.DisplayFor(modelItem => item.ProjectName)</h3>
+                </div>
+                <div class="panel-body h-300" data-plugin="scrollable">
+                    <div data-role="container">
+                        <div data-role="content">
+                            <br />
+                            <h5>Proje Adı</h5>
+                            @Html.DisplayFor(modelItem => item.ProjectName)
+                            <h5>Proje Açıklaması</h5>
+                            @Html.DisplayFor(modelItem => item.ProjectDescription)
+                            <h5>Adı Soyadı</h5>
+                            @Html.DisplayFor(modelItem => item.UserName)
+                            @Html.DisplayFor(modelItem => item.UserSurname)
+                            <h5>E-Posta</h5>
+                            @Html.DisplayFor(modelItem => item.UserEMail)
+                            <h5>Projeyi Görüntüle</h5>
+                            <a href="@Url.Action("Download", "Project", new { id = item.ProjectId })" target="_blank" class="btn btn-info"><span class="fa fa-search"></span></a>
+                            <h5>Projeyi Onayla</h5>
+                            <a href="@Url.Action("ApproveProject", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="btn btn-success"><span class="fa fa-thumbs-up"></span></a>
+                            <h5>Projeyi Reddet</h5>
+                            <a href="@Url.Action("DeclineProject", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="btn btn-danger"><span class="fa fa-thumbs-down"></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>

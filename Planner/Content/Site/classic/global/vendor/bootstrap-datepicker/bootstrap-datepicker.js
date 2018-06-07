@@ -1685,10 +1685,10 @@
 		datesDisabled: [],
 		endDate: Infinity,
 		forceParse: true,
-		format: 'mm/dd/yyyy',
+		format: 'dd/mm/yyyy',
 		keepEmptyValues: false,
 		keyboardNavigation: true,
-		language: 'en',
+		language: 'tr',
 		minViewMode: 0,
 		maxViewMode: 4,
 		multidate: false,
@@ -1730,7 +1730,17 @@
 			today: "Today",
 			clear: "Clear",
 			titleFormat: "MM yyyy"
-		}
+        },
+      tr: {
+        days: ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"],
+        daysShort: ["Pzt", "Sal", "Çar", "Per", "Cum", "Cts", "Pzr"],
+        daysMin: ["Pt", "Sa", "Çr", "Pr", "Cu", "Ct", "Pz"],
+        months: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+        monthsShort: ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Ekm", "Kas", "Ara"],
+        today: "Bugün",
+        clear: "Temizle",
+        titleFormat: "MM yyyy"
+      }
 	};
 
 	var DPGlobal = {

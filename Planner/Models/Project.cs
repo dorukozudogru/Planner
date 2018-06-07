@@ -32,7 +32,7 @@ namespace Planner.Models
         [Display(Name = "Desteklendi Mi?")]
         public int IsSupported { get; set; }
 
-        public string SupportMount { get; set; }
+        public string SupportRequest { get; set; }
 
         public int IsApproveChanged { get; set; }
 
@@ -40,6 +40,6 @@ namespace Planner.Models
 
         public DateTime LastEditDate { get; set; }
 
-        public int LastEditBy { get; set; }
+        public string LastEditBy { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8" lang="tr" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
 
@@ -36,6 +36,12 @@
     <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/uikit/modals.css">
     <link rel="stylesheet" href=".~/Content/Site/classic/global/vendor/formvalidation/formValidation.css">
     <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/forms/validation.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/forms/layouts.css">
+    <script src="~/Content/Site/classic/global/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/bootstrap-datepicker/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/asscrollable/asScrollable.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/assets/examples/css/advanced/scrollable.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/assets/examples/css/pages/errors.css">
 
     <!-- Fonts -->
     <link href="~/Content/Site/classic/global/fonts/font-awesome/font-awesome.css" rel="stylesheet" />
@@ -43,6 +49,7 @@
     <link rel="stylesheet" href="~/Content/Site/classic/global/fonts/web-icons/web-icons.min.css">
     <link rel="stylesheet" href="~/Content/Site/classic/global/fonts/brand-icons/brand-icons.min.css">
     <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
+    <script src="~/Content/Site/classic/global/js/Plugin/jquery-placeholder.js"></script>
 
     <!--[if lt IE 9]>
     <script src="~/Content/Site/classic/global/vendor/html5shiv/html5shiv.min.js"></script>
@@ -98,10 +105,10 @@
                         </a>
                     </li>
                     @*<li class="nav-item hidden-sm-down" id="toggleFullscreen">
-                        <a class="nav-link icon icon-fullscreen" data-toggle="fullscreen" href="#" role="button">
-                            <span class="sr-only">Toggle fullscreen</span>
-                        </a>
-                    </li>*@
+                            <a class="nav-link icon icon-fullscreen" data-toggle="fullscreen" href="#" role="button">
+                                <span class="sr-only">Toggle fullscreen</span>
+                            </a>
+                        </li>*@
                     <li class="nav-item hidden-float">
                         <a class="nav-link icon wb-search" data-toggle="collapse" href="#" data-target="#site-navbar-search"
                            role="button">
@@ -130,16 +137,17 @@
                         <a class="nav-link navbar-avatar" data-toggle="dropdown" href="#" aria-expanded="false"
                            data-animation="scale-up" role="button">
                             <span class="avatar avatar-online">
-                                <img src="~/Content/Site/classic/global/portraits/5.jpg" alt="...">
+                                <img src="~/Content/Site/classic/global/portraits/user.png" alt="PROJE SEPETİ">
                                 <i></i>
                             </span>
                         </a>
                         <div class="dropdown-menu" role="menu">
-                            <a class="dropdown-item" href="javascript:void(0)" role="menuitem"><i class="icon wb-user" aria-hidden="true"></i> Profile</a>
-                            <a class="dropdown-item" href="javascript:void(0)" role="menuitem"><i class="icon wb-payment" aria-hidden="true"></i> Billing</a>
-                            <a class="dropdown-item" href="javascript:void(0)" role="menuitem"><i class="icon wb-settings" aria-hidden="true"></i> Settings</a>
+                            <a>@Session["UserName"] @Session["UserSurname"]</a>
+                            <a class="dropdown-item" href="@Url.Action("UserProfile", "User", new { loggedUserId = Session["UserId"] })" role="menuitem"><i class="icon wb-user" aria-hidden="true"></i> Profil</a>
+                            @*<a class="dropdown-item" href="javascript:void(0)" role="menuitem"><i class="icon wb-payment" aria-hidden="true"></i> Billing</a>
+                                <a class="dropdown-item" href="javascript:void(0)" role="menuitem"><i class="icon wb-settings" aria-hidden="true"></i> Settings</a>*@
                             <div class="dropdown-divider" role="presentation"></div>
-                            <a class="dropdown-item" href="~/Account/Logout" role="menuitem"><i class="icon wb-power" aria-hidden="true"></i> Logout</a>
+                            <a class="dropdown-item" href="~/Account/Logout" role="menuitem"><i class="icon wb-power" aria-hidden="true"></i> Çıkış Yap</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
@@ -418,8 +426,8 @@
                                         </a>
                                     </li>
                                     <li class="site-menu-item">
-                                        <a class="animsition-link" href="@Url.Action("SupportedProjects", "Project")">
-                                            <span class="site-menu-title">Desteklenmiş Projeler</span>
+                                        <a class="animsition-link" href="@Url.Action("WaitingForSupport", "Project")">
+                                            <span class="site-menu-title">Destek Bekleyen Projeler</span>
                                         </a>
                                     </li>
                                 </ul>
@@ -492,6 +500,7 @@
     <script src="~/Content/Site/classic/global/vendor/blueimp-file-upload/jquery.fileupload-validate.js"></script>
     <script src="~/Content/Site/classic/global/vendor/blueimp-file-upload/jquery.fileupload-ui.js"></script>
     <script src="~/Content/Site/classic/global/vendor/dropify/dropify.min.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/bootstrap-datepicker/bootstrap-datepicker.js"></script>
 
     <!-- Scripts -->
     <script src="~/Content/Site/classic/global/js/Component.js"></script>
@@ -516,12 +525,16 @@
     <script src="~/Content/Site/classic/global/js/Plugin/matchheight.js"></script>
     <script src="~/Content/Site/classic/global/js/Plugin/jvectormap.js"></script>
     <script src="~/Content/Site/classic/global/js/Plugin/datatables.js"></script>
+    <script src="~/Content/Site/classic/global/js/Plugin/bootstrap-datepicker.js"></script>
 
     <script src="~/Content/Site/classic/iconbar/assets/examples/js/tables/datatable.js"></script>
     <script src="~/Content/Site/classic/iconbar/assets/examples/js/dashboard/v1.js"></script>
     <script src="~/Content/Site/classic/iconbar/assets/examples/js/forms/validation.js"></script>
     <script src="~/Content/Site/classic/global/js/Plugin/dropify.js"></script>
     <script src="~/Content/Site/classic/iconbar/assets/examples/js/forms/uploads.js"></script>
+    <script src="~/Content/Site/classic/global/js/Plugin/asscrollable.js"></script>
+
+    <script src="~/Content/Site/classic/iconbar/assets/examples/js/advanced/scrollable.js"></script>
 
     <script>
         (function (document, window, $) {
@@ -532,6 +545,15 @@
                 Site.run();
             });
         })(document, window, jQuery);
+    </script>
+
+    <script>
+        $('#sendProject').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)
+            var projectId = button.data('id')
+            var modal = $(this)
+            modal.find('.form-group input').val(projectId)
+        })
     </script>
 </body>
 </html>

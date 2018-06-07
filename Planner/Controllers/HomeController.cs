@@ -14,11 +14,6 @@ namespace Planner.Controllers
             return View();
         }
 
-        public ActionResult Error()
-        {
-            return View();
-        }
-
         public ActionResult Menu()
         {
             return View();
@@ -59,7 +54,7 @@ namespace Planner.Controllers
             msg.From = new MailAddress("projesepeti@citech.com.tr", "Proje Sepeti");
             //msg.From = new MailAddress("dorukozudogru@gmail.com", "Proje Sepeti");
             msg.To.Add(email);
-            msg.Subject = "Proje Sepeti Üyeliği";
+            msg.Subject = "PROJE SEPETİ";
             msg.Body = email_body;
             smtp.Send(msg);
         }

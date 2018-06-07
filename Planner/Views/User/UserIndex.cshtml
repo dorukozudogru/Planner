@@ -20,6 +20,7 @@
                         <th>Ad</th>
                         <th>Soyad</th>
                         <th>T.C. Kimlik No</th>
+                        <th>Kayıt Tarihi</th>
                         <th>Onayla</th>
                         <th>Reddet</th>
                         <th>Admin Yap</th>
@@ -33,6 +34,7 @@
                             <td>@Html.DisplayFor(modelItem => item.Name)</td>
                             <td>@Html.DisplayFor(modelItem => item.Surname)</td>
                             <td>@Html.DisplayFor(modelItem => item.CitizenshipNo)</td>
+                            <td>@Html.DisplayFor(modelItem => item.RegisterDate)</td>
                             @if (item.IsApproved == 4)
                             {
                                 <td><a href="@Url.Action("BlockUser", "User", new { id = item.Id, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-dark">Kullanıcıyı Dondur</a></td>

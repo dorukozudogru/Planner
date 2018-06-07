@@ -23,6 +23,9 @@ namespace Planner.Models
         [Display(Name = "Proje Adı")]
         public string ProjectName { get; set; }
 
+        [Display(Name = "Proje Açıklaması")]
+        public string ProjectDescription { get; set; }
+
         public string FileName { get; set; }
 
         [Display(Name = "Onaylandı Mı?")]
@@ -30,5 +33,7 @@ namespace Planner.Models
 
         [Display(Name = "Desteklendi Mi?")]
         public int IsSupported { get; set; }
+
+        public string SupportRequest { get; set; }
     }
 }

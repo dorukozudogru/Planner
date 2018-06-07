@@ -26,7 +26,7 @@
                             {
                                 <thead>
                                     <tr>
-                                        <th>İndir</th>
+                                        <th>Görüntüle</th>
                                         <th>Güncelle</th>
                                     </tr>
                                 </thead>
@@ -36,11 +36,7 @@
                                             <a href="@Url.Action("Download", "User", new { id = item.UserCVId })" target="_blank" class="btn btn-info"><span class="fa fa-search"></span></a>
                                         </td>
                                         <td>
-                                            <a class="js-scroll-trigger btn-animate btn-animate-vertical btn btn-danger btn-block text-white" data-target="#uploadCv" data-toggle="modal">
-                                                <span>
-                                                    <i class="icon wb-download" aria-hidden="true"></i>Yükle
-                                                </span>
-                                            </a>
+                                            <a class="js-scroll-trigger btn btn-danger text-white" data-target="#uploadCv" data-toggle="modal"><span class="icon wb-download"></span></a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -56,11 +52,7 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        <a class="js-scroll-trigger btn-animate btn-animate-vertical btn btn-danger btn-block text-white" data-target="#uploadCv" data-toggle="modal">
-                                            <span>
-                                                <i class="icon wb-download" aria-hidden="true"></i>Yükle
-                                            </span>
-                                        </a>
+                                        <a class="js-scroll-trigger btn btn-danger text-white wb-download" data-target="#uploadCv" data-toggle="modal"></a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -75,9 +67,8 @@
 
 @using (Html.BeginForm("CreateUserCV", "User", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    <div class="modal fade" id="uploadCv" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <br /><br /><br /><br /><br />
-        <div class="modal-dialog" role="document">
+    <div class="modal fade" id="uploadCv" tabindex="-1" role="dialog" aria-labelledby="uploadCv" aria-hidden="true">
+        <div class="modal-dialog modal-center modal-simple" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="container">

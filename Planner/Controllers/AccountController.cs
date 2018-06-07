@@ -15,68 +15,92 @@ namespace Planner.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
-            ViewBag.ReturnUrl = returnUrl;
+            ViewBag.ReturnUrl = System.Web.HttpContext.Current.Request.RawUrl.ToString();
             return View();
         }
 
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(User model, string returnUrl)
+        public ActionResult Login(User model)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                ViewBag.Message = "Lütfen Giriş Bilgilerinizi Kontrol Edin";
+                return View();
             }
-
             string encPass = HomeController.Encrypt(model.Password);
-            var loginUser = db.User.Where(a => a.EMail == model.EMail && a.Password == encPass).FirstOrDefault();
-            var loginUserCV = db.UserCV.FirstOrDefault(a => a.UserId == loginUser.Id);
-
+            var loginUser = db.User.FirstOrDefault(a => a.EMail == model.EMail);
             if (loginUser != null)
             {
-                if (loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.WaitingToApprove))
+                if (loginUser.IsActive)
                 {
-                    return RedirectToAction("LogInApprovement", "User");
-                }
-                else if (loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.Blocked) || loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.NotApproved))
-                {
-                    return RedirectToAction("Rejected", "User");
-                }
-                else if (loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.Approved) || loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.ApproveAfterBlock))
-                {
-                    if (loginUser.IsAdmin != true)
+                    if (loginUser.EMail != model.EMail || loginUser.Password != encPass)
                     {
-                        Session["IsLoggedIn"] = true;
-                        Session["UserId"] = loginUser.Id.ToString();
-                        Session["UserEMail"] = loginUser.EMail.ToString();
-                        Session["UserPassword"] = loginUser.Password.ToString();
-                        Session["UserName"] = loginUser.Name.ToString();
-                        Session["UserSurname"] = loginUser.Surname.ToString();
-                        Session["UserCitizenshipNo"] = loginUser.CitizenshipNo.ToString();
-                        Session["UserIsCvUploaded"] = Convert.ToBoolean(loginUser.IsCvUploaded);
-                        if (loginUserCV != null)
+                        ViewBag.Message = "Kullanıcı Adınızı veya Şifrenizi Hatalı Girdiniz";
+                        return View();
+                    }
+                    else
+                    {
+                        var loginUserCV = db.UserCV.FirstOrDefault(a => a.UserId == loginUser.Id);
+
+                        if (loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.WaitingToApprove))
                         {
-                            Session["UserCvId"] = loginUserCV.Id;
+                            ViewBag.Message = "Hesabınız Henüz Yöneticiler Tarafından Onaylanmamıştır";
+                            return View();
                         }
-                        Session["UserIsApproved"] = Convert.ToInt32(loginUser.IsApproved);
-                        Session["UserIsAdmin"] = Convert.ToInt32(loginUser.IsAdmin);
-                        return RedirectToAction("UserMenu", "User");
-                    }
-                    else if (loginUser.IsAdmin == true)
-                    {
-                        Session["IsLoggedIn"] = true;
-                        Session["UserId"] = loginUser.Id.ToString();
-                        Session["UserEMail"] = loginUser.EMail.ToString();
-                        Session["UserPassword"] = loginUser.Password.ToString();
-                        Session["UserName"] = loginUser.Name.ToString();
-                        Session["UserSurname"] = loginUser.Surname.ToString();
-                        Session["UserCitizenshipNo"] = loginUser.CitizenshipNo.ToString();
-                        Session["UserIsApproved"] = Convert.ToInt32(loginUser.IsApproved);
-                        Session["UserIsAdmin"] = Convert.ToInt32(loginUser.IsAdmin);
-                        return RedirectToAction("AdminUserMenu", "User");
+                        else if (loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.Blocked) || loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.NotApproved))
+                        {
+                            ViewBag.Message = "Hesabınız Yöneticiler Tarafından Onaylanmamıştır";
+                            return View();
+                        }
+                        else if (loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.Approved) || loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.ApproveAfterBlock))
+                        {
+                            if (loginUser.IsAdmin != true)
+                            {
+                                Session["IsLoggedIn"] = true;
+                                Session["UserId"] = loginUser.Id.ToString();
+                                Session["UserEMail"] = loginUser.EMail.ToString();
+                                Session["UserPassword"] = loginUser.Password.ToString();
+                                Session["UserName"] = loginUser.Name.ToString();
+                                Session["UserSurname"] = loginUser.Surname.ToString();
+                                Session["UserCitizenshipNo"] = loginUser.CitizenshipNo.ToString();
+                                Session["UserIsCvUploaded"] = Convert.ToBoolean(loginUser.IsCvUploaded);
+                                if (loginUserCV != null)
+                                {
+                                    Session["UserCvId"] = loginUserCV.Id;
+                                }
+                                Session["UserIsApproved"] = Convert.ToInt32(loginUser.IsApproved);
+                                Session["UserIsAdmin"] = Convert.ToInt32(loginUser.IsAdmin);
+                                return RedirectToAction("UserMenu", "User");
+                            }
+                            else if (loginUser.IsAdmin == true)
+                            {
+                                Session["IsLoggedIn"] = true;
+                                Session["UserId"] = loginUser.Id.ToString();
+                                Session["UserEMail"] = loginUser.EMail.ToString();
+                                Session["UserPassword"] = loginUser.Password.ToString();
+                                Session["UserName"] = loginUser.Name.ToString();
+                                Session["UserSurname"] = loginUser.Surname.ToString();
+                                Session["UserCitizenshipNo"] = loginUser.CitizenshipNo.ToString();
+                                Session["UserIsApproved"] = Convert.ToInt32(loginUser.IsApproved);
+                                Session["UserIsAdmin"] = Convert.ToInt32(loginUser.IsAdmin);
+                                return RedirectToAction("AdminUserMenu", "User");
+                            }
+                        }
                     }
                 }
+                else
+                {
+                    ViewBag.Message = "Hesabınız Pasif Durumdadır";
+                    return View();
+                }
+            }
+            else
+            {
+                ViewBag.Message = "Kullanıcı Adınızı veya Şifrenizi Hatalı Girdiniz";
+                //Aslında Giriş Yapan Kişi, Giriş Yapmaya Çalıştığı E-Postasıyla Sisteme Kayıt Olmamış. Ama Bu Durum Sistemde Açık Oluşturabilir.
+                return View();
             }
             return View(model);
         }
@@ -99,7 +123,7 @@ namespace Planner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Register(User model)
         {
-            if (ModelState.IsValid)
+            try
             {
                 //KPS Entegrasyonu
                 //int birthYear = user.BirthDate.Year;
@@ -117,27 +141,60 @@ namespace Planner.Controllers
                 //}
 
                 //Yalnızca Kimlik No Kontrolü
-                bool controlCitizenshipno = HomeController.ControlCitizenshipNo(model.CitizenshipNo);
-                if (controlCitizenshipno)
+                User user = db.User.FirstOrDefault(a => a.EMail == model.EMail);
+                if (user == null)
                 {
-                    model.Id = Guid.NewGuid().ToString();
-                    model.Password = HomeController.Encrypt(model.Password);
-                    model.IsCvUploaded = false;
-                    model.IsApproved = Convert.ToInt32(UserApproveEnum.WaitingToApprove);
-                    model.IsAdmin = false;
-                    model.RegisterDate = DateTime.Now;
-                    model.LastEditDate = Convert.ToDateTime("1753-01-01");
-                    model.LastEditBy = -1;
-                    db.User.Add(model);
-                    db.SaveChanges();
-                    return PartialView("_Approvement");
+                    bool controlCitizenshipno = HomeController.ControlCitizenshipNo(model.CitizenshipNo);
+                    if (controlCitizenshipno)
+                    {
+                        model.Id = Guid.NewGuid().ToString();
+                        model.Password = HomeController.Encrypt(model.Password);
+                        model.IsCvUploaded = false;
+                        model.IsApproved = Convert.ToInt32(UserApproveEnum.WaitingToApprove);
+                        model.IsAdmin = false;
+                        model.IsActive = true;
+                        model.RegisterDate = DateTime.Now;
+                        model.LastEditDate = Convert.ToDateTime("1753-01-01");
+                        model.LastEditBy = "00000000-0000-0000-0000-000000000000";
+                        if (model.City == null)
+                        {
+                            model.City = "";
+                        }
+                        if (model.Department == null)
+                        {
+                            model.Department = "";
+                        }
+                        if (model.Job == null)
+                        {
+                            model.Job = "";
+                        }
+                        if (model.School == null)
+                        {
+                            model.School = "";
+                        }
+                        db.User.Add(model);
+                        db.SaveChanges();
+
+                        var registeredUser = db.User.FirstOrDefault(a => a.EMail == model.EMail);
+                        Session["UserCitizenshipNo"] = registeredUser.CitizenshipNo.ToString();
+                        return PartialView("_UploadCv");
+                    }
+                    else
+                    {
+                        ViewBag.Message = "T.C. Kimlik Numaranızı Hatalı Girdiniz";
+                        return PartialView("_InvalidCitizenshipNo");
+                    }
                 }
                 else
                 {
-                    ViewBag.Message = "Gecersiz T.C. Kimlik Numarası";
+                    return PartialView("_AlreadyRegistered");
                 }
             }
-            return View(model);
+            catch (Exception ex)
+            {
+                ViewBag.Message = "Kayıt Sırasında Bir Hata Oluştu. Lütfen Tüm Bilgilerinizi Girdiğinizden Emin Olun.";
+                return PartialView("_InvalidCitizenshipNo");
+            }
         }
         #endregion
 

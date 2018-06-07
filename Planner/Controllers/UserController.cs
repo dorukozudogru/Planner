@@ -5,14 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Mime;
 using System.Web;
 using System.Web.Mvc;
 
 namespace Planner.Controllers
 {
-    //[UserAuthorize]
+    [UserAuthorize]
     public class UserController : Controller
     {
         private DBContext db = new DBContext();
@@ -83,20 +82,20 @@ namespace Planner.Controllers
             }
         }
 
-        public ActionResult ChangeUserToAdmin(string Id, string returnUrl)
+        public ActionResult ChangeUserToAdmin(string Id)
         {
             User userModel = db.User.FirstOrDefault(a => a.Id == Id);
             userModel.IsAdmin = true;
             db.SaveChanges();
-            return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Admin Olarak Ayarlanmıştır.", returnUrl });
+            return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Admin Olarak Ayarlanmıştır.", returnUrl = Request.UrlReferrer.AbsoluteUri });
         }
 
         #region Views
-        public ActionResult UserMenu(int? loggedUserId)
+        public ActionResult UserMenu(string loggedUserId)
         {
             if (Convert.ToString(Session["UserId"]) != "")
             {
-                if (Convert.ToBoolean(Session["UserIsAdmin"]) == true)
+                if (Convert.ToBoolean(Session["UserIsAdmin"]))
                 {
                     return RedirectToAction("AdminUserMenu", "User");
                 }
@@ -108,12 +107,6 @@ namespace Planner.Controllers
             }
         }
 
-        [AllowAnonymous]
-        public ActionResult Rejected()
-        {
-            return View();
-        }
-
         public ActionResult AdminUserMenu()
         {
             return View();
@@ -123,151 +116,131 @@ namespace Planner.Controllers
         {
             return View();
         }
-
-        [AllowAnonymous]
-        public ActionResult LogInApprovement()
-        {
-            return View();
-        }
-
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            User user = db.User.Find(id);
-            if (user == null)
-            {
-                return HttpNotFound();
-            }
-            return View(user);
-        }
         #endregion
 
         #region Approvement
-        public ActionResult ApproveUser(string id, string returnUrl)
+        public ActionResult ApproveUser(string id)
         {
             if (id == null || id == "")
             {
-                return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Id'si Bulunamadı", returnUrl });
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Id'si Bulunamadı", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
 
             var user = db.User.SingleOrDefault(m => m.Id == id);
             if (user == null)
             {
-                return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Bulunamadı", returnUrl });
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Bulunamadı", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
 
             if (user != null)
             {
                 user.IsApproved = Convert.ToInt32(UserApproveEnum.Approved);
                 user.LastEditDate = DateTime.Now;
-                user.LastEditBy = Convert.ToInt32(Session["UserId"]);
+                user.LastEditBy = Convert.ToString(Session["UserId"]);
                 db.SaveChanges();
                 try
                 {
                     HomeController.SendEMail(user.EMail, "Üyeliğiniz Onaylanmıştır.");
-                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Onaylanmıştır", returnUrl });
+                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Onaylanmıştır", returnUrl = Request.UrlReferrer.AbsoluteUri });
                 }
                 catch (Exception ex)
                 {
-                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Onaylanmıştır Fakat E-Posta Gönderiminde Bir Hata Oluşmuştur", returnUrl });
+                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Onaylanmıştır Fakat E-Posta Gönderiminde Bir Hata Oluşmuştur", returnUrl = Request.UrlReferrer.AbsoluteUri });
                 }
             }
             return View();
         }
 
-        public ActionResult DeclineUser(string id, string returnUrl)
+        public ActionResult DeclineUser(string id)
         {
             if (id == null || id == "")
             {
-                return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Id'si Bulunamadı", returnUrl });
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Id'si Bulunamadı", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
 
             var user = db.User.SingleOrDefault(m => m.Id == id);
             if (user == null)
             {
-                return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Bulunamadı", returnUrl });
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Bulunamadı", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
             if (user != null)
             {
                 user.IsApproved = Convert.ToInt32(UserApproveEnum.NotApproved);
                 user.LastEditDate = DateTime.Now;
-                user.LastEditBy = Convert.ToInt32(Session["UserId"]);
+                user.LastEditBy = Convert.ToString(Session["UserId"]);
                 db.SaveChanges();
                 try
                 {
                     HomeController.SendEMail(user.EMail, "Üyeliğiniz Reddedilmiştir.");
-                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Hesabı Reddedilmiştir", returnUrl });
+                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Hesabı Reddedilmiştir", returnUrl = Request.UrlReferrer.AbsoluteUri });
                 }
                 catch (Exception ex)
                 {
-                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Hesabı Reddedilmiştir Fakat E-Posta Gönderiminde Bir Hata Oluşmuştur", returnUrl });
+                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Hesabı Reddedilmiştir Fakat E-Posta Gönderiminde Bir Hata Oluşmuştur", returnUrl = Request.UrlReferrer.AbsoluteUri });
                 }
             }
             return View();
         }
 
-        public ActionResult BlockUser(string id, string returnUrl)
+        public ActionResult BlockUser(string id)
         {
             if (id == null || id == "")
             {
-                return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Id'si Bulunamadı", returnUrl });
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Id'si Bulunamadı", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
 
             var user = db.User.SingleOrDefault(m => m.Id == id);
             if (user == null)
             {
-                return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Bulunamadı", returnUrl });
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Bulunamadı", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
 
             if (user != null)
             {
                 user.IsApproved = Convert.ToInt32(UserApproveEnum.Blocked);
                 user.LastEditDate = DateTime.Now;
-                user.LastEditBy = Convert.ToInt32(Session["UserId"]);
+                user.LastEditBy = Convert.ToString(Session["UserId"]);
                 db.SaveChanges();
                 try
                 {
                     HomeController.SendEMail(user.EMail, "Üyeliğiniz Dondurulmuştur.");
-                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Hesabı Engellenmiştir", returnUrl });
+                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Hesabı Engellenmiştir", returnUrl = Request.UrlReferrer.AbsoluteUri });
                 }
                 catch (Exception ex)
                 {
-                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Hesabı Engellenmiştir Fakat E-Posta Gönderiminde Bir Hata Oluşmuştur", Request.UrlReferrer.AbsoluteUri });
+                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Hesabı Engellenmiştir Fakat E-Posta Gönderiminde Bir Hata Oluşmuştur", returnUrl = Request.UrlReferrer.AbsoluteUri });
                 }
             }
             return View();
         }
 
-        public ActionResult ApproveAfterBlockUser(string id, string returnUrl)
+        public ActionResult ApproveAfterBlockUser(string id)
         {
             if (id == null || id == "")
             {
-                return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Id'si Bulunamadı", returnUrl });
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Id'si Bulunamadı", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
 
             var user = db.User.SingleOrDefault(m => m.Id == id);
             if (user == null)
             {
-                return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Bulunamadı", returnUrl });
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Bulunamadı", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
 
             if (user != null)
             {
                 user.IsApproved = Convert.ToInt32(UserApproveEnum.ApproveAfterBlock);
                 user.LastEditDate = DateTime.Now;
-                user.LastEditBy = Convert.ToInt32(Session["UserId"]);
+                user.LastEditBy = Convert.ToString(Session["UserId"]);
                 db.SaveChanges();
                 try
                 {
                     HomeController.SendEMail(user.EMail, "Üyeliğiniz Yeniden Aktif Edilmiştir.");
-                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Hesabı Yeniden Aktif Edilmiştir", returnUrl });
+                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Hesabı Yeniden Aktif Edilmiştir", returnUrl = Request.UrlReferrer.AbsoluteUri });
                 }
                 catch (Exception ex)
                 {
-                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Hesabı Yeniden Aktif Edilmiştir Fakat E-Posta Gönderiminde Bir Hata Oluşmuştur", returnUrl });
+                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Hesabı Yeniden Aktif Edilmiştir Fakat E-Posta Gönderiminde Bir Hata Oluşmuştur", returnUrl = Request.UrlReferrer.AbsoluteUri });
                 }
             }
             return View();
@@ -408,16 +381,15 @@ namespace Planner.Controllers
                 }
                 else if (fileCV.ContentLength > 0 && fileCV.ContentType == "application/pdf")
                 {
-                    string sessionCitizenship = Convert.ToString(Session["UserCitizenshipNo"]);
+                    string citizenshipNo = Convert.ToString(Session["UserCitizenshipNo"]);
 
                     var fileName = Path.GetFileName(fileCV.FileName);
-                    var path = Path.Combine(Server.MapPath("~/Files/CV"), (sessionCitizenship + "_CV_" + fileName));
+                    var path = Path.Combine(Server.MapPath("~/Files/CV"), (citizenshipNo + "_CV_" + fileName));
                     fileCV.SaveAs(path);
 
-                    User u = new User();
                     UserCV cv = new UserCV();
 
-                    var userControl = db.User.SingleOrDefault(m => m.CitizenshipNo == sessionCitizenship);
+                    var userControl = db.User.SingleOrDefault(m => m.CitizenshipNo == citizenshipNo);
 
                     if (userControl.IsCvUploaded != false)
                     {
@@ -425,10 +397,12 @@ namespace Planner.Controllers
                         cv.FileName = fileName;
                         cv.FilePath = path;
                         cv.CreationDate = DateTime.Now;
+                        db.SaveChanges();
+                        return RedirectToAction("MessageShow", "Home", new { messageBody = "CV Başarıyla Güncellendi", returnUrl = Request.UrlReferrer.AbsoluteUri });
                     }
                     else
                     {
-                        cv.UserId = Convert.ToString(Session["UserId"]);
+                        cv.UserId = userControl.Id;
                         cv.FileName = fileName;
                         cv.FilePath = path;
                         cv.CreationDate = DateTime.Now;
@@ -436,16 +410,18 @@ namespace Planner.Controllers
 
                         var user = db.User.SingleOrDefault(m => m.Id == cv.UserId);
                         user.IsCvUploaded = true;
+                        db.SaveChanges();
+                        ViewBag.Message = "CV Başarıyla Yüklendi";
+                        Session["UserIsCvUploaded"] = true;
                     }
-                    db.SaveChanges();
                 }
-                ViewBag.Message = "CV Başarıyla Yüklendi";
                 return View();
             }
             catch (Exception ex)
             {
-                ViewBag.Message = "CV Yükleme Sırasında Bir Hata Oluştu";
-                return View();
+                ViewBag.Message = "Kullanıcınız Başarıyla Oluşturulmuştur. Fakat CV Yükleme Sırasında Bir Hata Oluştu. Lütfen Yönetici Onayından Sonra CV'nizi Yükleyiniz.";
+                ViewBag.ReturnUrl = Request.UrlReferrer.AbsoluteUri;
+                return PartialView("_UploadUserCV");
             }
         }
 
@@ -467,8 +443,48 @@ namespace Planner.Controllers
             }
             catch (Exception)
             {
-                string returnUrl = "";
-                return RedirectToAction("MessageShow", "Home", new { messageBody = "Dosya Bulunamadı", returnUrl });
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Dosya Bulunamadı", returnUrl = Request.UrlReferrer.AbsoluteUri });
+            }
+        }
+
+        public ActionResult UserProfile(string loggedUserId)
+        {
+            try
+            {
+                User userModel = db.User.FirstOrDefault(z => z.Id == loggedUserId);
+                return View(userModel);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Beklenmeyen Bir Hata Oluştu", returnUrl = Request.UrlReferrer.AbsoluteUri });
+            }
+        }
+
+        [HttpPost]
+        public ActionResult EditProfile(User user)
+        {
+            if (HomeController.ControlCitizenshipNo(user.CitizenshipNo))
+            {
+                User model = db.User.FirstOrDefault(a => a.EMail == user.EMail);
+                model.Name = user.Name;
+                model.Surname = user.Surname;
+                model.EMail = user.EMail;
+                model.Password = HomeController.Encrypt(user.Password);
+                model.CitizenshipNo = user.CitizenshipNo;
+                model.BirthDate = user.BirthDate;
+                model.City = user.City;
+                model.PhoneNumber = user.PhoneNumber;
+                model.School = user.School;
+                model.Department = user.Department;
+                model.Job = user.Job;
+                model.LastEditBy = user.Id;
+                model.LastEditDate = DateTime.Now;
+                db.SaveChanges();
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Bilgileriniz Güncellenmiştir", returnUrl = Request.UrlReferrer.AbsoluteUri });
+            }
+            else
+            {
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "T.C. Kimlik Numaranızı Doğru Girdiğinizden Emin Olun", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
         }
     }
