@@ -9,6 +9,7 @@ namespace Planner.Enums
     {
         NotSupported = 0,
         WaitingToSupport = 1,
-        Supported = 2
+        Supported = 2,
+        Closed = 3
     }
 }

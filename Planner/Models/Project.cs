@@ -34,6 +34,9 @@ namespace Planner.Models
 
         public string SupportRequest { get; set; }
 
+        [Display(Name = "Görmeye Yetkili Kullanıcılar")]
+        public string AuthorizedUsers { get; set; }
+
         public int IsApproveChanged { get; set; }
 
         public DateTime CreationDate { get; set; }

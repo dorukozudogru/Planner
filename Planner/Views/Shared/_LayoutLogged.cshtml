@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8" lang="tr" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title</title>
+    @*<title>@ViewBag.Title</title>*@
+    <title>Proje Sepeti</title>
 
     <link rel="apple-touch-icon" href="~/Content/Site/classic/iconbar/assets/images/apple-touch-icon.png">
     <link rel="shortcut icon" href="~/Content/Site/classic/iconbar/assets/images/favicon.ico">
@@ -40,8 +41,8 @@
     <script src="~/Content/Site/classic/global/vendor/jquery-placeholder/jquery.placeholder.js"></script>
     <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/bootstrap-datepicker/bootstrap-datepicker.css">
     <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/asscrollable/asScrollable.css">
-    <link rel="stylesheet" href="~/Content/Site/classic/assets/examples/css/advanced/scrollable.css">
-    <link rel="stylesheet" href="~/Content/Site/classic/assets/examples/css/pages/errors.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/advanced/scrollable.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/pages/errors.css">
 
     <!-- Fonts -->
     <link href="~/Content/Site/classic/global/fonts/font-awesome/font-awesome.css" rel="stylesheet" />
@@ -142,7 +143,8 @@
                             </span>
                         </a>
                         <div class="dropdown-menu" role="menu">
-                            <a>@Session["UserName"] @Session["UserSurname"]</a>
+                            <a class="dropdown-item" role="menuitem"><strong>@Session["UserName"] @Session["UserSurname"]</strong><br><small>(@Session["UserEMail"])</small></a>
+                            <div class="dropdown-divider" role="presentation"></div>
                             <a class="dropdown-item" href="@Url.Action("UserProfile", "User", new { loggedUserId = Session["UserId"] })" role="menuitem"><i class="icon wb-user" aria-hidden="true"></i> Profil</a>
                             @*<a class="dropdown-item" href="javascript:void(0)" role="menuitem"><i class="icon wb-payment" aria-hidden="true"></i> Billing</a>
                                 <a class="dropdown-item" href="javascript:void(0)" role="menuitem"><i class="icon wb-settings" aria-hidden="true"></i> Settings</a>*@
@@ -546,9 +548,16 @@
             });
         })(document, window, jQuery);
     </script>
-
     <script>
         $('#sendProject').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)
+            var projectId = button.data('id')
+            var modal = $(this)
+            modal.find('.form-group input').val(projectId)
+        })
+    </script>
+    <script>
+        $('#approveProject').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget)
             var projectId = button.data('id')
             var modal = $(this)

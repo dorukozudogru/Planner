@@ -3,16 +3,15 @@
 @{
     ViewBag.Title = "Edit";
     Layout = "~/Views/Shared/_LayoutLogged.cshtml";
-    ViewBag.ReturnUrl = "/Project/Edit";
 }
 
 <div class="container text-center">
-    <section class="text-white">
+    <section class="text-dark">
         @using (Html.BeginForm(Html.BeginForm("EditProject", "Project", FormMethod.Post, new { enctype = "multipart/form-data", returnUrl = ViewBag.ReturnUrl })))
         {
             @Html.AntiForgeryToken()
             <div class="form-horizontal">
-                <h4>Projem</h4>
+                <h2 class="section-heading">Projem</h2>
                 <hr />
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 @Html.HiddenFor(model => model.Id)
@@ -28,14 +27,17 @@
                 </div>
                 <div class="text-center col-md-auto">
                     <span>Proje Dosyası</span>
-                    <input type="file" name="fileProject2" id="fileProject2" value="Yükle" accept=".pdf" class="form-control text-center" />
+                    <input type="file" data-plugin="dropify" data-height="80" name="fileProject2" id="fileProject2" value="Yükle" accept=".pdf" class="form-control text-center" />
+                    <small style="color:red">*Proje dosyanızı tekrar yüklemeyi unutmayın</small>
                 </div>
                 <br />
                 <br />
-                <div class="text-center ">
-                    <input type="submit" value="Yükle" class="btn btn-danger" formaction="/Project/EditProject" />
+                <div class="text-center">
+                    <input type="submit" value="Yükle" class="btn btn-success" formaction="/Project/EditProject" />
                 </div>
             </div>
         }
+        <br />
+        <a class="btn btn-danger" href="@ViewBag.ReturnUrl">Vazgeç</a>
     </section>
 </div>

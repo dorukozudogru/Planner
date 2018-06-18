@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8" lang="tr" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title</title>
+    @*<title>@ViewBag.Title</title>*@
+    <title>Proje Sepeti</title>
 
     <link rel="apple-touch-icon" href="~/Content/Site/classic/iconbar/assets/images/apple-touch-icon.png">
     <link rel="shortcut icon" href="~/Content/Site/classic/iconbar/assets/images/favicon.ico">
@@ -20,9 +21,7 @@
     <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/intro-js/introjs.css">
     <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/slidepanel/slidePanel.css">
     <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/flag-icon-css/flag-icon.css">
-    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/chartist/chartist.css">
     <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/jvectormap/jquery-jvectormap.css">
-    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/chartist-plugin-tooltip/chartist-plugin-tooltip.css">
     <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/dashboard/v1.css">
     <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/datatables.net-bs4/dataTables.bootstrap4.css">
     <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/datatables.net-fixedheader-bs4/dataTables.fixedheader.bootstrap4.css">
@@ -37,8 +36,9 @@
     <script src="~/Content/Site/classic/global/vendor/jquery-placeholder/jquery.placeholder.js"></script>
     <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/bootstrap-datepicker/bootstrap-datepicker.css">
     <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/asscrollable/asScrollable.css">
-    <link rel="stylesheet" href="~/Content/Site/classic/assets/examples/css/advanced/scrollable.css">
-    <link rel="stylesheet" href="~/Content/Site/classic/assets/examples/css/pages/errors.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/advanced/scrollable.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/pages/errors.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/pages/user.css">
 
     <!-- Fonts -->
     <link href="~/Content/Site/classic/global/fonts/font-awesome/font-awesome.css" rel="stylesheet" />
@@ -139,7 +139,8 @@
                             </span>
                         </a>
                         <div class="dropdown-menu" role="menu">
-                            <a>@Session["UserName"] @Session["UserSurname"]</a>
+                            <a class="dropdown-item" role="menuitem"><strong>@Session["UserName"] @Session["UserSurname"]</strong><br><small>(@Session["UserEMail"])</small></a>
+                            <div class="dropdown-divider" role="presentation"></div>
                             <a class="dropdown-item" href="@Url.Action("UserProfile", "User", new { loggedUserId = Session["UserId"] })" role="menuitem"><i class="icon wb-user" aria-hidden="true"></i> Profil</a>
                             @*<a class="dropdown-item" href="javascript:void(0)" role="menuitem"><i class="icon wb-payment" aria-hidden="true"></i> Billing</a>
                                 <a class="dropdown-item" href="javascript:void(0)" role="menuitem"><i class="icon wb-settings" aria-hidden="true"></i> Settings</a>*@
@@ -463,14 +464,11 @@
     <script src="~/Content/Site/classic/global/vendor/asscrollable/jquery-asScrollable.js"></script>
     <script src="~/Content/Site/classic/global/vendor/ashoverscroll/jquery-asHoverScroll.js"></script>
 
-    <!-- Plugins -->
     <script src="~/Content/Site/classic/global/vendor/switchery/switchery.js"></script>
     <script src="~/Content/Site/classic/global/vendor/intro-js/intro.js"></script>
     <script src="~/Content/Site/classic/global/vendor/screenfull/screenfull.js"></script>
     <script src="~/Content/Site/classic/global/vendor/slidepanel/jquery-slidePanel.js"></script>
     <script src="~/Content/Site/classic/global/vendor/skycons/skycons.js"></script>
-    <script src="~/Content/Site/classic/global/vendor/chartist/chartist.min.js"></script>
-    <script src="~/Content/Site/classic/global/vendor/chartist-plugin-tooltip/chartist-plugin-tooltip.js"></script>
     <script src="~/Content/Site/classic/global/vendor/aspieprogress/jquery-asPieProgress.min.js"></script>
     <script src="~/Content/Site/classic/global/vendor/jvectormap/jquery-jvectormap.min.js"></script>
     <script src="~/Content/Site/classic/global/vendor/jvectormap/maps/jquery-jvectormap-au-mill-en.js"></script>
@@ -493,8 +491,8 @@
     <script src="~/Content/Site/classic/global/vendor/bootbox/bootbox.js"></script>
     <script src="~/Content/Site/classic/global/vendor/jquery-placeholder/jquery.placeholder.js"></script>
     <script src="~/Content/Site/classic/global/vendor/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/aspaginator/jquery-asPaginator.min.js"></script>
 
-    <!-- Scripts -->
     <script src="~/Content/Site/classic/global/js/Component.js"></script>
     <script src="~/Content/Site/classic/global/js/Plugin.js"></script>
     <script src="~/Content/Site/classic/global/js/Base.js"></script>
@@ -505,11 +503,9 @@
     <script src="~/Content/Site/classic/iconbar/assets/js/Section/PageAside.js"></script>
     <script src="~/Content/Site/classic/iconbar/assets/js/Plugin/menu.js"></script>
 
-    <!-- Config -->
     <script src="~/Content/Site/classic/global/js/config/colors.js"></script>
     <script src="~/Content/Site/classic/iconbar/assets/js/config/tour.js"></script>
 
-    <!-- Page -->
     <script src="~/Content/Site/classic/iconbar/assets/js/Site.js"></script>
     <script src="~/Content/Site/classic/global/js/Plugin/asscrollable.js"></script>
     <script src="~/Content/Site/classic/global/js/Plugin/slidepanel.js"></script>
@@ -518,12 +514,13 @@
     <script src="~/Content/Site/classic/global/js/Plugin/jvectormap.js"></script>
     <script src="~/Content/Site/classic/global/js/Plugin/datatables.js"></script>
     <script src="~/Content/Site/classic/global/js/Plugin/bootstrap-datepicker.js"></script>
+    <script src="~/Content/Site/classic/global/js/Plugin/aspaginator.js"></script>
+    <script src="~/Content/Site/classic/global/js/Plugin/responsive-tabs.js"></script>
+    <script src="~/Content/Site/classic/global/js/Plugin/tabs.js"></script>
+    <script src="~/Content/Site/classic/global/js/Plugin/asscrollable.js"></script>
 
     <script src="~/Content/Site/classic/iconbar/assets/examples/js/tables/datatable.js"></script>
     <script src="~/Content/Site/classic/iconbar/assets/examples/js/dashboard/v1.js"></script>
-
-    <script src="~/Content/Site/classic/global/js/Plugin/asscrollable.js"></script>
-
     <script src="~/Content/Site/classic/iconbar/assets/examples/js/advanced/scrollable.js"></script>
     <script>
         (function (document, window, $) {
@@ -534,6 +531,22 @@
                 Site.run();
             });
         })(document, window, jQuery);
+    </script>
+    <script>
+        $('#sendProject').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)
+            var projectId = button.data('id')
+            var modal = $(this)
+            modal.find('.form-group input').val(projectId)
+        })
+    </script>
+    <script>
+        $('#approveProject').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)
+            var projectId = button.data('id')
+            var modal = $(this)
+            modal.find('.form-group input').val(projectId)
+        })
     </script>
 </body>
 </html>

@@ -9,7 +9,7 @@ namespace Planner.Models
     {
         public int Id { get; set; }
 
-        public string SupportedProject { get; set; }
+        public string SupportedProjectId { get; set; }
 
         public string Supporter { get; set; }
 

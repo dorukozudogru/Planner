@@ -42,12 +42,22 @@ namespace Planner
                     if (errorCode == 404)
                     {
                         Server.ClearError();
-                        Response.Redirect("~/Error/Error404");
+                        Response.Redirect("~/Error/Index");
+                    }
+                    if (errorCode == 500)
+                    {
+                        Server.ClearError();
+                        Response.Redirect("~/Error/Error500");
                     }
                     if (errorCode == 503)
                     {
                         Server.ClearError();
                         Response.Redirect("~/Error/Error503");
+                    }
+                    else
+                    {
+                        Server.ClearError();
+                        Response.Redirect("~/Error/Index");
                     }
                 }
                 else

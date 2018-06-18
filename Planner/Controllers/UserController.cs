@@ -370,6 +370,7 @@ namespace Planner.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult UploadUserCV(HttpPostedFileBase fileCV)
         {
             try

@@ -41,6 +41,8 @@
                             @Html.DisplayFor(modelItem => item.UserEMail)
                             <h5>Projeyi Görüntüle</h5>
                             <a href="@Url.Action("Download", "Project", new { id = item.ProjectId })" target="_blank" class="btn btn-info"><span class="fa fa-search"></span></a>
+                            <h5>Projeyi Kimler Görsün?</h5>
+                            <a href="@Url.Action("GiveAuthorizeToUserForProject", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="btn btn-warning"><span class="fa fa-user-secret"></span></a>
                             <h5>Projeyi Onayla</h5>
                             <a href="@Url.Action("ApproveProject", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="btn btn-success"><span class="fa fa-thumbs-up"></span></a>
                             <h5>Projeyi Reddet</h5>

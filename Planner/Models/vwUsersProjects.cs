@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Planner.Models
 {
@@ -34,6 +35,12 @@ namespace Planner.Models
         [Display(Name = "Desteklendi Mi?")]
         public int IsSupported { get; set; }
 
-        public string SupportRequest { get; set; }
+        public string Supporter { get; set; }
+
+        public string SupportRequirements { get; set; }
+
+        public string SupportValue { get; set; }
+
+        public DateTime SupportDate { get; set; }
     }
 }

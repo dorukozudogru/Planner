@@ -26,7 +26,7 @@ namespace Planner.Controllers
             return View();
         }
 
-        #region ListProjects
+        #region ListProjects // userAuthorize işlemini method yap
         public ActionResult AllProjects()
         {
             if (Convert.ToBoolean(Session["UserIsAdmin"]) != false)
@@ -42,15 +42,35 @@ namespace Planner.Controllers
                     UserProject upModel = new UserProject();
                     List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
 
+                    string[] _authUsers;
+                    bool userAuthorized = true;
+
                     foreach (var item in db.UserProject)
                     {
-                        int upId = item.Id;
-                        upModel = db.UserProject.First(z => z.Id == upId);
-                        pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                        userModel = db.User.First(z => z.Id == upModel.UserId);
+                        if (item.AuthorizedUsers != null)
+                        {
+                            _authUsers = item.AuthorizedUsers.Split(';');
+                            for (int i = 0; i < _authUsers.Count(); i++)
+                            {
+                                if (_authUsers[i] != Session["UserId"].ToString())
+                                {
+                                    userAuthorized = false;
+                                }
+                                else
+                                {
+                                    userAuthorized = true;
+                                }
+                            }
+                        }
+                        if (userAuthorized)
+                        {
+                            int upId = item.Id;
+                            upModel = db.UserProject.First(z => z.Id == upId);
+                            pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
+                            userModel = db.User.First(z => z.Id == upModel.UserId);
 
-                        vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported, ProjectDescription = pModel.Description, SupportRequest = pModel.SupportRequest });
-
+                            vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported, ProjectDescription = pModel.Description });
+                        }
                     }
                     vwLstUp.ToList();
                     return View(vwLstUp);
@@ -81,15 +101,36 @@ namespace Planner.Controllers
                 UserProject upModel = new UserProject();
                 List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
 
+                string[] _authUsers;
+                bool userAuthorized = true;
+
                 foreach (var item in db.UserProject)
                 {
-                    int upId = item.Id;
-                    upModel = db.UserProject.First(z => z.Id == upId);
-                    pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                    userModel = db.User.First(z => z.Id == upModel.UserId);
-                    if (pModel.IsApproved == Convert.ToInt32(ProjectApproveEnum.Approved) && pModel.IsSupported != Convert.ToInt32(ProjectSupportEnum.Supported))
+                    if (item.AuthorizedUsers != null)
                     {
-                        vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported, ProjectDescription = pModel.Description, SupportRequest = pModel.SupportRequest });
+                        _authUsers = item.AuthorizedUsers.Split(';');
+                        for (int i = 0; i < _authUsers.Count(); i++)
+                        {
+                            if (_authUsers[i] != Session["UserId"].ToString())
+                            {
+                                userAuthorized = false;
+                            }
+                            else
+                            {
+                                userAuthorized = true;
+                            }
+                        }
+                    }
+                    if (userAuthorized)
+                    {
+                        int upId = item.Id;
+                        upModel = db.UserProject.First(z => z.Id == upId);
+                        pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
+                        userModel = db.User.First(z => z.Id == upModel.UserId);
+                        if (pModel.IsApproved == Convert.ToInt32(ProjectApproveEnum.Approved) && pModel.IsSupported == Convert.ToInt32(ProjectSupportEnum.NotSupported))
+                        {
+                            vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported, ProjectDescription = pModel.Description });
+                        }
                     }
                 }
                 vwLstUp.ToList();
@@ -116,15 +157,36 @@ namespace Planner.Controllers
                 UserProject upModel = new UserProject();
                 List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
 
+                string[] _authUsers;
+                bool userAuthorized = true;
+
                 foreach (var item in db.UserProject)
                 {
-                    int upId = item.Id;
-                    upModel = db.UserProject.First(z => z.Id == upId);
-                    pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                    userModel = db.User.First(z => z.Id == upModel.UserId);
-                    if (pModel.IsSupported == Convert.ToInt32(ProjectSupportEnum.Supported) && pModel.IsApproved == Convert.ToInt32(ProjectApproveEnum.Approved))
+                    if (item.AuthorizedUsers != null)
                     {
-                        vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported, ProjectDescription = pModel.Description, SupportRequest = pModel.SupportRequest });
+                        _authUsers = item.AuthorizedUsers.Split(';');
+                        for (int i = 0; i < _authUsers.Count(); i++)
+                        {
+                            if (_authUsers[i] != Session["UserId"].ToString())
+                            {
+                                userAuthorized = false;
+                            }
+                            else
+                            {
+                                userAuthorized = true;
+                            }
+                        }
+                    }
+                    if (userAuthorized)
+                    {
+                        int upId = item.Id;
+                        upModel = db.UserProject.First(z => z.Id == upId);
+                        pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
+                        userModel = db.User.First(z => z.Id == upModel.UserId);
+                        if (pModel.IsSupported == Convert.ToInt32(ProjectSupportEnum.Supported) && pModel.IsApproved == Convert.ToInt32(ProjectApproveEnum.Approved))
+                        {
+                            vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported, ProjectDescription = pModel.Description });
+                        }
                     }
                 }
                 vwLstUp.ToList();
@@ -153,15 +215,36 @@ namespace Planner.Controllers
                     UserProject upModel = new UserProject();
                     List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
 
+                    string[] _authUsers;
+                    bool userAuthorized = true;
+
                     foreach (var item in db.UserProject)
                     {
-                        int upId = item.Id;
-                        upModel = db.UserProject.First(z => z.Id == upId);
-                        pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                        userModel = db.User.First(z => z.Id == upModel.UserId);
-                        if (pModel.IsApproved == Convert.ToInt32(ProjectApproveEnum.WaitingToApprove))
+                        if (item.AuthorizedUsers != null)
                         {
-                            vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported, ProjectDescription = pModel.Description, SupportRequest = pModel.SupportRequest });
+                            _authUsers = item.AuthorizedUsers.Split(';');
+                            for (int i = 0; i < _authUsers.Count(); i++)
+                            {
+                                if (_authUsers[i] != Session["UserId"].ToString())
+                                {
+                                    userAuthorized = false;
+                                }
+                                else
+                                {
+                                    userAuthorized = true;
+                                }
+                            }
+                        }
+                        if (userAuthorized)
+                        {
+                            int upId = item.Id;
+                            upModel = db.UserProject.First(z => z.Id == upId);
+                            pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
+                            userModel = db.User.First(z => z.Id == upModel.UserId);
+                            if (pModel.IsApproved == Convert.ToInt32(ProjectApproveEnum.WaitingToApprove))
+                            {
+                                vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported, ProjectDescription = pModel.Description });
+                            }
                         }
                     }
                     vwLstUp.ToList();
@@ -193,15 +276,36 @@ namespace Planner.Controllers
                 UserProject upModel = new UserProject();
                 List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
 
+                string[] _authUsers;
+                bool userAuthorized = true;
+
                 foreach (var item in db.UserProject)
                 {
-                    int upId = item.Id;
-                    upModel = db.UserProject.First(z => z.Id == upId);
-                    pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                    userModel = db.User.First(z => z.Id == upModel.UserId);
-                    if (pModel.IsSupported == Convert.ToInt32(ProjectSupportEnum.WaitingToSupport))
+                    if (item.AuthorizedUsers != null)
                     {
-                        vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported, ProjectDescription = pModel.Description, SupportRequest = pModel.SupportRequest });
+                        _authUsers = item.AuthorizedUsers.Split(';');
+                        for (int i = 0; i < _authUsers.Count(); i++)
+                        {
+                            if (_authUsers[i] != Session["UserId"].ToString())
+                            {
+                                userAuthorized = false;
+                            }
+                            else
+                            {
+                                userAuthorized = true;
+                            }
+                        }
+                    }
+                    if (userAuthorized)
+                    {
+                        int upId = item.Id;
+                        upModel = db.UserProject.First(z => z.Id == upId);
+                        pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
+                        userModel = db.User.First(z => z.Id == upModel.UserId);
+                        if (pModel.IsSupported == Convert.ToInt32(ProjectSupportEnum.WaitingToSupport) && pModel.IsSupported != Convert.ToInt32(ProjectSupportEnum.Closed))
+                        {
+                            vwLstUp.Add(new vwUsersProjects { UserId = userModel.Id, UserName = userModel.Name, UserSurname = userModel.Surname, UserEMail = userModel.EMail, UserCitizenshipNo = userModel.CitizenshipNo, ProjectId = pModel.Id, ProjectName = pModel.Name, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported, ProjectDescription = pModel.Description });
+                        }
                     }
                 }
                 vwLstUp.ToList();
@@ -231,10 +335,18 @@ namespace Planner.Controllers
                 upmodel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangeAsApproved);
                 pmodel.LastEditDate = DateTime.Now;
                 pmodel.LastEditBy = Convert.ToString(Session["UserId"]);
+
                 db.SaveChanges();
                 User umodel = new User();
                 umodel = db.User.FirstOrDefault(m => m.Id == upmodel.UserId);
-                HomeController.SendEMail(umodel.EMail, "Projeniz Onaylanmıştır. Destek başvurusu yapmak için sisteme giriş yapınız.");
+                try
+                {
+                    HomeController.SendEMail(umodel.EMail, "Projeniz Onaylanmıştır. Destek başvurusu yapmak için sisteme giriş yapınız.");
+                }
+                catch (Exception ex)
+                {
+                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Proje Onaylanmıştır Fakat E-Posta Gönderiminde Bir Hata Oluşmuştur", returnUrl = Request.UrlReferrer.AbsoluteUri });
+                }
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Proje Onaylanmıştır", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
             catch (Exception ex)
@@ -260,7 +372,14 @@ namespace Planner.Controllers
                 db.SaveChanges();
                 User umodel = new User();
                 umodel = db.User.FirstOrDefault(m => m.Id == upmodel.UserId);
-                HomeController.SendEMail(umodel.EMail, "Projeniz Onaylanmamıştır.");
+                try
+                {
+                    HomeController.SendEMail(umodel.EMail, "Projeniz Onaylanmamıştır.");
+                }
+                catch (Exception ex)
+                {
+                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Proje Reddedilmiştir Fakat E-Posta Gönderiminde Bir Hata Oluşmuştur", returnUrl = Request.UrlReferrer.AbsoluteUri });
+                }
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Proje Reddedilmiştir", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
             catch (Exception ex)
@@ -269,36 +388,40 @@ namespace Planner.Controllers
             }
         }
 
-        public ActionResult SupportProject(string Id)
+        public ActionResult SupportToProject(string Id, string supportRequirements, string supportValue)
         {
             try
             {
-                Project pmodel = new Project();
-                UserProject upmodel = new UserProject();
-                pmodel = db.Projects.FirstOrDefault(m => m.Id == Id);
-                upmodel = db.UserProject.FirstOrDefault(m => m.ProjectId == Id);
-                if (pmodel.IsApproved == Convert.ToInt32(ProjectApproveEnum.Approved))
+                UserProject upModel = db.UserProject.FirstOrDefault(a => a.ProjectId == Id);
+                User uModel = db.User.FirstOrDefault(a => a.Id == upModel.UserId);
+                Project pModel = db.Projects.FirstOrDefault(a => a.Id == upModel.ProjectId);
+                SupportedProjects sProjects = new SupportedProjects();
+
+                if (pModel.IsApproved == Convert.ToInt32(ProjectApproveEnum.Approved))
                 {
-                    pmodel.IsSupported = Convert.ToInt32(ProjectSupportEnum.Supported);
-                    upmodel.IsSupported = Convert.ToInt32(ProjectSupportEnum.Supported);
-                    pmodel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangeAsSupported);
-                    upmodel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangeAsSupported);
-                    pmodel.LastEditDate = DateTime.Now;
-                    pmodel.LastEditBy = Convert.ToString(Session["UserId"]);
+                    pModel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangeAsSupported);
+                    upModel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangeAsSupported);
+                    pModel.LastEditDate = DateTime.Now;
+                    pModel.LastEditBy = Convert.ToString(Session["UserId"]);
+
+                    sProjects.SupportDate = DateTime.Now;
+                    sProjects.SupportedProjectId = Id;
+                    sProjects.Supporter = Session["UserId"].ToString();
+                    sProjects.SupportRequirements = supportRequirements;
+                    sProjects.SupportValue = supportValue;
+                    db.SupportedProjects.Add(sProjects);
                     db.SaveChanges();
-                    User umodel = new User();
-                    umodel = db.User.FirstOrDefault(m => m.Id == upmodel.UserId);
-                    HomeController.SendEMail(umodel.EMail, "Projeniz Destek Onayından Geçmiştir.");
-                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Proje Desteklenmiştir", returnUrl = Request.UrlReferrer.AbsoluteUri });
+                    HomeController.SendEMail(uModel.EMail, "Projenize Destek Verilmiştir. Detaylı Bilgi İçin Sisteminizi Kontrol Ediniz.");
+                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Destek Bilgileriniz İletilmiştir. Sorumlu Kişiler Bilgilendirilecektir.", returnUrl = Request.UrlReferrer.AbsoluteUri });
                 }
                 else
                 {
-                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Desteklenecek Proje Bulunmamaktadır.", returnUrl = Request.UrlReferrer.AbsoluteUri });
+                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Projenin (Bir Önceki Adım Olarak) Onaylandığına Emin Olun.", returnUrl = Request.UrlReferrer.AbsoluteUri });
                 }
             }
             catch (Exception ex)
             {
-                return RedirectToAction("MessageShow", "Home", new { messageBody = "Proje Desteklenirken Bir Hata Oluştu", returnUrl = Request.UrlReferrer.AbsoluteUri });
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Hata Oluştu. Lütfen Tekrar Deneyin.", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
         }
 
@@ -326,6 +449,21 @@ namespace Planner.Controllers
             {
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Proje Desteği Reddedilirken Bir Hata Oluştu", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
+        }
+
+        public ActionResult CloseSupportedProject(string Id)
+        {
+            Project project = db.Projects.FirstOrDefault(a => a.Id == Id);
+            UserProject userProject = db.UserProject.FirstOrDefault(a => a.ProjectId == Id);
+            User user = db.User.FirstOrDefault(a => a.Id == userProject.UserId);
+
+            //project.IsSupported = Convert.ToInt32(ProjectSupportEnum.Supported);
+            //userProject.IsSupported = Convert.ToInt32(ProjectSupportEnum.Supported);
+            project.IsSupported = Convert.ToInt32(ProjectSupportEnum.Closed);
+            userProject.IsSupported = Convert.ToInt32(ProjectSupportEnum.Closed);
+            db.SaveChanges();
+            HomeController.SendEMail(user.EMail, "Projenizin Destek Başvurusu Kapatılmıştır.");
+            return RedirectToAction("MessageShow", "Home", new { messageBody = "Proje Desteği Kapatılmıştır", returnUrl = Request.UrlReferrer.AbsoluteUri });
         }
         #endregion
 
@@ -458,47 +596,18 @@ namespace Planner.Controllers
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Hata Oluştu. Lütfen Tekrar Deneyin", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
         }
-
-        public ActionResult SupportToProject(string Id, string supportRequirements, string supportValue)
-        {
-            try
-            {
-                UserProject upModel = db.UserProject.FirstOrDefault(a => a.ProjectId == Id);
-                User uModel = db.User.FirstOrDefault(a => a.Id == upModel.UserId);
-                SupportedProjects sProjects = new SupportedProjects();
-
-                sProjects.SupportDate = DateTime.Now;
-                sProjects.SupportedProject = Id;
-                sProjects.Supporter = Session["UserId"].ToString();
-                sProjects.SupportRequirements = supportRequirements;
-                sProjects.SupportValue = supportValue;
-                db.SupportedProjects.Add(sProjects);
-                db.SaveChanges();
-                HomeController.SendEMail(uModel.EMail, "Projenize Destek Verilmiştir. Detaylı Bilgi İçin Sisteminizi Kontrol Ediniz.");
-                return RedirectToAction("MessageShow", "Home", new { messageBody = "Destek Bilgileriniz İletilmiştir. Sorumlu Kişiler Bilgilendirilecektir.", returnUrl = Request.UrlReferrer.AbsoluteUri });
-            }
-            catch (Exception ex)
-            {
-                return RedirectToAction("MessageShow", "Home", new { messageBody = "Hata Oluştu. Lütfen Tekrar Deneyin.", returnUrl = Request.UrlReferrer.AbsoluteUri });
-            }
-        }
         #endregion
 
         #region Edit Project
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(string id)
         {
+            ViewBag.ReturnUrl = Request.UrlReferrer.AbsoluteUri;
             Project project = db.Projects.Find(id);
-            //vwUsersProjects vwUp = db.vwUsersProjects.Find(id);
 
             if (id == null || project == null)
             {
                 return View("UserMenu");
             }
-
-            //if (vwUp.UserId != Convert.ToInt32(Session["UserId"]))
-            //{
-            //    return RedirectToAction("UserMenu");
-            //}
 
             else
             {
@@ -509,42 +618,120 @@ namespace Planner.Controllers
         [HttpPost]
         public ActionResult EditProject(HttpPostedFileBase fileProject2, Project project)
         {
-            try
+            if (fileProject2 != null)
             {
-                if (ModelState.IsValid)
+                try
                 {
-                    string sessionCitizenship = Convert.ToString(Session["UserCitizenshipNo"]);
-                    //For Project
-                    var fileName = Path.GetFileName(fileProject2.FileName);
-                    var path = Path.Combine(Server.MapPath("~/Files/Project"), (sessionCitizenship + "_Güncel_Proje_" + fileName));
-                    fileProject2.SaveAs(path);
+                    if (ModelState.IsValid)
+                    {
+                        string sessionCitizenship = Convert.ToString(Session["UserCitizenshipNo"]);
 
-                    var _tempProject = db.Projects.FirstOrDefault(m => m.Id == project.Id);
+                        var fileName = Path.GetFileName(fileProject2.FileName);
+                        var path = Path.Combine(Server.MapPath("~/Files/Project"), (sessionCitizenship + "_Güncel_Proje_" + fileName));
+                        fileProject2.SaveAs(path);
 
-                    _tempProject.Name = project.Name;
-                    _tempProject.Description = project.Description;
-                    _tempProject.FileName = fileName;
-                    _tempProject.FilePath = path;
-                    _tempProject.FileSize = Convert.ToInt64(fileProject2.ContentLength);
-                    _tempProject.FileExtension = fileProject2.ContentType;
-                    _tempProject.IsApproved = _tempProject.IsApproved;
-                    _tempProject.IsSupported = _tempProject.IsSupported;
-                    _tempProject.IsApproveChanged = _tempProject.IsApproveChanged;
-                    _tempProject.CreationDate = _tempProject.CreationDate;
-                    _tempProject.LastEditBy = Convert.ToString(Session["UserId"]);
-                    _tempProject.LastEditDate = DateTime.Now;
+                        var _tempProject = db.Projects.FirstOrDefault(m => m.Id == project.Id);
 
-                    db.SaveChanges();
+                        _tempProject.Name = project.Name;
+                        _tempProject.Description = project.Description;
+                        _tempProject.FileName = fileName;
+                        _tempProject.FilePath = path;
+                        _tempProject.FileSize = Convert.ToInt64(fileProject2.ContentLength);
+                        _tempProject.FileExtension = fileProject2.ContentType;
+                        _tempProject.IsApproved = _tempProject.IsApproved;
+                        _tempProject.IsSupported = _tempProject.IsSupported;
+                        _tempProject.IsApproveChanged = _tempProject.IsApproveChanged;
+                        _tempProject.CreationDate = _tempProject.CreationDate;
+                        _tempProject.LastEditBy = Convert.ToString(Session["UserId"]);
+                        _tempProject.LastEditDate = DateTime.Now;
+
+                        db.SaveChanges();
+                    }
+                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Proje Başarıyla Güncellendi", returnUrl = Request.UrlReferrer.AbsoluteUri });
                 }
-                ViewBag.Message = "Proje Başarıyla Güncellendi";
-                return View(project);
+                catch (Exception ex)
+                {
+                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Güncelleme Sırasında Bir Hata Oluştu", returnUrl = Request.UrlReferrer.AbsoluteUri });
+                }
             }
-            catch (Exception ex)
+            else
             {
-                ViewBag.Message = "Güncelleme Sırasında Bir Hata Oluştu";
-                return View();
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Lütfen Proje Dosyanızı Yükleyiniz.", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
         }
         #endregion
+
+        public ActionResult GiveAuthorizeToUserForProject(string id)
+        {
+            try
+            {
+                User userModel = new User();
+                List<User> lstUser = new List<User>();
+
+                Session["ProjectId"] = id;
+                Project projectModel = db.Projects.Find(id);
+
+                foreach (var item in db.User)
+                {
+                    lstUser.Add(new User
+                    {
+                        BirthDate = item.BirthDate,
+                        CitizenshipNo = item.CitizenshipNo,
+                        City = item.City,
+                        Department = item.Department,
+                        EMail = item.EMail,
+                        Id = item.Id,
+                        IsActive = item.IsActive,
+                        IsAdmin = item.IsAdmin,
+                        IsApproved = item.IsApproved,
+                        IsCvUploaded = item.IsCvUploaded,
+                        Job = item.Job,
+                        LastEditBy = item.LastEditBy,
+                        LastEditDate = item.LastEditDate,
+                        Name = item.Name,
+                        Password = item.Password,
+                        PhoneNumber = item.PhoneNumber,
+                        RegisterDate = item.RegisterDate,
+                        School = item.School,
+                        Surname = item.Surname
+                    });
+                }
+                return View(lstUser);
+            }
+            catch (Exception ex)
+            {
+                List<User> lstUser = new List<User>();
+                return View(lstUser);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult SaveAuthorizeToUserForProject(List<string> users)
+        {
+            try
+            {
+                string _test = Session["ProjectId"].ToString();
+                Project project = db.Projects.FirstOrDefault(a => a.Id == _test);
+                UserProject userProject = db.UserProject.FirstOrDefault(a => a.ProjectId == _test);
+                TempData.Clear();
+                string _users = null;
+
+                foreach (var item in users)
+                {
+                    _users += item + ";";
+                }
+
+                _users += Session["UserId"];
+
+                project.AuthorizedUsers = _users;
+                userProject.AuthorizedUsers = _users;
+                db.SaveChanges();
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Projeyi Görmeye Yetkili Kullanıcılar Ayarlanmıştır.", returnUrl = "/Project/WaitingForApprove" });
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Hata Oluştu. Lütfen Tekrar Deneyin.", returnUrl = Request.UrlReferrer.AbsoluteUri });
+            }
+        }
     }
 }
