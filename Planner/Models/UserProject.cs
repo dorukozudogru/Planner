@@ -22,12 +22,5 @@ namespace Planner.Models
 
         [Display(Name = "Onayý Deðiþtirildi Mi?")]
         public int IsApproveChanged { get; set; }
-
-        [Display(Name = "Görmeye Yetkili Kullanýcýlar")]
-        public string AuthorizedUsers { get; set; }
-
-        //public virtual UserProject UserProject1 { get; set; }
-
-        //public virtual UserProject UserProject2 { get; set; }
     }
 }

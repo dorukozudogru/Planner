@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
-using Planner.Models;
 using Planner.Enums;
+using Planner.Helpers;
+using Planner.Models;
 
 namespace Planner.Controllers
 {
@@ -11,7 +12,6 @@ namespace Planner.Controllers
     {
         private DBContext db = new DBContext();
 
-        #region Hallolanlar
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
@@ -35,59 +35,67 @@ namespace Planner.Controllers
             {
                 if (loginUser.IsActive)
                 {
-                    if (loginUser.EMail != model.EMail || loginUser.Password != encPass)
+                    if (loginUser.IsEmailVerified)
                     {
-                        ViewBag.Message = "Kullanıcı Adınızı veya Şifrenizi Hatalı Girdiniz";
-                        return View();
+                        if (loginUser.EMail != model.EMail || loginUser.Password != encPass)
+                        {
+                            ViewBag.Message = "Kullanıcı Adınızı veya Şifrenizi Hatalı Girdiniz";
+                            return View();
+                        }
+                        else
+                        {
+                            var loginUserCV = db.UserCV.FirstOrDefault(a => a.UserId == loginUser.Id);
+
+                            if (loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.WaitingToApprove))
+                            {
+                                ViewBag.Message = "Hesabınız Henüz Yöneticiler Tarafından Onaylanmamıştır";
+                                return View();
+                            }
+                            else if (loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.Blocked) || loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.NotApproved))
+                            {
+                                ViewBag.Message = "Hesabınız Yöneticiler Tarafından Onaylanmamıştır";
+                                return View();
+                            }
+                            else if (loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.Approved) || loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.ApproveAfterBlock))
+                            {
+                                if (loginUser.IsAdmin != true)
+                                {
+                                    Session["IsLoggedIn"] = true;
+                                    Session["UserId"] = loginUser.Id.ToString();
+                                    Session["UserEMail"] = loginUser.EMail.ToString();
+                                    Session["UserPassword"] = loginUser.Password.ToString();
+                                    Session["UserName"] = loginUser.Name.ToString();
+                                    Session["UserSurname"] = loginUser.Surname.ToString();
+                                    Session["UserCitizenshipNo"] = loginUser.CitizenshipNo.ToString();
+                                    Session["UserIsCvUploaded"] = Convert.ToBoolean(loginUser.IsCvUploaded);
+                                    if (loginUserCV != null)
+                                    {
+                                        Session["UserCvId"] = loginUserCV.Id;
+                                    }
+                                    Session["UserIsApproved"] = Convert.ToInt32(loginUser.IsApproved);
+                                    Session["UserIsAdmin"] = Convert.ToInt32(loginUser.IsAdmin);
+                                    return RedirectToAction("UserMenu", "User");
+                                }
+                                else if (loginUser.IsAdmin == true)
+                                {
+                                    Session["IsLoggedIn"] = true;
+                                    Session["UserId"] = loginUser.Id.ToString();
+                                    Session["UserEMail"] = loginUser.EMail.ToString();
+                                    Session["UserPassword"] = loginUser.Password.ToString();
+                                    Session["UserName"] = loginUser.Name.ToString();
+                                    Session["UserSurname"] = loginUser.Surname.ToString();
+                                    Session["UserCitizenshipNo"] = loginUser.CitizenshipNo.ToString();
+                                    Session["UserIsApproved"] = Convert.ToInt32(loginUser.IsApproved);
+                                    Session["UserIsAdmin"] = Convert.ToInt32(loginUser.IsAdmin);
+                                    return RedirectToAction("AdminUserMenu", "User");
+                                }
+                            }
+                        }
                     }
                     else
                     {
-                        var loginUserCV = db.UserCV.FirstOrDefault(a => a.UserId == loginUser.Id);
-
-                        if (loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.WaitingToApprove))
-                        {
-                            ViewBag.Message = "Hesabınız Henüz Yöneticiler Tarafından Onaylanmamıştır";
-                            return View();
-                        }
-                        else if (loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.Blocked) || loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.NotApproved))
-                        {
-                            ViewBag.Message = "Hesabınız Yöneticiler Tarafından Onaylanmamıştır";
-                            return View();
-                        }
-                        else if (loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.Approved) || loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.ApproveAfterBlock))
-                        {
-                            if (loginUser.IsAdmin != true)
-                            {
-                                Session["IsLoggedIn"] = true;
-                                Session["UserId"] = loginUser.Id.ToString();
-                                Session["UserEMail"] = loginUser.EMail.ToString();
-                                Session["UserPassword"] = loginUser.Password.ToString();
-                                Session["UserName"] = loginUser.Name.ToString();
-                                Session["UserSurname"] = loginUser.Surname.ToString();
-                                Session["UserCitizenshipNo"] = loginUser.CitizenshipNo.ToString();
-                                Session["UserIsCvUploaded"] = Convert.ToBoolean(loginUser.IsCvUploaded);
-                                if (loginUserCV != null)
-                                {
-                                    Session["UserCvId"] = loginUserCV.Id;
-                                }
-                                Session["UserIsApproved"] = Convert.ToInt32(loginUser.IsApproved);
-                                Session["UserIsAdmin"] = Convert.ToInt32(loginUser.IsAdmin);
-                                return RedirectToAction("UserMenu", "User");
-                            }
-                            else if (loginUser.IsAdmin == true)
-                            {
-                                Session["IsLoggedIn"] = true;
-                                Session["UserId"] = loginUser.Id.ToString();
-                                Session["UserEMail"] = loginUser.EMail.ToString();
-                                Session["UserPassword"] = loginUser.Password.ToString();
-                                Session["UserName"] = loginUser.Name.ToString();
-                                Session["UserSurname"] = loginUser.Surname.ToString();
-                                Session["UserCitizenshipNo"] = loginUser.CitizenshipNo.ToString();
-                                Session["UserIsApproved"] = Convert.ToInt32(loginUser.IsApproved);
-                                Session["UserIsAdmin"] = Convert.ToInt32(loginUser.IsAdmin);
-                                return RedirectToAction("AdminUserMenu", "User");
-                            }
-                        }
+                        ViewBag.Message = "E-Posta Doğrulamasını Yapınız";
+                        return View();
                     }
                 }
                 else
@@ -99,7 +107,7 @@ namespace Planner.Controllers
             else
             {
                 ViewBag.Message = "Kullanıcı Adınızı veya Şifrenizi Hatalı Girdiniz";
-                //Aslında Giriş Yapan Kişi, Giriş Yapmaya Çalıştığı E-Postasıyla Sisteme Kayıt Olmamış. Ama Bu Durum Sistemde Açık Oluşturabilir.
+                //Aslında Giriş Yapan Kişi, Giriş Yapmaya Çalıştığı E-Postasıyla Sisteme Kayıt Olmamış. Ama Bunu Yazmak Sistemde Açık Oluşturabilir.
                 return View();
             }
             return View(model);
@@ -150,6 +158,7 @@ namespace Planner.Controllers
                         model.Id = Guid.NewGuid().ToString();
                         model.Password = HomeController.Encrypt(model.Password);
                         model.IsCvUploaded = false;
+                        model.IsEmailVerified = false;
                         model.IsApproved = Convert.ToInt32(UserApproveEnum.WaitingToApprove);
                         model.IsAdmin = false;
                         model.IsActive = true;
@@ -196,93 +205,67 @@ namespace Planner.Controllers
                 return PartialView("_InvalidCitizenshipNo");
             }
         }
-        #endregion
 
-        //
-        // GET: /Account/ForgotPassword
         [AllowAnonymous]
         public ActionResult ForgotPassword()
         {
             return View();
         }
 
-        // BURAYI YAP
-        // POST: /Account/ForgotPassword
-        //[HttpPost]
-        //[AllowAnonymous]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var user = db.User.Where(a => a.EMail == model.Email).FirstOrDefault();
-        //        if (user == null)
-        //        {
-        //            // Don't reveal that the user does not exist or is not confirmed
-        //            return View("ForgotPasswordConfirmation");
-        //        }
-
-        //        string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id.ToString());
-        //        var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-        //        await UserManager.SendEmailAsync(user.Id.ToString(), "Reset Password",
-        //           "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-        //        TempData["ViewBagLink"] = callbackUrl;
-        //        return RedirectToAction("ForgotPasswordConfirmation", "Account");
-        //    }
-
-        //    // If we got this far, something failed, redisplay form
-        //    return View(model);
-        //}
-
-        //
-        // GET: /Account/ForgotPasswordConfirmation
+        [HttpPost]
         [AllowAnonymous]
-        public ActionResult ForgotPasswordConfirmation()
+        [ValidateAntiForgeryToken]
+        public ActionResult ForgotPassword(string email)
         {
-            ViewBag.Link = TempData["ViewBagLink"];
+            var user = db.User.FirstOrDefault(a => a.EMail == email);
+            if (user == null)
+            {
+                ViewBag.Message = "E-Postanızı Hatalı Girdiniz";
+                return View();
+            }
+
+            byte[] resetCode = new byte[32];
+            var rngCrypto = new System.Security.Cryptography.RNGCryptoServiceProvider();
+            rngCrypto.GetBytes(resetCode);
+            string code = Convert.ToBase64String(resetCode); //Aslında kullanılmıyor ama link dolu görünsün :)
+
+            var callbackUrl = Url.Action("ResetPassword", "Account", new { code, userId = user.Id }, protocol: Request.Url.Scheme);
+            HomeController.SendEMail(user.EMail, "Şifrenizi yandaki linke tıklayarak değiştirebilirsiniz. " + callbackUrl, "Şifre Sıfırlama");
+            user.Password = HomeController.Encrypt(Guid.NewGuid().ToString()); // Şifreyi rastgele bir şey yaptı.
+            db.SaveChanges();
+            ViewBag.Message = "Şifre Sıfırlama Kodu Gönderilmiştir";
             return View();
         }
 
-        //
-        // GET: /Account/ResetPassword
         [AllowAnonymous]
-        public ActionResult ResetPassword(string code)
+        public ActionResult ResetPassword(string userId)
         {
-            return code == null ? View("Error") : View();
+            return userId == null ? View("Error") : View();
         }
 
-        ////
-        //// POST: /Account/ResetPassword
-        //[HttpPost]
-        //[AllowAnonymous]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View(model);
-        //    }
-
-        //    var user = await UserManager.FindByNameAsync(model.Email);
-        //    if (user == null)
-        //    {
-        //        // Don't reveal that the user does not exist
-        //        return RedirectToAction("ResetPasswordConfirmation", "Account");
-        //    }
-        //    var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
-        //    if (result.Succeeded)
-        //    {
-        //        return RedirectToAction("ResetPasswordConfirmation", "Account");
-        //    }
-        //    AddErrors(result);
-        //    return View();
-        //}
-
-        //
-        // GET: /Account/ResetPasswordConfirmation
+        [HttpPost]
         [AllowAnonymous]
-        public ActionResult ResetPasswordConfirmation()
+        [ValidateAntiForgeryToken]
+        public ActionResult ResetPassword(string email, string password)
         {
+            var user = db.User.FirstOrDefault(a => a.EMail == email);
+            if (user == null)
+            {
+                ViewBag.Message = "E-Postanızı Hatalı Girdiniz";
+                return View();
+            }
+            user.Password = HomeController.Encrypt(password);
+            db.SaveChanges();
+            ViewBag.Message = "Şifreniz Değiştirilmiştir";
+            return View();
+        }
+
+        [AllowAnonymous]
+        public ActionResult VerifyEmail(string userId)
+        {
+            var user = db.User.FirstOrDefault(a => a.Id == userId);
+            user.IsEmailVerified = true;
+            db.SaveChanges();
             return View();
         }
     }

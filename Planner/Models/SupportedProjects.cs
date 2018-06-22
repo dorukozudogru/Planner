@@ -11,7 +11,7 @@ namespace Planner.Models
 
         public string SupportedProjectId { get; set; }
 
-        public string Supporter { get; set; }
+        public string SupporterUserId { get; set; }
 
         public string SupportRequirements { get; set; }
 

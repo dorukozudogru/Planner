@@ -35,7 +35,9 @@ namespace Planner.Models
         [Display(Name = "Desteklendi Mi?")]
         public int IsSupported { get; set; }
 
-        public string Supporter { get; set; }
+        public string SupportRequest { get; set; }
+
+        public string SupporterUserId { get; set; }
 
         public string SupportRequirements { get; set; }
 

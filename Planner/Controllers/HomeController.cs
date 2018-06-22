@@ -1,5 +1,4 @@
-﻿using Planner.Models;
-using System;
+﻿using System;
 using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Web.Mvc;
@@ -8,7 +7,6 @@ namespace Planner.Controllers
 {
     public class HomeController : Controller
     {
-        private DBContext db = new DBContext();
         public ActionResult Index()
         {
             return View();
@@ -35,7 +33,7 @@ namespace Planner.Controllers
             return Convert.ToBase64String(_encodedbyte);
         }
 
-        public static void SendEMail(string email, string email_body)
+        public static void SendEMail(string email, string email_body, string email_subject)
         {
             MailMessage msg = new MailMessage();
             SmtpClient smtp = new SmtpClient("mail.citech.com.tr");
@@ -54,7 +52,7 @@ namespace Planner.Controllers
             msg.From = new MailAddress("projesepeti@citech.com.tr", "Proje Sepeti");
             //msg.From = new MailAddress("dorukozudogru@gmail.com", "Proje Sepeti");
             msg.To.Add(email);
-            msg.Subject = "PROJE SEPETİ";
+            msg.Subject = email_subject;
             msg.Body = email_body;
             smtp.Send(msg);
         }

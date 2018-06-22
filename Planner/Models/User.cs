@@ -53,6 +53,8 @@ namespace Planner.Models
 
         public bool IsCvUploaded { get; set; }
 
+        public bool IsEmailVerified { get; set; }
+
         public int IsApproved { get; set; }
 
         public bool IsAdmin { get; set; }

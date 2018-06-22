@@ -1,10 +1,8 @@
+using System;
+using System.Data.Entity;
+
 namespace Planner.Models
 {
-    using System;
-    using System.Data.Entity;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using System.Linq;
-
     public partial class DBContext : DbContext
     {
         public DBContext()
@@ -17,6 +15,7 @@ namespace Planner.Models
         public virtual DbSet<UserProject> UserProject { get; set; }
         public virtual DbSet<UserCV> UserCV { get; set; }
         public virtual DbSet<SupportedProjects> SupportedProjects { get; set; }
+        public virtual DbSet<ProjectUserAuthorize> ProjectUserAuthorize { get; set; }
 
         //protected override void OnModelCreating(DbModelBuilder modelBuilder)
         //{

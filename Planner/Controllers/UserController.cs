@@ -45,14 +45,12 @@ namespace Planner.Controllers
                         vwLstUc.Add(new vwUsersCVs { UserId = userModel.Id, EMail = userModel.EMail, Name = userModel.Name, Surname = userModel.Surname, CitizenshipNo = userModel.CitizenshipNo, UserCVId = ucModel.Id, FileName = ucModel.FileName, FilePath = ucModel.FilePath });
                     }
                 }
-                vwLstUc.ToList();
                 return View(vwLstUc);
             }
             catch (Exception ex)
             {
-                List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
-                vwLstUp.ToList();
-                return View(vwLstUp);
+                List<vwUsersCVs> vwLstUc = new List<vwUsersCVs>();
+                return View(vwLstUc);
             }
         }
 
@@ -70,14 +68,11 @@ namespace Planner.Controllers
                 userModel = db.User.FirstOrDefault(z => z.Id == loggedUserId);
 
                 vwLstUc.Add(new vwUsersCVs { UserId = userModel.Id, EMail = userModel.EMail, Name = userModel.Name, Surname = userModel.Surname, CitizenshipNo = userModel.CitizenshipNo, UserCVId = ucModel.Id, FileName = ucModel.FileName, FilePath = ucModel.FilePath });
-                vwLstUc.ToList();
-
                 return View(vwLstUc);
             }
             catch (Exception)
             {
                 List<vwUsersCVs> vwLstUp = new List<vwUsersCVs>();
-                vwLstUp.ToList();
                 return View(vwLstUp);
             }
         }
@@ -140,7 +135,7 @@ namespace Planner.Controllers
                 db.SaveChanges();
                 try
                 {
-                    HomeController.SendEMail(user.EMail, "Üyeliğiniz Onaylanmıştır.");
+                    HomeController.SendEMail(user.EMail, "Üyeliğiniz Onaylanmıştır.", "Üyelik Onayı");
                     return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Onaylanmıştır", returnUrl = Request.UrlReferrer.AbsoluteUri });
                 }
                 catch (Exception ex)
@@ -171,7 +166,7 @@ namespace Planner.Controllers
                 db.SaveChanges();
                 try
                 {
-                    HomeController.SendEMail(user.EMail, "Üyeliğiniz Reddedilmiştir.");
+                    HomeController.SendEMail(user.EMail, "Üyeliğiniz Reddedilmiştir.", "Üyelik Onayı");
                     return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Hesabı Reddedilmiştir", returnUrl = Request.UrlReferrer.AbsoluteUri });
                 }
                 catch (Exception ex)
@@ -203,7 +198,7 @@ namespace Planner.Controllers
                 db.SaveChanges();
                 try
                 {
-                    HomeController.SendEMail(user.EMail, "Üyeliğiniz Dondurulmuştur.");
+                    HomeController.SendEMail(user.EMail, "Üyeliğiniz Dondurulmuştur.", "Üyelik Onayı");
                     return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Hesabı Engellenmiştir", returnUrl = Request.UrlReferrer.AbsoluteUri });
                 }
                 catch (Exception ex)
@@ -235,7 +230,7 @@ namespace Planner.Controllers
                 db.SaveChanges();
                 try
                 {
-                    HomeController.SendEMail(user.EMail, "Üyeliğiniz Yeniden Aktif Edilmiştir.");
+                    HomeController.SendEMail(user.EMail, "Üyeliğiniz Yeniden Aktif Edilmiştir.", "Üyelik Onayı");
                     return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Hesabı Yeniden Aktif Edilmiştir", returnUrl = Request.UrlReferrer.AbsoluteUri });
                 }
                 catch (Exception ex)
@@ -414,6 +409,9 @@ namespace Planner.Controllers
                         db.SaveChanges();
                         ViewBag.Message = "CV Başarıyla Yüklendi";
                         Session["UserIsCvUploaded"] = true;
+
+                        var callbackUrl = Url.Action("VerifyEmail", "Account", new { userId = user.Id }, protocol: Request.Url.Scheme);
+                        HomeController.SendEMail(user.EMail, "E-postanızı yandaki linke tıklayarak onaylayabilirsiniz. " + callbackUrl, "Üyelik Onayı");
                     }
                 }
                 return View();

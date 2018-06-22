@@ -26,7 +26,7 @@
                 <div class="panel-heading">
                     <h3 class="panel-title">@Html.DisplayFor(modelItem => item.ProjectName)</h3>
                 </div>
-                <div class="panel-body h-300" data-plugin="scrollable">
+                <div class="panel-body h-400" data-plugin="scrollable">
                     <div data-role="container">
                         <div data-role="content">
                             <br />
@@ -43,10 +43,10 @@
                             @Html.DisplayFor(modelItem => item.SupportRequest)
                             <h5>Projeyi Görüntüle</h5>
                             <a href="@Url.Action("Download", "Project", new { id = item.ProjectId })" target="_blank" class="btn btn-info"><span class="fa fa-search"></span></a>
-                            <h5>Projeyi Onayla</h5>
+                            <h5>Projeyi Destekle</h5>
                             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#approveProject" data-id="@item.ProjectId"><span class="fa fa-thumbs-up"></span></button>
-                            @*<h5>Projeyi Reddet</h5>
-                            <a href="@Url.Action("DeclineSupportProject", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="btn btn-danger"><span class="fa fa-thumbs-down"></span></a>*@
+                            <h5>Projeyi Kapat</h5>
+                            <a href="@Url.Action("CloseSupportedProject", "Project", new { id = item.ProjectId })" class="btn btn-danger"><span class="fa fa-close"></span></a>
                         </div>
                     </div>
                 </div>

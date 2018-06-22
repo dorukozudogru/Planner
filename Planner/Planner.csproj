@@ -170,11 +170,13 @@
     <Compile Include="Helpers\UserAuthorizeAttribute.cs" />
     <Compile Include="Models\DBContext.cs" />
     <Compile Include="Models\Project.cs" />
+    <Compile Include="Models\ProjectUserAuthorize.cs" />
     <Compile Include="Models\SupportedProjects.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserCV.cs" />
     <Compile Include="Models\UserProject.cs" />
     <Compile Include="Models\UserSession.cs" />
+    <Compile Include="Models\vwAuthorizedUserProject.cs" />
     <Compile Include="Models\vwUsersCVs.cs" />
     <Compile Include="Models\vwUsersProjects.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -6235,15 +6237,9 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\_LoggedPartial.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Account\ConfirmEmail.cshtml" />
-    <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
     <Content Include="Views\Account\ForgotPassword.cshtml" />
-    <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
-    <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
-    <Content Include="Views\Account\SendCode.cshtml" />
-    <Content Include="Views\Account\VerifyCode.cshtml" />
     <Content Include="Views\Account\_Approvement.cshtml" />
     <Content Include="Views\Account\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Account\_RemoveAccountPartial.cshtml" />
@@ -6286,6 +6282,8 @@
     <Content Include="Views\Error\Error503.cshtml" />
     <Content Include="Views\Error\Error403.cshtml" />
     <Content Include="Views\Project\GiveAuthorizeToUserForProject.cshtml" />
+    <Content Include="Views\Project\ProjectAuthorizedUser.cshtml" />
+    <Content Include="Views\Account\VerifyEmail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

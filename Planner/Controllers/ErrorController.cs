@@ -11,8 +11,15 @@ namespace Planner.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.ReturnUrl = Request.UrlReferrer.AbsoluteUri;
-            return View();
+            try
+            {
+                ViewBag.ReturnUrl = Request.UrlReferrer.AbsoluteUri;
+                return View();
+            }
+            catch (Exception)
+            {
+                return View();
+            }
         }
 
         public ActionResult Error400()
