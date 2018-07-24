@@ -10,7 +10,7 @@ namespace Planner.Models
         public int Id { get; set; }
 
         [Display(Name = "UserId")]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         [Display(Name = "CV Adı")]
         public string FileName { get; set; }

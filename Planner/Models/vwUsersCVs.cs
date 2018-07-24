@@ -8,7 +8,7 @@ namespace Planner.Models
 {
     public class vwUsersCVs
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         public string EMail { get; set; }
 

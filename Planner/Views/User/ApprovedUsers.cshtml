@@ -1,9 +1,9 @@
-﻿@model IEnumerable<Planner.Models.vwUsersProjects>
+﻿@model IEnumerable<Planner.Models.User>
 
 @{
     ViewBag.Title = "Onaylanmış Kullanıcılar";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.ReturnUrl = "/Project/AllProjects";
+    ViewBag.ReturnUrl = "/User/ApprovedUsers";
 }
 
 <div class="panel">
@@ -15,24 +15,33 @@
         <table class="table table-hover dataTable table-striped w-full" data-plugin="dataTable">
             <thead>
                 <tr>
+                    <th>E-Posta</th>
                     <th>Ad</th>
                     <th>Soyad</th>
-                    <th>E-Posta</th>
                     <th>T.C. Kimlik No</th>
-                    <th>Proje Adı</th>
-                    <th>Projeyi İndir</th>
+                    <th>Kayıt Tarihi</th>
+                    <th>Engelle</th>
+                    <th>Admin Yap</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => item.UserName)</td>
-                        <td>@Html.DisplayFor(modelItem => item.UserSurname)</td>
-                        <td>@Html.DisplayFor(modelItem => item.UserEMail)</td>
-                        <td>@Html.DisplayFor(modelItem => item.UserCitizenshipNo)</td>
-                        <td>@Html.DisplayFor(modelItem => item.ProjectName)</td>
-                        <td><a href="@Url.Action("Download", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-danger">İndir</a></td>
+                        <td>@Html.DisplayFor(modelItem => item.EMail)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Surname)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CitizenshipNo)</td>
+                        <td>@Html.DisplayFor(modelItem => item.RegisterDate)</td>
+                        <td><a href="@Url.Action("BlockUser", "User", new { id = item.Id, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-dark">Kullanıcıyı Engelle</a></td>
+                        @if (item.IsAdmin != true)
+                        {
+                            <td><a href="@Url.Action("ChangeUserToAdmin", "User", new { id = item.Id, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-warning">Admin Yap</a></td>
+                        }
+                        else
+                        {
+                            <td style="text-align:center">Admin Kullanıcı</td>
+                        }
                     </tr>
                 }
             </tbody>

@@ -13,36 +13,38 @@
     ViewBag.ReturnUrl = "/Project/ApprovedProjects";
 }
 
-<div class="panel">
+<div class="panel" style="background-color:lightgrey">
     <header class="panel-heading">
-        <div class="panel-actions"></div>
         <h3 class="panel-title">Onaylanmış Projeler</h3>
     </header>
-    <div class="panel-body">
-        <table class="table table-hover dataTable table-striped w-full" data-plugin="dataTable">
-            <thead>
-                <tr>
-                    <th>Ad</th>
-                    <th>Soyad</th>
-                    <th>E-Posta</th>
-                    <th>T.C. Kimlik No</th>
-                    <th>Proje Adı</th>
-                    <th>Projeyi İndir</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@Html.DisplayFor(modelItem => item.UserName)</td>
-                        <td>@Html.DisplayFor(modelItem => item.UserSurname)</td>
-                        <td>@Html.DisplayFor(modelItem => item.UserEMail)</td>
-                        <td>@Html.DisplayFor(modelItem => item.UserCitizenshipNo)</td>
-                        <td>@Html.DisplayFor(modelItem => item.ProjectName)</td>
-                        <td><a href="@Url.Action("Download", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-danger">İndir</a></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+</div>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="panel-body panel-info col-md-4">
+            <div class="panel nav-tabs-horizontal">
+                <div class="panel-heading">
+                    <h3 class="panel-title">@Html.DisplayFor(modelItem => item.ProjectName)</h3>
+                </div>
+                <div class="panel-body h-400" data-plugin="scrollable">
+                    <div data-role="container">
+                        <div data-role="content">
+                            <br />
+                            <h5>Proje Adı</h5>
+                            @Html.DisplayFor(modelItem => item.ProjectName)
+                            <h5>Proje Açıklaması</h5>
+                            @Html.DisplayFor(modelItem => item.ProjectDescription)
+                            <h5>Adı Soyadı</h5>
+                            @Html.DisplayFor(modelItem => item.UserName)
+                            @Html.DisplayFor(modelItem => item.UserSurname)
+                            <h5>E-Posta</h5>
+                            @Html.DisplayFor(modelItem => item.UserEMail)
+                            <h5>Projeyi Görüntüle</h5>
+                            <a href="@Url.Action("Download", "Project", new { id = item.ProjectId })" target="_blank" class="btn btn-info"><span class="fa fa-search"></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>

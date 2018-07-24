@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 namespace Planner.Models
 {
     public class vwUsersProjects
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         [Display(Name = "Adı")]
         public string UserName { get; set; }
@@ -22,10 +19,13 @@ namespace Planner.Models
         [Display(Name = "T.C. Kimlik No")]
         public string UserCitizenshipNo { get; set; }
 
-        public int ProjectId { get; set; }
+        public string ProjectId { get; set; }
 
         [Display(Name = "Proje Adı")]
         public string ProjectName { get; set; }
+
+        [Display(Name = "Proje Açıklaması")]
+        public string ProjectDescription { get; set; }
 
         public string FileName { get; set; }
 
@@ -34,5 +34,15 @@ namespace Planner.Models
 
         [Display(Name = "Desteklendi Mi?")]
         public int IsSupported { get; set; }
+
+        public string SupportRequest { get; set; }
+
+        public string SupporterUserId { get; set; }
+
+        public string SupportRequirements { get; set; }
+
+        public string SupportValue { get; set; }
+
+        public DateTime SupportDate { get; set; }
     }
 }

@@ -19,20 +19,20 @@
                         <th>Ad</th>
                         <th>Soyad</th>
                         <th>T.C. Kimlik No</th>
-                        <th>CV İndir</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model)
                     {
 
-                        <tr>
-                            <td>@Html.DisplayFor(modelItem => item.EMail)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Surname)</td>
-                            <td>@Html.DisplayFor(modelItem => item.CitizenshipNo)</td>
-                            <td><a href="@Url.Action("Download", "User", new { id = item.UserCVId })" class="btn btn-block btn-danger">İndir</a></td>
-                        </tr>
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.EMail)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Surname)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CitizenshipNo)</td>
+                        <td style="vertical-align:middle"><a href="@Url.Action("Download", "User", new { id = item.UserCVId })" target="_blank" class="btn btn-info"><span class="fa fa-search"></span></a></td>
+                    </tr>
                     }
                 </tbody>
             </table>

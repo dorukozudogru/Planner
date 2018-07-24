@@ -1,10 +1,14 @@
-﻿
-@model IEnumerable<Planner.Models.Project>
+﻿@model IEnumerable<Planner.Models.Project>
 
 @{
     ViewBag.Title = "Projelerim";
     Layout = "~/views/Shared/_LayoutLogged.cshtml";
+    ViewBag.ReturnUrl = "/User/UserProjectIndex";
 }
+
+@*<div class="example example-buttons" style="position:fixed;bottom:0px;right:30px">
+        <button type="button" class="js-scroll-trigger btn btn-floating btn-success" data-target="#newProject"><i class="icon wb-plus" aria-hidden="true"></i></button>
+    </div>*@
 
 <div class="panel">
     <header class="panel-heading">
@@ -15,23 +19,23 @@
         <table class="table table-hover dataTable table-striped w-full" data-plugin="dataTable">
             <thead>
                 <tr>
-                    <th width="10px">Adı</th>
-                    <th style="min-width:50px">Açıklama</th>
-                    <th width="30px">Onay & Destek</th>
-                    <th width="1px">Düzenle</th>
-                    <th width="1px">İndir</th>
+                    <th>Adı</th>
+                    <th>Açıklama</th>
+                    <th>Onay & Destek</th>
+                    <th>Düzenle</th>
+                    <th>Görüntüle</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr>
+                    <tr style="text-align:center">
                         <td style="vertical-align:middle">@Html.DisplayFor(modelItem => item.Name)</td>
-                        <td style="max-width:30px; vertical-align:middle">@Html.TextAreaFor(modelItem => item.Description, 0, 45, new { htmlAttributes = new { @class = "form-control text-center" } })</td>
+                        <td style="vertical-align:middle"><textarea placeholder="@item.Description" readonly class="form-control text-center"></textarea></td>
                         @if (item.IsApproved == 0 && (item.IsApproveChanged != 2 || item.IsApproveChanged != 4))
                         {
-                            <td style="vertical-align:middle"><a href="@Url.Action("SendProjectToApprove", "Project", new { id = item.Id })" class="btn btn-warning btn-block">Onaya Gönder</a></td>
-                            <td style="vertical-align:middle"><a href="@Url.Action("Edit", "Project", new { id = item.Id })" class="btn btn-dark btn-block">Düzenle</a></td>
+                            <td style="vertical-align:middle"><a href="@Url.Action("SendProjectToApprove", "Project", new { id = item.Id })" class="btn btn-warning">Onaya Gönder</a></td>
+                            <td style="vertical-align:middle"><a href="@Url.Action("Edit", "Project", new { id = item.Id })" class="btn btn-dark">Düzenle</a></td>
                         }
                         @if (item.IsApproved == 0 && (item.IsApproveChanged == 2 || item.IsApproveChanged == 4))
                         {
@@ -40,14 +44,14 @@
                         }
                         @if (item.IsApproved == 1 && (item.IsApproveChanged != 2 || item.IsApproveChanged != 4))
                         {
-                            <td style="vertical-align:middle"><a class="btn btn-info btn-block text-white disabled">Onay Bekliyor</a></td>
+                            <td style="vertical-align:middle"><a class="btn btn-info text-white disabled">Onay Bekliyor</a></td>
                             <td></td>
                         }
                         @if (item.IsApproved == 2)
                         {
                             if (item.IsSupported == 0 && (item.IsApproveChanged != 2 || item.IsApproveChanged != 4))
                             {
-                                <td style="vertical-align:middle"><a href="@Url.Action("SendProjectToSupport", "Project", new { id = item.Id })" class="btn btn-success">Destek Başvurusu Yap</a></td>
+                                <td style="vertical-align:middle"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#sendProject" data-id="@item.Id">Destek Başvurusu Yap</button></td>
                                 <td></td>
                             }
                             if (item.IsSupported == 0 && (item.IsApproveChanged == 2 || item.IsApproveChanged == 4))
@@ -57,7 +61,7 @@
                             }
                             if (item.IsSupported == 1 && (item.IsApproveChanged != 2 || item.IsApproveChanged != 4))
                             {
-                                <td style="vertical-align:middle"><a class="btn btn-secondary btn-block text-white disabled">Destek Onayı Bekliyor</a></td>
+                                <td style="vertical-align:middle"><a class="btn btn-secondary text-white disabled">Destek Bekliyor</a></td>
                                 <td></td>
                             }
                             if (item.IsSupported == 2)
@@ -65,10 +69,75 @@
                                 <td style="vertical-align:middle">Desteklendi</td>
                             }
                         }
-                        <td style="vertical-align:middle"><a href="@Url.Action("Download", "Project", new { id = item.Id })" class="btn btn-danger">İndir</a></td>
+                        <td style="vertical-align:middle"><a href="@Url.Action("Download", "Project", new { id = item.Id })" target="_blank" class="btn btn-info"><span class="fa fa-search"></span></a></td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
+
+@*@using (Html.BeginForm("CreateUserCV", "User", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="modal fade" id="newProject" tabindex="-1" role="dialog" aria-labelledby="uploadCv" aria-hidden="true">
+                <div class="modal-dialog modal-center modal-simple" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="container">
+                                <div class="card card-login mx-auto mt-5">
+                                    <div class="modal-header">
+                                        <h4>CV Yükle</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <input type="file" id="input-file-now-custom-2" data-plugin="dropify" data-height="100" name="fileCV" id="fileCV" value="Yükle" accept=".pdf" class="form-control" />
+                                                <br />
+                                                <input type="submit" value="Yükle" class="btn btn-danger btn-block" formaction="/User/UploadUserCV" />
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }*@
+
+@using (Html.BeginForm("SendProjectToSupport", "Project", FormMethod.Post, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="modal fade" id="sendProject" tabindex="-1" role="dialog" aria-labelledby="sendProject" aria-hidden="true">
+        <div class="modal-dialog modal-center modal-simple" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="container">
+                        <div class="card card-login mx-auto mt-5">
+                            <div class="modal-header">
+                                <h4>Talep Et</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="form-group">
+                                        <input type="hidden" name="Id" id="form-id" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        Destek Taleplerinizi Yazınız
+                                        <textarea id="supportRequest" name="supportRequest" class="form-control" rows="2" cols="20" style="max-height:400px"></textarea>
+                                        <br />
+                                        <button type="submit" class="btn btn-danger">Başvuruyu Tamamla</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
