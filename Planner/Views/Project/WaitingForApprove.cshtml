@@ -48,7 +48,7 @@
                             <h5>Projeyi Onayla</h5>
                             <a href="@Url.Action("ApproveProject", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="btn btn-success"><span class="fa fa-thumbs-up"></span></a>
                             <h5>Projeyi Reddet</h5>
-                            <a href="@Url.Action("DeclineProject", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="btn btn-danger"><span class="fa fa-thumbs-down"></span></a>
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#approveProject" data-id="@item.ProjectId"><span class="fa fa-thumbs-down"></span></button>
                         </div>
                     </div>
                 </div>
@@ -56,3 +56,38 @@
         </div>
     }
 </div>
+
+@using (Html.BeginForm("RejectProject", "Project", FormMethod.Post, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="modal fade" id="approveProject" tabindex="-1" role="dialog" aria-labelledby="approveProject" aria-hidden="true">
+        <div class="modal-dialog modal-center modal-simple" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="container">
+                        <div class="card card-login mx-auto mt-5">
+                            <div class="modal-header">
+                                <h4>Projeyi Reddet</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="form-group">
+                                        <input type="hidden" name="Id" id="form-id" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        Neden Reddediyorsunuz?
+                                        <textarea id="declineCause" name="declineCause" class="form-control" rows="2" cols="20" style="max-height:400px"></textarea>
+                                        <br />
+                                        <button type="submit" class="btn btn-danger">Reddet</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

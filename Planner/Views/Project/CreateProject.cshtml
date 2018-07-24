@@ -33,13 +33,13 @@
 
             <div class="text-center col-md-auto">
                 <span>Proje Adı</span>
-                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control text-center", placeholder = "Projenizin Adını Giriniz" } })
+                <textarea class="form-control text-center" name="Name" placeholder="Projenizin Adını Giriniz"></textarea>
                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
             </div>
             <br />
             <div class="text-center col-md-auto">
                 <span>Proje Açıklaması</span><br />
-                @Html.TextAreaFor(model => model.Description, 5, 210, new { htmlAttributes = new { @class = "form-control text-center" } })
+                <textarea class="form-control text-center" name="Description" placeholder="Projenizin Açıklamasını Giriniz"></textarea>
                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
             </div>
             <br />
@@ -55,7 +55,3 @@
         </div>
     }
 </section>
-
-@*<div>
-        @Html.ActionLink("Back to List", "Index")
-    </div>*@

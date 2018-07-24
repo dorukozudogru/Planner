@@ -31,7 +31,7 @@
                 {
                     <tr style="text-align:center">
                         <td style="vertical-align:middle">@Html.DisplayFor(modelItem => item.Name)</td>
-                        <td style="max-width:30px; vertical-align:middle">@Html.TextAreaFor(modelItem => item.Description, 0, 45, new { htmlAttributes = new { @class = "form-control text-center" } })</td>
+                        <td style="vertical-align:middle"><textarea placeholder="@item.Description" readonly class="form-control text-center"></textarea></td>
                         @if (item.IsApproved == 0 && (item.IsApproveChanged != 2 || item.IsApproveChanged != 4))
                         {
                             <td style="vertical-align:middle"><a href="@Url.Action("SendProjectToApprove", "Project", new { id = item.Id })" class="btn btn-warning">Onaya Gönder</a></td>

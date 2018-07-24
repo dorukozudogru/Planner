@@ -15,6 +15,7 @@ namespace Planner.Models
         public virtual DbSet<UserProject> UserProject { get; set; }
         public virtual DbSet<UserCV> UserCV { get; set; }
         public virtual DbSet<SupportedProjects> SupportedProjects { get; set; }
+        public virtual DbSet<RejectedProjects> RejectedProjects { get; set; }
         public virtual DbSet<ProjectUserAuthorize> ProjectUserAuthorize { get; set; }
 
         //protected override void OnModelCreating(DbModelBuilder modelBuilder)

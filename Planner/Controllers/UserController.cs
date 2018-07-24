@@ -340,14 +340,13 @@ namespace Planner.Controllers
                     List<Project> lstUp = new List<Project>();
                     foreach (var item in db.UserProject)
                     {
-                        if (userModel.Id == item.UserId)
+                        if (userModel.Id == item.UserId && item.IsApproveChanged != Convert.ToInt32(ProjectTypeChangeEnum.ChangeAsNotApproved))
                         {
                             string pId = item.ProjectId;
                             pModel = db.Projects.First(z => z.Id == pId);
                             lstUp.Add(new Project { Id = pModel.Id, Name = pModel.Name, Description = pModel.Description, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported });
                         }
                     }
-                    lstUp.ToList();
                     return View(lstUp);
                 }
                 else
@@ -358,8 +357,42 @@ namespace Planner.Controllers
             }
             catch (Exception ex)
             {
-                var lstNull = "";
-                lstNull.ToList();
+                List<Project> lstNull = new List<Project>();
+                return View(lstNull);
+            }
+        }
+
+        public ActionResult UserRejectedProjectIndex(string loggedUserId)
+        {
+            try
+            {
+                if (loggedUserId == Convert.ToString(Session["UserId"]))
+                {
+                    User userModel = db.User.First(a => a.Id == loggedUserId);
+                    Project pModel = new Project();
+                    RejectedProjects rProjects = new RejectedProjects();
+                    List<vwRejectedProjects> lstUp = new List<vwRejectedProjects>();
+                    foreach (var item in db.UserProject)
+                    {
+                        if (userModel.Id == item.UserId && item.IsApproveChanged == Convert.ToInt32(ProjectTypeChangeEnum.ChangeAsNotApproved))
+                        {
+                            string pId = item.ProjectId;
+                            pModel = db.Projects.First(z => z.Id == pId);
+                            rProjects = db.RejectedProjects.FirstOrDefault(z => z.RejectedProjectId == pModel.Id);
+                            lstUp.Add(new vwRejectedProjects { ProjectId = pModel.Id, ProjectName = pModel.Name, ProjectDescription = pModel.Description, RejectCause = rProjects.RejectCause, RejectDate = rProjects.RejectDate.Date });
+                        }
+                    }
+                    return View(lstUp);
+                }
+                else
+                {
+                    RedirectToAction("UserMenu");
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                List<Project> lstNull = new List<Project>();
                 return View(lstNull);
             }
         }

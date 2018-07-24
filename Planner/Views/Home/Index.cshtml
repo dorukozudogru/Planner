@@ -1,15 +1,11 @@
-﻿@{
-    ViewBag.Title = "Hoşgeldiniz";
-}
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <meta name="description" content="Proje Sepeti © 2018 - Tüm Hakları Saklıdır.">
     <meta name="author" content="Doruk ÖZÜDOĞRU">
-    <title>@ViewBag.Title - Proje Sepeti</title>
+    <title>Hoşgeldiniz! - Proje Sepeti</title>
 
     <link href="~/Content/Index/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -31,10 +27,10 @@
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="#about">Hakkımızda</a>
+                        <a class="nav-link js-scroll-trigger" href="#whyUs">Neden Biz?</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="#services">Neden Biz?</a>
+                        <a class="nav-link js-scroll-trigger" href="#aboutUs">Hakkımızda</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="#portfolio">Desteklerimiz</a>
@@ -60,30 +56,30 @@
                 <div class="row">
                     <div class="col-lg-10 mx-auto">
                         <h1 class="text-uppercase">
-                            <strong>Mucidin Yatırımcıyla Buluşma Noktası</strong>
+                            <strong>Fikir Sahibinin Yatırımcıyla<br />Buluşma Noktası</strong>
                         </h1>
-                        <hr>
+                        <hr class="my-10">
                     </div>
                     <div class="col-lg-8 mx-auto">
-                        <p class="text-faded mb-5">Start Bootstrap can help you build better websites using the Bootstrap CSS framework! Just download your template and start going, no strings attached!</p>
-                        <a class="btn btn-primary btn-xl js-scroll-trigger" href="#about">Daha Fazlası</a>
+                        <p class="text-faded mb-5">Proje Sepeti ile fikirlerinizi diğerleriyle paylaşın!</p>
+                        <a class="btn btn-xl btn-primary js-scroll-trigger text-white" href="#about"><span class="fa fa-arrow-down"></span></a>
                     </div>
                 </div>
             </div>
         </header>
-        <section class="bg-primary" id="about">
+        <section class="bg-primary" id="whyUs">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 mx-auto text-center">
-                        <h2 class="section-heading text-white">We've got what you need!</h2>
+                        <h2 class="section-heading text-white">Beklediğiniz Desteği Burada Bulabilirsiniz!</h2>
                         <hr class="light my-4">
-                        <p class="text-faded mb-4">Start Bootstrap has everything you need to get your new website up and running in no time! All of the templates and themes on Start Bootstrap are open source, free to download, and easy to use. No strings attached!</p>
-                        <a class="btn btn-light btn-xl js-scroll-trigger" href="#services">Get Started!</a>
+                        <p class="text-faded mb-4">Binlerce projenin bulunduğu bu platformda yapacağınız desteği yalnızca ücret ödemek olarak görmeyin! Kodlayarak veya projeye daha farklı fikirler sunarak da destek olabilirsiniz!</p>
+                        <a class="btn btn-light btn-xl js-scroll-trigger" href="/Account/Login">Hadi Bir Göz Atın!</a>
                     </div>
                 </div>
             </div>
         </section>
-        <section id="services">
+        <section id="aboutUs">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12 text-center">
@@ -221,69 +217,13 @@
                 </div>
             </div>
         </section>
-        @*<section id="register" class="bg-dark text-white">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-12 text-center">
-                            <h2 class="section-heading sr-contact">Kayıt Olun</h2>
-                            <hr class="my-4">
-                        </div>
-                    </div>
-                </div>
-                @using (Html.BeginForm("Index", "User", FormMethod.Post, FormMethod.Post, new { @class = "form-horizontal sr-contact", role = "form" }))
-                {
-                    @Html.AntiForgeryToken()
-                    <div class="container">
-                        @Html.ValidationSummary(true)
-                        <div class="text-center col-md-auto">
-                            <span>E-Posta</span>
-                            @Html.EditorFor(model => model.EMail, new { htmlAttributes = new { @class = "form-control text-center sr-contact", placeholder = "E-Postanızı Giriniz" } })
-                            @Html.ValidationMessageFor(model => model.EMail)
-                        </div>
-                        <br />
-                        <div class="text-center col-md-auto">
-                            <span>Ad</span>
-                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control text-center sr-contact", placeholder = "Adınızı Giriniz" } })
-                            @Html.ValidationMessageFor(model => model.Name)
-                        </div>
-                        <br />
-                        <div class="text-center col-md-auto">
-                            <span>Soyad</span>
-                            @Html.EditorFor(model => model.Surname, new { htmlAttributes = new { @class = "form-control text-center sr-contact", placeholder = "Soyadınızı Giriniz" } })
-                            @Html.ValidationMessageFor(model => model.Surname)
-                        </div>
-                        <br />
-                        <div class="text-center col-md-auto">
-                            <span>Doğum Tarihi</span>
-                            @Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { type = "date", @class = "form-control text-center sr-contact" } })
-                            @Html.ValidationMessageFor(model => model.BirthDate)
-                        </div>
-                        <br />
-                        <div class="text-center col-md-auto">
-                            <span>Şifre</span>
-                            <input type="password" name="Password" value="" class="col-md-12 form-control text-center sr-contact" placeholder="Şifrenizi Giriniz" />
-                            @Html.ValidationMessageFor(model => model.Password)
-                        </div>
-                        <br />
-                        <div class="text-center col-md-auto">
-                            <span>T.C. Kimlik Numarası</span>
-                            @Html.EditorFor(model => model.CitizenshipNo, new { htmlAttributes = new { @class = "form-control text-center sr-contact", type = "number", placeholder = "T.C. Kimlik Numaranızı Giriniz" } })
-                            @Html.ValidationMessageFor(model => model.CitizenshipNo)
-                        </div>
-                        <br />
-                        <div class="text-center">
-                            <input type="submit" value="Kayıt Ol" class="btn btn-danger sr-contact" formaction="/User/Create" />
-                        </div>
-                    </div>
-                }
-            </section>*@
         <section id="contact">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 mx-auto text-center">
-                        <h2 class="section-heading">Let's Get In Touch!</h2>
+                        <h2 class="section-heading">Bizimle İletişime Geçmeye Ne Dersiniz?</h2>
                         <hr class="my-4">
-                        <p class="mb-5">Ready to start your next project with us? That's great! Give us a call or send us an email and we will get back to you as soon as possible!</p>
+                        <p>Hadi aşağıdaki seçeneklerden birini seçin ve bize ulaşın!</p>
                     </div>
                 </div>
                 <div class="row">

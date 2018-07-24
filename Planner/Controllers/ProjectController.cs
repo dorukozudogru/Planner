@@ -488,12 +488,14 @@ namespace Planner.Controllers
             }
         }
 
-        public ActionResult DeclineProject(string Id)
+        public ActionResult RejectProject(string Id, string declineCause)
         {
             try
             {
                 Project pmodel = new Project();
                 UserProject upmodel = new UserProject();
+                RejectedProjects rProjects = new RejectedProjects();
+
                 pmodel = db.Projects.FirstOrDefault(m => m.Id == Id);
                 upmodel = db.UserProject.FirstOrDefault(m => m.ProjectId == Id);
                 pmodel.IsApproved = Convert.ToInt32(ProjectApproveEnum.NotApproved);
@@ -502,12 +504,18 @@ namespace Planner.Controllers
                 upmodel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangeAsNotApproved);
                 pmodel.LastEditDate = DateTime.Now;
                 pmodel.LastEditBy = Convert.ToString(Session["UserId"]);
+
+                rProjects.RejectedProjectId = Id;
+                rProjects.RejectUserId = Convert.ToString(Session["UserId"]);
+                rProjects.RejectCause = declineCause;
+                rProjects.RejectDate = DateTime.Now;
+                db.RejectedProjects.Add(rProjects);
                 db.SaveChanges();
                 User umodel = new User();
                 umodel = db.User.FirstOrDefault(m => m.Id == upmodel.UserId);
                 try
                 {
-                    HomeController.SendEMail(umodel.EMail, "Projeniz Onaylanmamıştır.", "Proje Onayı");
+                    HomeController.SendEMail(umodel.EMail, "Projeniz Onaylanmamıştır. Reddedilme Sebebi: '" + declineCause + "'" , "Proje Onayı");
                 }
                 catch (Exception ex)
                 {
@@ -544,7 +552,14 @@ namespace Planner.Controllers
                     sProjects.SupportValue = supportValue;
                     db.SupportedProjects.Add(sProjects);
                     db.SaveChanges();
-                    HomeController.SendEMail(uModel.EMail, "Projenize Destek Verilmiştir. Detaylı Bilgi İçin Sisteminizi Kontrol Ediniz.", "Proje Desteği");
+                    try
+                    {
+                        HomeController.SendEMail(uModel.EMail, "Projenize Destek Verilmiştir. Detaylı Bilgi İçin Sisteminizi Kontrol Ediniz.", "Proje Desteği");
+                    }
+                    catch (Exception ex)
+                    {
+                        return RedirectToAction("MessageShow", "Home", new { messageBody = "Destek Bilgileriniz İletilmiştir", returnUrl = Request.UrlReferrer.AbsoluteUri });
+                    }
                     return RedirectToAction("MessageShow", "Home", new { messageBody = "Destek Bilgileriniz İletilmiştir. Sorumlu Kişiler Bilgilendirilecektir.", returnUrl = Request.UrlReferrer.AbsoluteUri });
                 }
                 else
@@ -646,7 +661,7 @@ namespace Planner.Controllers
                     project.FilePath = path;
                     CreateProject(project);
                 }
-                return RedirectToAction("MessageShow", "Home", new { messageBody = "Projeniz Yüklenmiştir. Lütfen Projenizi Kontrol Ettikten Sonra Onaya Gönderiniz.", returnUrl = Request.UrlReferrer.AbsoluteUri });
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Projeniz Yüklenmiştir. Lütfen Projenizi Kontrol Ettikten Sonra Onaya Gönderiniz.", returnUrl = "/User/UserMenu" });
             }
             catch (Exception ex)
             {
