@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using Planner.Enums;
@@ -24,12 +25,7 @@ namespace Planner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(User model)
         {
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Message = "Lütfen Giriş Bilgilerinizi Kontrol Edin";
-                return View();
-            }
-            string encPass = HomeController.Encrypt(model.Password);
+            string encPass = EncryptionHelper.Encrypt(model.Password);
             var loginUser = db.User.FirstOrDefault(a => a.EMail == model.EMail);
             if (loginUser != null)
             {
@@ -95,6 +91,9 @@ namespace Planner.Controllers
                     else
                     {
                         ViewBag.Message = "E-Posta Doğrulamasını Yapınız";
+                        ViewBag.Message2 = "Doğrulama Postasını Almak İçin Tıklayınız";
+                        ViewBag.Link = Url.Action("VerifyEmail", "Account", new { userId = loginUser.Id }, protocol: Request.Url.Scheme);
+                        HomeController.SendEMail(model.EMail, "E-postanızı yandaki linke tıklayarak onaylayabilirsiniz. " + ViewBag.Link, "Üyelik Onayı");
                         return View();
                     }
                 }
@@ -137,7 +136,7 @@ namespace Planner.Controllers
                 //int birthYear = user.BirthDate.Year;
                 //KPS_Servis.KPSPublicSoapClient ws = new KPS_Servis.KPSPublicSoapClient();
                 //bool? confirmCitizenshipNo = ws.TCKimlikNoDogrula(Convert.ToInt64(user.CitizenshipNo), (user.Name).ToUpper(), (user.Surname).ToUpper(), birthYear);
-                //if (confirmCitizenshipNo == true)
+                //if (confirmCitizenshipNo)
                 //{
                 //    user.Password = HomeController.Encrypt(user.Password);
                 //    user.IsApproved = Convert.ToInt32(UserApproveEnum.WaitingToApprove);
@@ -149,43 +148,57 @@ namespace Planner.Controllers
                 //}
 
                 //Yalnızca Kimlik No Kontrolü
-                User user = db.User.FirstOrDefault(a => a.EMail == model.EMail);
+                User user = db.User.FirstOrDefault(x => x.EMail == model.EMail);
                 if (user == null)
                 {
-                    bool controlCitizenshipno = HomeController.ControlCitizenshipNo(model.CitizenshipNo);
+                    bool controlCitizenshipno = CitizenshipNoHelper.ControlCitizenshipNo(model.CitizenshipNo);
                     if (controlCitizenshipno)
                     {
-                        model.Id = Guid.NewGuid().ToString();
-                        model.Password = HomeController.Encrypt(model.Password);
-                        model.IsCvUploaded = false;
-                        model.IsEmailVerified = false;
-                        model.IsApproved = Convert.ToInt32(UserApproveEnum.WaitingToApprove);
-                        model.IsAdmin = false;
-                        model.IsActive = true;
-                        model.RegisterDate = DateTime.Now;
-                        model.LastEditDate = Convert.ToDateTime("1753-01-01");
-                        model.LastEditBy = "00000000-0000-0000-0000-000000000000";
-                        if (model.City == null)
+                        var guid = Guid.NewGuid().ToString();
+                        User newUser = new User()
                         {
-                            model.City = "";
-                        }
-                        if (model.Department == null)
-                        {
-                            model.Department = "";
-                        }
-                        if (model.Job == null)
-                        {
-                            model.Job = "";
-                        }
-                        if (model.School == null)
-                        {
-                            model.School = "";
-                        }
-                        db.User.Add(model);
-                        db.SaveChanges();
+                            Id = guid,
+                            EMail = model.EMail,
+                            Name = model.Name,
+                            Surname = model.Surname,
+                            Password = EncryptionHelper.Encrypt(model.Password),
+                            BirthDate = model.BirthDate,
+                            PhoneNumber = model.PhoneNumber,
+                            CitizenshipNo = model.CitizenshipNo,
+                            City = String.IsNullOrEmpty(model.City) ? "" : model.City,
+                            School = String.IsNullOrEmpty(model.School) ? "" : model.School,
+                            Department = String.IsNullOrEmpty(model.Department) ? "" : model.Department,
+                            Job = String.IsNullOrEmpty(model.Job) ? "" : model.Job,
+                            IsFirm = model.IsFirm,
+                            IsCvUploaded = false,
+                            IsEmailVerified = false,
+                            IsApproved = Convert.ToInt32(UserApproveEnum.WaitingToApprove),
+                            IsAdmin = false,
+                            IsActive = true,
+                            RegisterDate = DateTime.Now,
+                            LastEditDate = DateTime.Now.AddYears(-10),
+                            LastEditBy = "00000000-0000-0000-0000-000000000000"
+                        };
 
-                        var registeredUser = db.User.FirstOrDefault(a => a.EMail == model.EMail);
-                        Session["UserCitizenshipNo"] = registeredUser.CitizenshipNo.ToString();
+                        var callbackUrl = Url.Action("VerifyEmail", "Account", new { userId = guid }, protocol: Request.Url.Scheme);
+
+                        bool emailSend = HomeController.SendEMail(model.EMail, "E-postanızı yandaki linke tıklayarak onaylayabilirsiniz. " + callbackUrl, "Üyelik Onayı");
+
+                        if (!emailSend)
+                        {
+                            ViewBag.Message = "E-posta doğrulamada bir sorun oluştu. Lütfen aşağıdaki linke tıklayarak tekrar deneyin.";
+                            ViewBag.Link = callbackUrl;
+                        }
+
+                        if (newUser.IsFirm)
+                        {
+                            db.User.Add(newUser);
+                            db.SaveChanges();
+                            ViewBag.Message = "Kayıt işleminiz başarıyla gerçekleştirilerek sistem yöneticilerine onaya gönderilmiştir.";
+                            return PartialView("_Approvement");
+                        }
+
+                        UserController.SetInfos(model);
                         return PartialView("_UploadCv");
                     }
                     else
@@ -231,7 +244,7 @@ namespace Planner.Controllers
 
             var callbackUrl = Url.Action("ResetPassword", "Account", new { code, userId = user.Id }, protocol: Request.Url.Scheme);
             HomeController.SendEMail(user.EMail, "Şifrenizi yandaki linke tıklayarak değiştirebilirsiniz. " + callbackUrl, "Şifre Sıfırlama");
-            user.Password = HomeController.Encrypt(Guid.NewGuid().ToString()); // Şifreyi rastgele bir şey yaptı.
+            user.Password = EncryptionHelper.Encrypt(Guid.NewGuid().ToString()); // Şifreyi rastgele bir şey yaptı.
             db.SaveChanges();
             ViewBag.Message = "Şifre Sıfırlama Kodu Gönderilmiştir";
             return View();
@@ -254,7 +267,7 @@ namespace Planner.Controllers
                 ViewBag.Message = "E-Postanızı Hatalı Girdiniz";
                 return View();
             }
-            user.Password = HomeController.Encrypt(password);
+            user.Password = EncryptionHelper.Encrypt(password);
             db.SaveChanges();
             ViewBag.Message = "Şifreniz Değiştirilmiştir";
             return View();

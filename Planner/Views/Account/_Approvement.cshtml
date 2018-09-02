@@ -3,9 +3,16 @@
     Layout = "~/Views/Shared/_LayoutRegister.cshtml";
 }
 
-<div class="container text-center">
-    <section class="text-white" id="loginapprovment">
-        <h2 class="alert alert-danger">Kayıt işleminiz başarıyla gerçekleştirilerek sistem yöneticilerine onaya gönderilmiştir.</h2>
-        <a class="btn btn-info" href="/Home">Anasayfa</a>
-    </section>
+<div class="page vertical-align text-center" data-animsition-in="fade-in" data-animsition-out="fade-out">
+    <div class="page-content vertical-align-middle animation-slide-top animation-duration-1">
+        <div class="brand">
+            <img class="brand-img" src="~/Content/Site/classic/iconbar/assets/images/ci_tech.png" alt="PROJE SEPETİ" style="max-height:55px; max-width:55px"><h2 class="text-white">PROJE SEPETİ</h2>
+        </div>
+        <div class="container text-center">
+            <section class="text-white" id="loginapprovment">
+                <h2 class="brand-text">@ViewBag.Message</h2>
+                <a class="btn btn-info" href="/Home">Anasayfa</a>
+            </section>
+        </div>
+    </div>
 </div>

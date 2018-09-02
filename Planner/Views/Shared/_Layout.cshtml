@@ -77,11 +77,11 @@
                 <img class="navbar-brand-logo" src="~/Content/Site/classic/iconbar/assets/images/ci_tech.png" title="CI TECH">
                 <span class="navbar-brand-text hidden-xs-down">Proje Sepeti</span>
             </div>
-            <button type="button" class="navbar-toggler collapsed" data-target="#site-navbar-search"
+            @*<button type="button" class="navbar-toggler collapsed" data-target="#site-navbar-search"
                     data-toggle="collapse">
                 <span class="sr-only">Toggle Search</span>
                 <i class="icon wb-search" aria-hidden="true"></i>
-            </button>
+            </button>*@
         </div>
 
         <div class="navbar-container container-fluid">
@@ -96,7 +96,7 @@
                     <li class="nav-item hidden-float" id="toggleMenubar">
                         <a class="nav-link" data-toggle="menubar" href="#" role="button">
                             <i class="icon hamburger hamburger-arrow-left">
-                                <span class="sr-only">Toggle menubar</span>
+                                <span class="sr-only">Hide SideBar</span>
                                 <span class="hamburger-bar"></span>
                             </i>
                         </a>
@@ -106,12 +106,12 @@
                                 <span class="sr-only">Toggle fullscreen</span>
                             </a>
                         </li>*@
-                    <li class="nav-item hidden-float">
+                    @*<li class="nav-item hidden-float">
                         <a class="nav-link icon wb-search" data-toggle="collapse" href="#" data-target="#site-navbar-search"
                            role="button">
                             <span class="sr-only">Toggle Search</span>
                         </a>
-                    </li>
+                    </li>*@
                 </ul>
                 <!-- End Navbar Toolbar -->
                 <!-- Navbar Toolbar Right -->
@@ -119,7 +119,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link" data-toggle="dropdown" href="javascript:void(0)" data-animation="scale-up"
                            aria-expanded="false" role="button">
-                            <span class="flag-icon flag-icon-us"></span>
+                            <span class="flag-icon flag-icon-tr"></span>
                         </a>
                         <div class="dropdown-menu" role="menu">
                             <a class="dropdown-item" href="javascript:void(0)" role="menuitem">
@@ -140,8 +140,8 @@
                         </a>
                         <div class="dropdown-menu" role="menu">
                             <a class="dropdown-item" role="menuitem"><strong>@Session["UserName"] @Session["UserSurname"]</strong><br><small>(@Session["UserEMail"])</small></a>
-                            <div class="dropdown-divider" role="presentation"></div>
-                            <a class="dropdown-item" href="@Url.Action("UserProfile", "User", new { loggedUserId = Session["UserId"] })" role="menuitem"><i class="icon wb-user" aria-hidden="true"></i> Profil</a>
+                            @*<div class="dropdown-divider" role="presentation"></div>*@
+                            @*<a class="dropdown-item" href="@Url.Action("UserProfile", "User", new { loggedUserId = Session["UserId"] })" role="menuitem"><i class="icon wb-user" aria-hidden="true"></i> Profil</a>*@
                             @*<a class="dropdown-item" href="javascript:void(0)" role="menuitem"><i class="icon wb-payment" aria-hidden="true"></i> Billing</a>
                                 <a class="dropdown-item" href="javascript:void(0)" role="menuitem"><i class="icon wb-settings" aria-hidden="true"></i> Settings</a>*@
                             <div class="dropdown-divider" role="presentation"></div>

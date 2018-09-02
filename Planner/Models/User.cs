@@ -11,28 +11,34 @@ namespace Planner.Models
 
         [Display (Name = "E-Posta")]
         [StringLength(80)]
+        [Required]
         public string EMail { get; set; }
 
         [Display(Name = "Ad")]
         [StringLength(80)]
+        [Required]
         public string Name { get; set; }
 
         [Display(Name = "Soyad")]
         [StringLength(100)]
+        [Required]
         public string Surname { get; set; }
 
         [Display(Name = "Þifre")]
         [StringLength(30)]
+        [Required]
         public string Password { get; set; }
 
         [Display(Name = "Doðum Tarihi")]
         public DateTime BirthDate { get; set; }
 
         [Display(Name = "Telefon")]
+        [Required]
         public string PhoneNumber { get; set; }
 
         [Display(Name = "T.C. Kimlik Numarasý")]
         [StringLength(11)]
+        [Required]
         public string CitizenshipNo { get; set; }
 
         [Display(Name = "Þehir")]
@@ -50,6 +56,8 @@ namespace Planner.Models
         [Display(Name = "Meslek")]
         [StringLength(100)]
         public string Job { get; set; }
+
+        public bool IsFirm { get; set; }
 
         public bool IsCvUploaded { get; set; }
 

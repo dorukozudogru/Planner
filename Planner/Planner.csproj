@@ -166,6 +166,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\CitizenshipNoHelper.cs" />
+    <Compile Include="Helpers\EncryptionHelper.cs" />
     <Compile Include="Helpers\SessionWrapper.cs" />
     <Compile Include="Helpers\UserAuthorizeAttribute.cs" />
     <Compile Include="Models\DBContext.cs" />

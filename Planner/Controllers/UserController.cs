@@ -3,6 +3,7 @@ using Planner.Helpers;
 using Planner.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net.Mime;
@@ -15,6 +16,12 @@ namespace Planner.Controllers
     public class UserController : Controller
     {
         private DBContext db = new DBContext();
+        private static User _user;
+
+        public static void SetInfos(User user)
+        {
+            _user = user;
+        }
 
         public ActionResult UserIndex()
         {
@@ -410,17 +417,13 @@ namespace Planner.Controllers
                 }
                 else if (fileCV.ContentLength > 0 && fileCV.ContentType == "application/pdf")
                 {
-                    string citizenshipNo = Convert.ToString(Session["UserCitizenshipNo"]);
-
                     var fileName = Path.GetFileName(fileCV.FileName);
-                    var path = Path.Combine(Server.MapPath("~/Files/CV"), (citizenshipNo + "_CV_" + fileName));
+                    var path = Path.Combine(Server.MapPath("~/Files/CV"), (_user.CitizenshipNo + "_CV_" + fileName));
                     fileCV.SaveAs(path);
 
                     UserCV cv = new UserCV();
-
-                    var userControl = db.User.SingleOrDefault(m => m.CitizenshipNo == citizenshipNo);
-
-                    if (userControl.IsCvUploaded != false)
+                    var userControl = db.User.FirstOrDefault(m => m.CitizenshipNo == _user.CitizenshipNo);
+                    if (userControl != null)
                     {
                         cv = db.UserCV.SingleOrDefault(m => m.UserId == userControl.Id);
                         cv.FileName = fileName;
@@ -431,28 +434,27 @@ namespace Planner.Controllers
                     }
                     else
                     {
-                        cv.UserId = userControl.Id;
+                        cv.UserId = _user.Id;
                         cv.FileName = fileName;
                         cv.FilePath = path;
                         cv.CreationDate = DateTime.Now;
+                        _user.IsCvUploaded = true;
+
+                        db.User.Add(_user);
                         db.UserCV.Add(cv);
 
-                        var user = db.User.SingleOrDefault(m => m.Id == cv.UserId);
-                        user.IsCvUploaded = true;
-                        db.SaveChanges();
-                        ViewBag.Message = "CV Başarıyla Yüklendi";
+                        ViewBag.Message = "Kayıt işleminiz başarıyla gerçekleştirilerek sistem yöneticilerine onaya gönderilmiştir.";
                         Session["UserIsCvUploaded"] = true;
-
-                        var callbackUrl = Url.Action("VerifyEmail", "Account", new { userId = user.Id }, protocol: Request.Url.Scheme);
-                        HomeController.SendEMail(user.EMail, "E-postanızı yandaki linke tıklayarak onaylayabilirsiniz. " + callbackUrl, "Üyelik Onayı");
                     }
                 }
+                db.SaveChanges();
                 return View();
             }
             catch (Exception ex)
             {
-                ViewBag.Message = "Kullanıcınız Başarıyla Oluşturulmuştur. Fakat CV Yükleme Sırasında Bir Hata Oluştu. Lütfen Yönetici Onayından Sonra CV'nizi Yükleyiniz.";
-                ViewBag.ReturnUrl = Request.UrlReferrer.AbsoluteUri;
+                ViewBag.Message = "Kayıt Aşamasında Bir Hata Oluştu. Lütfen Tekrar Deneyin.";
+                ViewBag.Link = Request.UrlReferrer.AbsoluteUri;
+                db.Dispose();
                 return PartialView("_UploadUserCV");
             }
         }
@@ -495,13 +497,13 @@ namespace Planner.Controllers
         [HttpPost]
         public ActionResult EditProfile(User user)
         {
-            if (HomeController.ControlCitizenshipNo(user.CitizenshipNo))
+            if (CitizenshipNoHelper.ControlCitizenshipNo(user.CitizenshipNo))
             {
                 User model = db.User.FirstOrDefault(a => a.EMail == user.EMail);
                 model.Name = user.Name;
                 model.Surname = user.Surname;
                 model.EMail = user.EMail;
-                model.Password = HomeController.Encrypt(user.Password);
+                model.Password = EncryptionHelper.Encrypt(user.Password);
                 model.CitizenshipNo = user.CitizenshipNo;
                 model.BirthDate = user.BirthDate;
                 model.City = user.City;

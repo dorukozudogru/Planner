@@ -81,11 +81,11 @@
                 <img class="navbar-brand-logo" src="~/Content/Site/classic/iconbar/assets/images/ci_tech.png" title="CI TECH">
                 <span class="navbar-brand-text hidden-xs-down">Proje Sepeti</span>
             </div>
-            <button type="button" class="navbar-toggler collapsed" data-target="#site-navbar-search"
+            @*<button type="button" class="navbar-toggler collapsed" data-target="#site-navbar-search"
                     data-toggle="collapse">
                 <span class="sr-only">Toggle Search</span>
                 <i class="icon wb-search" aria-hidden="true"></i>
-            </button>
+            </button>*@
         </div>
 
         <div class="navbar-container container-fluid">
@@ -100,7 +100,7 @@
                     <li class="nav-item hidden-float" id="toggleMenubar">
                         <a class="nav-link" data-toggle="menubar" href="#" role="button">
                             <i class="icon hamburger hamburger-arrow-left">
-                                <span class="sr-only">Toggle menubar</span>
+                                <span class="sr-only">Hide SideBar</span>
                                 <span class="hamburger-bar"></span>
                             </i>
                         </a>
@@ -110,12 +110,12 @@
                                 <span class="sr-only">Toggle fullscreen</span>
                             </a>
                         </li>*@
-                    <li class="nav-item hidden-float">
+                    @*<li class="nav-item hidden-float">
                         <a class="nav-link icon wb-search" data-toggle="collapse" href="#" data-target="#site-navbar-search"
                            role="button">
                             <span class="sr-only">Toggle Search</span>
                         </a>
-                    </li>
+                    </li>*@
                 </ul>
                 <!-- End Navbar Toolbar -->
                 <!-- Navbar Toolbar Right -->
@@ -363,7 +363,7 @@
         if (Session["UserEMail"] != null)
         {
             var itemId = Session["UserId"];
-            if (!Convert.ToBoolean(Session["UserIsCvUploaded"]))
+            @*if (!Convert.ToBoolean(Session["UserIsCvUploaded"]))
             {
                 <div class="site-menubar site-menubar-light" style="position:fixed">
                     <div class="site-menubar-body">
@@ -382,10 +382,19 @@
                 </div>
             }
             else
-            {
+            {*@
                 <div class="site-menubar site-menubar-light" style="position:fixed">
                     <div class="site-menubar-body">
                         <ul class="site-menu" data-plugin="menu">
+                            <li class="site-menu-item has-sub">
+                                <a href="@Url.Action("UserMenu", "User")">
+                                    <i class="site-menu-icon fa-home" aria-hidden="true"></i>
+                                    <span class="site-menu-title">Ana Sayfa</span>
+                                    <div class="site-menu-badge">
+                                        <span class="badge badge-pill badge-success"></span>
+                                    </div>
+                                </a>
+                            </li>
                             <li class="site-menu-item has-sub">
                                 <a href="javascript:void(0)">
                                     <i class="site-menu-icon fa-file-text" aria-hidden="true"></i>
@@ -446,7 +455,7 @@
                         </ul>
                     </div>
                 </div>
-            }
+            //}
 
         }
     }

@@ -17,6 +17,7 @@
             <div class="page-login-main animation-slide-right animation-duration-1">
                 <h3 class="font-size-24">Giriş Yap</h3>
                 <h6 style="color:red">@ViewBag.Message</h6>
+                <h6 style="color:red"><a href="~/Home/SendEMail">@ViewBag.Message2</a></h6>
                 @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
                 {
                     @Html.AntiForgeryToken()
