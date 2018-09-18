@@ -58,12 +58,6 @@
                 <label class="sr-only" for="Job">Mesleğiniz</label>
                 <input type="text" class="form-control" id="Job" name="Job" placeholder="Mesleğiniz">
             </div>
-            <div class="form-group">
-                <label class="form-control-label">Yatırımcı mısınız?</label>
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.IsFirm)
-                </div>
-            </div>
             <input type="submit" value="Kayıt Ol" class="btn btn-info btn-block" formaction="/Account/Register" />
         }
         <br />

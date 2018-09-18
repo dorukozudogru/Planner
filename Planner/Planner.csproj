@@ -166,8 +166,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\CitizenshipNoHelper.cs" />
-    <Compile Include="Helpers\EncryptionHelper.cs" />
     <Compile Include="Helpers\SessionWrapper.cs" />
     <Compile Include="Helpers\UserAuthorizeAttribute.cs" />
     <Compile Include="Models\DBContext.cs" />
@@ -6225,7 +6223,9 @@
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -6289,6 +6289,7 @@
     <Content Include="Views\Project\ProjectAuthorizedUser.cshtml" />
     <Content Include="Views\Account\VerifyEmail.cshtml" />
     <Content Include="Views\User\UserRejectedProjectIndex.cshtml" />
+    <Content Include="Views\User\ResendEmail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

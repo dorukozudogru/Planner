@@ -70,3 +70,64 @@
         </div>
     </div>
 }
+
+<div class="example-buttons" style="position:fixed;bottom:5px;right:30px">
+    <button type="button" class="btn-success js-scroll-trigger btn btn-floating" data-toggle="modal" data-target="#newUser"><i class="icon wb-plus" aria-hidden="true"></i></button>
+</div>
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-group", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="modal fade" id="newUser" tabindex="-1" role="dialog" aria-labelledby="newUser" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-center modal-simple" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-header">
+                        <h4>Kullanıcı Ekle</h4>
+                    </div>
+                    <button type="button" class="close" style="padding-right" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xl-6 form-group">
+                            <input type="email" class="form-control" name="EMail" placeholder="E-Posta" />
+                        </div>
+                        <div class="col-xl-6 form-group">
+                            <input type="password" class="form-control" name="Password" placeholder="Şifre" />
+                        </div>
+                        <div class="col-xl-4 form-group">
+                            <input type="text" class="form-control" name="Name" placeholder="Adı" />
+                        </div>
+                        <div class="col-xl-4 form-group">
+                            <input type="text" class="form-control" name="Surname" placeholder="Soyadı" />
+                        </div>
+                        <div class="col-xl-4 form-group">
+                            <input type="date" class="form-control" name="BirthDate" placeholder="Doğum Tarihi" />
+                        </div>
+                        <div class="col-xl-4 form-group">
+                            <input type="text" class="form-control" name="PhoneNumber" placeholder="Telefon Numarası" />
+                        </div>
+                        <div class="col-xl-4 form-group">
+                            <input type="text" class="form-control" name="CitizenshipNo" placeholder="T.C. Kimlik Numarası" />
+                        </div>
+                        <div class="col-xl-4 form-group">
+                            <input type="text" class="form-control" name="City" placeholder="Yaşadığı Şehir" />
+                        </div>
+                        <div class="col-xl-4 form-group">
+                            <input type="text" class="form-control" name="School" placeholder="Mezun Olduğu/Okuduğu Okul" />
+                        </div>
+                        <div class="col-xl-4 form-group">
+                            <input type="text" class="form-control" name="Department" placeholder="Mezun Olduğu/Okuduğu Bölüm" />
+                        </div>
+                        <div class="col-xl-4 form-group">
+                            <input type="text" class="form-control" name="Job" placeholder="Mesleği" />
+                        </div>
+                    </div>
+                    <input type="submit" value="Kaydet" class="btn btn-success btn-block" formaction="/Account/Register" />
+                </div>
+            </div>
+        </div>
+    </div>
+}

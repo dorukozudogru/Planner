@@ -1,7 +1,14 @@
 ﻿
 @{
     ViewBag.Title = "Proje Sepeti";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    if (Convert.ToBoolean(Session["UserIsAdmin"]))
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutLogged.cshtml";
+    }
 }
 <br />
 <div class="container text-center">

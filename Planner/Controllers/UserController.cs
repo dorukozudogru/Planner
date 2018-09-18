@@ -3,7 +3,6 @@ using Planner.Helpers;
 using Planner.Models;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net.Mime;
@@ -16,12 +15,8 @@ namespace Planner.Controllers
     public class UserController : Controller
     {
         private DBContext db = new DBContext();
-        private static User _user;
-
-        public static void SetInfos(User user)
-        {
-            _user = user;
-        }
+        static string callbackUrl = "";
+        static string userEmail = "";
 
         public ActionResult UserIndex()
         {
@@ -417,13 +412,17 @@ namespace Planner.Controllers
                 }
                 else if (fileCV.ContentLength > 0 && fileCV.ContentType == "application/pdf")
                 {
+                    string citizenshipNo = Convert.ToString(Session["UserCitizenshipNo"]);
+
                     var fileName = Path.GetFileName(fileCV.FileName);
-                    var path = Path.Combine(Server.MapPath("~/Files/CV"), (_user.CitizenshipNo + "_CV_" + fileName));
+                    var path = Path.Combine(Server.MapPath("~/Files/CV"), (citizenshipNo + "_CV_" + fileName));
                     fileCV.SaveAs(path);
 
                     UserCV cv = new UserCV();
-                    var userControl = db.User.FirstOrDefault(m => m.CitizenshipNo == _user.CitizenshipNo);
-                    if (userControl != null)
+
+                    var userControl = db.User.SingleOrDefault(m => m.CitizenshipNo == citizenshipNo);
+
+                    if (userControl.IsCvUploaded != false)
                     {
                         cv = db.UserCV.SingleOrDefault(m => m.UserId == userControl.Id);
                         cv.FileName = fileName;
@@ -434,27 +433,44 @@ namespace Planner.Controllers
                     }
                     else
                     {
-                        cv.UserId = _user.Id;
+                        cv.UserId = userControl.Id;
                         cv.FileName = fileName;
                         cv.FilePath = path;
                         cv.CreationDate = DateTime.Now;
-                        _user.IsCvUploaded = true;
-
-                        db.User.Add(_user);
                         db.UserCV.Add(cv);
 
-                        ViewBag.Message = "Kayıt işleminiz başarıyla gerçekleştirilerek sistem yöneticilerine onaya gönderilmiştir.";
+                        var user = db.User.SingleOrDefault(m => m.Id == cv.UserId);
+                        user.IsCvUploaded = true;
+                        db.SaveChanges();
+                        ViewBag.Message = "CV Başarıyla Yüklendi";
                         Session["UserIsCvUploaded"] = true;
+                        userEmail = user.EMail;
+
+                        callbackUrl = Url.Action("VerifyEmail", "Account", new { userId = user.Id }, protocol: Request.Url.Scheme);
+                        try
+                        {
+                            HomeController.SendEMail(user.EMail, "E-postanızı yandaki linke tıklayarak onaylayabilirsiniz. " + callbackUrl, "Üyelik Onayı");
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
                     }
                 }
-                db.SaveChanges();
                 return View();
             }
             catch (Exception ex)
             {
-                ViewBag.Message = "Kayıt Aşamasında Bir Hata Oluştu. Lütfen Tekrar Deneyin.";
-                ViewBag.Link = Request.UrlReferrer.AbsoluteUri;
-                db.Dispose();
+                if (ex.ToString().Contains("SMTP"))
+                {
+                    ViewBag.Message = "Kullanıcınız Başarıyla Oluşturulmuştur. Fakat Onay E-Postası Gönderimi Sırasında Bir Hata Oluştu.";
+                    ViewBag.ReturnUrl = "/User/ResendEmail";
+                }
+                else
+                {
+                    ViewBag.Message = "Kullanıcınız Başarıyla Oluşturulmuştur. Fakat CV Yükleme Sırasında Bir Hata Oluştu. Lütfen Yönetici Onayından Sonra CV'nizi Yükleyiniz.";
+                    ViewBag.ReturnUrl = Request.UrlReferrer.AbsoluteUri;
+                }
                 return PartialView("_UploadUserCV");
             }
         }
@@ -497,13 +513,13 @@ namespace Planner.Controllers
         [HttpPost]
         public ActionResult EditProfile(User user)
         {
-            if (CitizenshipNoHelper.ControlCitizenshipNo(user.CitizenshipNo))
+            if (HomeController.ControlCitizenshipNo(user.CitizenshipNo))
             {
                 User model = db.User.FirstOrDefault(a => a.EMail == user.EMail);
                 model.Name = user.Name;
                 model.Surname = user.Surname;
                 model.EMail = user.EMail;
-                model.Password = EncryptionHelper.Encrypt(user.Password);
+                model.Password = HomeController.Encrypt(user.Password);
                 model.CitizenshipNo = user.CitizenshipNo;
                 model.BirthDate = user.BirthDate;
                 model.City = user.City;
@@ -520,6 +536,32 @@ namespace Planner.Controllers
             {
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "T.C. Kimlik Numaranızı Doğru Girdiğinizden Emin Olun", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
+        }
+
+        
+        [AllowAnonymous]
+        public ActionResult ResendEmail()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(userEmail))
+                {
+                    HomeController.SendEMail(userEmail, "E-postanızı yandaki linke tıklayarak onaylayabilirsiniz. " + callbackUrl, "Üyelik Onayı");
+                }
+                else
+                {
+                    HomeController.SendEMail(Session["ResendEmail"].ToString(), "E-postanızı yandaki linke tıklayarak onaylayabilirsiniz. " + Session["ConfirmationUrl"].ToString(), "Üyelik Onayı");
+                }
+                ViewBag.Message = "CV Başarıyla Yüklendi";
+                ViewBag.ReturnUrl = "/Account/Login";
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = "Onay E-Postası Gönderimi Sırasında Bir Hata Oluştu.";
+                ViewBag.ReturnUrl = "/User/ResendEmail";
+                ViewBag.Message2 = "/Home";
+            }
+            return PartialView("_UploadUserCV");
         }
     }
 }

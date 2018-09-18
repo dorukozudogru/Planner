@@ -10,8 +10,6 @@
         <div class="brand">
             @*<a href="/Home"><img class="brand-img" src="~/Content/Site/classic/iconbar/assets/images/ci_tech.png" alt="PROJE SEPETİ" style="max-height:55px; max-width:55px"></a>*@
             <h2 class="brand-text">Özgeçmiş Yükle</h2>
-            <h3 class="brand-text">@ViewBag.Message</h3>
-            <a class="btn btn-info" href="@ViewBag.Link">Tıklayın!</a>
         </div>
         @using (Html.BeginForm("UploadUserCV", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
