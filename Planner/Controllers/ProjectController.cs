@@ -216,9 +216,9 @@ namespace Planner.Controllers
 
                 foreach (var item in db.UserProject)
                 {
-                    if (pModel.IsSupported == Convert.ToInt32(ProjectSupportEnum.Supported) &&
-                        pModel.IsApproved == Convert.ToInt32(ProjectApproveEnum.Approved) &&
-                        pModel.IsSupported != Convert.ToInt32(ProjectSupportEnum.Closed))
+                    if (item.IsSupported == Convert.ToInt32(ProjectSupportEnum.Supported) &&
+                        item.IsApproved == Convert.ToInt32(ProjectApproveEnum.Approved) &&
+                        item.IsSupported != Convert.ToInt32(ProjectSupportEnum.Closed))
                     {
                         string _tempUserId = Session["UserId"].ToString();
                         ProjectUserAuthorize authorize = db.ProjectUserAuthorize.FirstOrDefault(a => a.ProjectId == item.ProjectId);
@@ -303,7 +303,7 @@ namespace Planner.Controllers
 
                     foreach (var item in db.UserProject)
                     {
-                        if (pModel.IsApproved == Convert.ToInt32(ProjectApproveEnum.WaitingToApprove))
+                        if (item.IsApproved == Convert.ToInt32(ProjectApproveEnum.WaitingToApprove))
                         {
                             string _tempUserId = Session["UserId"].ToString();
                             ProjectUserAuthorize authorize = db.ProjectUserAuthorize.FirstOrDefault(a => a.ProjectId == item.ProjectId);
@@ -390,8 +390,8 @@ namespace Planner.Controllers
 
                 foreach (var item in db.UserProject)
                 {
-                    if (pModel.IsSupported == Convert.ToInt32(ProjectSupportEnum.WaitingToSupport) &&
-                        pModel.IsSupported != Convert.ToInt32(ProjectSupportEnum.Closed))
+                    if (item.IsSupported == Convert.ToInt32(ProjectSupportEnum.WaitingToSupport) &&
+                        item.IsSupported != Convert.ToInt32(ProjectSupportEnum.Closed))
                     {
                         string _tempUserId = Session["UserId"].ToString();
                         ProjectUserAuthorize authorize = db.ProjectUserAuthorize.FirstOrDefault(a => a.ProjectId == item.ProjectId);

@@ -6254,7 +6254,7 @@
     <Content Include="Views\Project\CreateProject.cshtml" />
     <Content Include="Views\Project\Edit.cshtml" />
     <Content Include="Views\Project\SupportedProjects.cshtml" />
-    <Content Include="Views\Project\WaitingForApprove.cshtml" />
+    <Content Include="Views\Project\WaitingToApprove.cshtml" />
     <Content Include="Views\Project\WaitingForSupport.cshtml" />
     <Content Include="Views\Shared\_LayoutLogged.cshtml" />
     <Content Include="Views\Error\Error500.cshtml" />

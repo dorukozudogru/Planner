@@ -45,8 +45,11 @@
                             <a href="@Url.Action("Download", "Project", new { id = item.ProjectId })" target="_blank" class="btn btn-info"><span class="fa fa-search"></span></a>
                             <h5>Projeyi Destekle</h5>
                             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#approveProject" data-id="@item.ProjectId"><span class="fa fa-thumbs-up"></span></button>
-                            <h5>Projeyi Kapat</h5>
-                            <a href="@Url.Action("CloseSupportedProject", "Project", new { id = item.ProjectId })" class="btn btn-danger"><span class="fa fa-close"></span></a>
+                            @if (Convert.ToBoolean(Session["UserIsAdmin"]) != false)
+                            {
+                                <h5>Projeyi Kapat</h5>
+                                <a href="@Url.Action("CloseSupportedProject", "Project", new { id = item.ProjectId })" class="btn btn-danger"><span class="fa fa-close"></span></a>
+                            }
                         </div>
                     </div>
                 </div>
