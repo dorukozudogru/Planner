@@ -1,0 +1,10 @@
+﻿@model IEnumerable<Planner.Models.User>
+
+@{
+    ViewBag.Title = "UserMenu";
+    Layout = "~/Views/Shared/_LayoutLogged.cshtml";
+}
+
+<div class="container text-center">
+    <h1>Hoşgeldin @Session["UserName"] @Session["UserSurname"]</h1>
+</div>
