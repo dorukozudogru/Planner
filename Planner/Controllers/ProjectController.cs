@@ -66,7 +66,8 @@ namespace Planner.Controllers
                                 FileName = pModel.FileName,
                                 IsApproved = pModel.IsApproved,
                                 IsSupported = pModel.IsSupported,
-                                ProjectDescription = pModel.Description
+                                ProjectDescription = pModel.Description,
+                                ProjectCreationDate = pModel.CreationDate
                             });
                         }
                         else //Authorize proje için null değilse kimlerin görebildiğine bakılmalı
@@ -95,7 +96,8 @@ namespace Planner.Controllers
                                     FileName = pModel.FileName,
                                     IsApproved = pModel.IsApproved,
                                     IsSupported = pModel.IsSupported,
-                                    ProjectDescription = pModel.Description
+                                    ProjectDescription = pModel.Description,
+                                    ProjectCreationDate = pModel.CreationDate
                                 });
                             }
                         }
@@ -154,7 +156,8 @@ namespace Planner.Controllers
                                 FileName = pModel.FileName,
                                 IsApproved = pModel.IsApproved,
                                 IsSupported = pModel.IsSupported,
-                                ProjectDescription = pModel.Description
+                                ProjectDescription = pModel.Description,
+                                ProjectCreationDate = pModel.CreationDate
                             });
                         }
                         else
@@ -183,7 +186,8 @@ namespace Planner.Controllers
                                     FileName = pModel.FileName,
                                     IsApproved = pModel.IsApproved,
                                     IsSupported = pModel.IsSupported,
-                                    ProjectDescription = pModel.Description
+                                    ProjectDescription = pModel.Description,
+                                    ProjectCreationDate = pModel.CreationDate
                                 });
 
                             }
@@ -240,7 +244,8 @@ namespace Planner.Controllers
                                 FileName = pModel.FileName,
                                 IsApproved = pModel.IsApproved,
                                 IsSupported = pModel.IsSupported,
-                                ProjectDescription = pModel.Description
+                                ProjectDescription = pModel.Description,
+                                ProjectCreationDate = pModel.CreationDate
                             });
                         }
                         else
@@ -269,7 +274,8 @@ namespace Planner.Controllers
                                     FileName = pModel.FileName,
                                     IsApproved = pModel.IsApproved,
                                     IsSupported = pModel.IsSupported,
-                                    ProjectDescription = pModel.Description
+                                    ProjectDescription = pModel.Description,
+                                    ProjectCreationDate = pModel.CreationDate
                                 });
                             }
                         }
@@ -325,7 +331,8 @@ namespace Planner.Controllers
                                     FileName = pModel.FileName,
                                     IsApproved = pModel.IsApproved,
                                     IsSupported = pModel.IsSupported,
-                                    ProjectDescription = pModel.Description
+                                    ProjectDescription = pModel.Description,
+                                    ProjectCreationDate = pModel.CreationDate
                                 });
                             }
                             else
@@ -353,7 +360,8 @@ namespace Planner.Controllers
                                         FileName = pModel.FileName,
                                         IsApproved = pModel.IsApproved,
                                         IsSupported = pModel.IsSupported,
-                                        ProjectDescription = pModel.Description
+                                        ProjectDescription = pModel.Description,
+                                        ProjectCreationDate = pModel.CreationDate
                                     });
                                 }
                             }
@@ -413,7 +421,8 @@ namespace Planner.Controllers
                                 FileName = pModel.FileName,
                                 IsApproved = pModel.IsApproved,
                                 IsSupported = pModel.IsSupported,
-                                ProjectDescription = pModel.Description
+                                ProjectDescription = pModel.Description,
+                                ProjectCreationDate = pModel.CreationDate
                             });
                         }
                         else
@@ -442,7 +451,8 @@ namespace Planner.Controllers
                                     FileName = pModel.FileName,
                                     IsApproved = pModel.IsApproved,
                                     IsSupported = pModel.IsSupported,
-                                    ProjectDescription = pModel.Description
+                                    ProjectDescription = pModel.Description,
+                                    ProjectCreationDate = pModel.CreationDate
                                 });
                             }
                         }

@@ -2,7 +2,15 @@
 
 @{
     ViewBag.Title = "Profil";
-    Layout = "~/Views/Shared/_LayoutLogged.cshtml";
+    if (Convert.ToBoolean(Session["UserIsAdmin"]) != true)
+    {
+        Layout = "~/Views/Shared/_LayoutLogged.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    ViewBag.ReturnUrl = "/User/UserProfile";
 }
 
 <div class="panel panel-body container-fluid">

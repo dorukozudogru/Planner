@@ -13,38 +13,33 @@
     ViewBag.ReturnUrl = "/Project/SupportedProjects";
 }
 
-<div class="panel" style="background-color:lightgrey">
-    <header class="panel-heading">
-        <h3 class="panel-title">Desteklenmiş Projeler</h3>
-    </header>
-</div>
-<div class="row">
-    @foreach (var item in Model)
-    {
-        <div class="panel-body panel-info col-md-4">
-            <div class="panel nav-tabs-horizontal">
-                <div class="panel-heading">
-                    <h3 class="panel-title">@Html.DisplayFor(modelItem => item.ProjectName)</h3>
-                </div>
-                <div class="panel-body h-400" data-plugin="scrollable">
-                    <div data-role="container">
-                        <div data-role="content">
-                            <br />
-                            <h5>Proje Adı</h5>
-                            @Html.DisplayFor(modelItem => item.ProjectName)
-                            <h5>Proje Açıklaması</h5>
-                            @Html.DisplayFor(modelItem => item.ProjectDescription)
-                            <h5>Adı Soyadı</h5>
-                            @Html.DisplayFor(modelItem => item.UserName)
-                            @Html.DisplayFor(modelItem => item.UserSurname)
-                            <h5>E-Posta</h5>
-                            @Html.DisplayFor(modelItem => item.UserEMail)
-                            <h5>Projeyi Görüntüle</h5>
-                            <a href="@Url.Action("Download", "Project", new { id = item.ProjectId })" target="_blank" class="btn btn-info"><span class="fa fa-search"></span></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="app-projects">
+    <div class="projects-wrap">
+        <div class="ribbon ribbon-clip animation-slide-left animation-delay-400" style="min-width:200px">
+            <span class="ribbon-inner">Desteklenmiş Projeler</span>
         </div>
-    }
+        <ul class="blocks blocks-100 blocks-lg-5 blocks-md-3 blocks-sm-2" data-plugin="animateList" data-child="li">
+            @foreach (var item in Model)
+            {
+                <li>
+                    <div class="panel" style="min-height:460px">
+                        <figure class="overlay overlay-hover animation-hover">
+                            <img class="caption-figure overlay-figure" src="~/Content/Site/classic/global/photos/placeholder.png" />
+                            <figcaption class="overlay-panel overlay-background overlay-fade text-center vertical-align">
+                                <a href="@Url.Action("Download", "Project", new { id = item.ProjectId })" target="_blank">
+                                    <button type="button" class="btn btn-outline btn-default project-button">Görüntüle</button>
+                                </a>
+                            </figcaption>
+                        </figure>
+                        <div class="time float-right">@item.ProjectCreationDate</div>
+                        <div class="text-truncate">@item.ProjectName</div>
+                        <hr />
+                        <div class="text-truncate">@item.UserName @item.UserSurname</div>
+                        <hr />
+                        <div class="text pre-scrollable" style="max-height:130px">@item.ProjectDescription</div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
 </div>

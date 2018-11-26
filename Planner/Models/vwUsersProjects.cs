@@ -29,6 +29,8 @@ namespace Planner.Models
 
         public string FileName { get; set; }
 
+        public DateTime ProjectCreationDate { get; set; }
+
         [Display(Name = "Onaylandı Mı?")]
         public int IsApproved { get; set; }
 

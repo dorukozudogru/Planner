@@ -162,7 +162,9 @@
     <Compile Include="Enums\ProjectApproveEnum.cs" />
     <Compile Include="Enums\ProjectSupportEnum.cs" />
     <Compile Include="Enums\ProjectTypeChangeEnum.cs" />
+    <Compile Include="Enums\RoleFunctionEnum.cs" />
     <Compile Include="Enums\UserApproveEnum.cs" />
+    <Compile Include="Enums\UserRoleEnum.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -172,10 +174,12 @@
     <Compile Include="Models\Project.cs" />
     <Compile Include="Models\ProjectUserAuthorize.cs" />
     <Compile Include="Models\RejectedProjects.cs" />
+    <Compile Include="Models\Role.cs" />
     <Compile Include="Models\SupportedProjects.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserCV.cs" />
     <Compile Include="Models\UserProject.cs" />
+    <Compile Include="Models\UserRole.cs" />
     <Compile Include="Models\UserSession.cs" />
     <Compile Include="Models\vwAuthorizedUserProject.cs" />
     <Compile Include="Models\vwRejectedProjects.cs" />
@@ -4469,6 +4473,7 @@
     <Content Include="Content\Site\classic\iconbar\assets\images\logo-colored%402x.png" />
     <Content Include="Content\Site\classic\iconbar\assets\images\logo-colored.png" />
     <Content Include="Content\Site\classic\iconbar\assets\images\logo.png" />
+    <Content Include="Content\Site\classic\iconbar\assets\images\pdf.png" />
     <Content Include="Content\Site\classic\iconbar\assets\js\App\Calendar.js" />
     <Content Include="Content\Site\classic\iconbar\assets\js\App\Contacts.js" />
     <Content Include="Content\Site\classic\iconbar\assets\js\App\Documents.js" />
