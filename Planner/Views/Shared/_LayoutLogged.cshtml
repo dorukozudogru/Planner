@@ -33,12 +33,11 @@
     <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/datatables.net-select-bs4/dataTables.select.bootstrap4.css">
     <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/datatables.net-responsive-bs4/dataTables.responsive.bootstrap4.css">
     <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/datatables.net-buttons-bs4/dataTables.buttons.bootstrap4.css">
-    <link href="~/Content/Site/classic/iconbar/assets/examples/css/tables/datatable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/tables/datatable.css" />
     <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/uikit/modals.css">
-    <link rel="stylesheet" href=".~/Content/Site/classic/global/vendor/formvalidation/formValidation.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/formvalidation/formValidation.css">
     <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/forms/validation.css">
     <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/forms/layouts.css">
-    <script src="~/Content/Site/classic/global/vendor/jquery-placeholder/jquery.placeholder.js"></script>
     <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/bootstrap-datepicker/bootstrap-datepicker.css">
     <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/asscrollable/asScrollable.css">
     <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/advanced/scrollable.css">
@@ -53,7 +52,6 @@
     <link rel="stylesheet" href="~/Content/Site/classic/global/fonts/web-icons/web-icons.min.css">
     <link rel="stylesheet" href="~/Content/Site/classic/global/fonts/brand-icons/brand-icons.min.css">
     <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
-    <script src="~/Content/Site/classic/global/js/Plugin/jquery-placeholder.js"></script>
 
     <!--[if lt IE 9]>
     <script src="~/Content/Site/classic/global/vendor/html5shiv/html5shiv.min.js"></script>
@@ -63,6 +61,8 @@
     <script src="~/Content/Site/classic/global/vendor/respond/respond.min.js"></script>
     <![endif]-->
     <!-- Scripts -->
+    <script src="~/Content/Site/classic/global/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+    <script src="~/Content/Site/classic/global/js/Plugin/jquery-placeholder.js"></script>
     <script src="~/Content/Site/classic/global/vendor/breakpoints/breakpoints.js"></script>
     <script>
         Breakpoints();
@@ -131,9 +131,6 @@
                                 <a href="@Url.Action("UserCV", "User", new { loggedUserId = itemId })">
                                     <i class="site-menu-icon fa-file-text" aria-hidden="true"></i>
                                     <span class="site-menu-title">CV Yükle</span>
-                                    <div class="site-menu-badge">
-                                        <span class="badge badge-pill badge-success"><!--Buraya Kaç Tane Olduğu Yazılabilir--></span>
-                                    </div>
                                 </a>
                             </li>
                         </ul>
@@ -149,9 +146,6 @@
                                 <a href="/User/UserMenu">
                                     <i class="site-menu-icon fa-home" aria-hidden="true"></i>
                                     <span class="site-menu-title">Ana Sayfa</span>
-                                    <div class="site-menu-badge">
-                                        <span class="badge badge-pill badge-success"></span>
-                                    </div>
                                 </a>
                             </li>
                             <li class="site-menu-item has-sub">
@@ -176,27 +170,18 @@
                                 <a href="~/Project/CreateProject">
                                     <i class="site-menu-icon wb-user" aria-hidden="true"></i>
                                     <span class="site-menu-title">Proje Yükle</span>
-                                    <div class="site-menu-badge">
-                                        <span class="badge badge-pill badge-success"></span>
-                                    </div>
                                 </a>
                             </li>
                             <li class="site-menu-item has-sub">
                                 <a href="@Url.Action("UserCV", "User", new { loggedUserId = itemId })">
                                     <i class="site-menu-icon wb-library" aria-hidden="true"></i>
-                                    <span class="site-menu-title">CV'm</span>
-                                    <div class="site-menu-badge">
-                                        <span class="badge badge-pill badge-success"></span>
-                                    </div>
+                                    <span class="site-menu-title">CV</span>
                                 </a>
                             </li>
                             <li class="site-menu-item has-sub">
                                 <a href="javascript:void(0)">
                                     <i class="site-menu-icon fa-file-text" aria-hidden="true"></i>
                                     <span class="site-menu-title">Projeler</span>
-                                    <div class="site-menu-badge">
-                                        <span class="badge badge-pill badge-success"><!--Buraya Kaç Tane Olduğu Yazılabilir--></span>
-                                    </div>
                                 </a>
                                 <ul class="site-menu-sub">
                                     <li class="site-menu-item">
@@ -215,7 +200,6 @@
                     </div>
                 </div>
             }
-
         }
     }
     <!-------------------------------------------------------------------------------------------------------->
@@ -242,7 +226,7 @@
     <script src="~/Content/Site/classic/global/vendor/slidepanel/jquery-slidePanel.js"></script>
     <script src="~/Content/Site/classic/global/vendor/skycons/skycons.js"></script>
     <script src="~/Content/Site/classic/global/vendor/chartist/chartist.min.js"></script>
-    <script src="~/Content/Site/classic/global/vendor/chartist-plugin-tooltip/chartist-plugin-tooltip.js"></script>
+    @*<script src="~/Content/Site/classic/global/vendor/chartist-plugin-tooltip/chartist-plugin-tooltip.js"></script>*@
     <script src="~/Content/Site/classic/global/vendor/aspieprogress/jquery-asPieProgress.min.js"></script>
     <script src="~/Content/Site/classic/global/vendor/jvectormap/jquery-jvectormap.min.js"></script>
     <script src="~/Content/Site/classic/global/vendor/jvectormap/maps/jquery-jvectormap-au-mill-en.js"></script>
@@ -313,7 +297,6 @@
     <script src="~/Content/Site/classic/iconbar/assets/examples/js/forms/uploads.js"></script>
     <script src="~/Content/Site/classic/global/js/Plugin/asscrollable.js"></script>
     <script src="~/Content/Site/classic/iconbar/assets/js/App/Projects.js"></script>
-    <script src="~/Content/Site/classic/iconbar/assets/examples/js/apps/projects.js"></script>
 
     <script src="~/Content/Site/classic/iconbar/assets/examples/js/advanced/scrollable.js"></script>
 

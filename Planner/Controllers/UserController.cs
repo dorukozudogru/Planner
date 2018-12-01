@@ -638,7 +638,7 @@ namespace Planner.Controllers
                 {
                     HomeController.SendEMail(Session["ResendEmail"].ToString(), "E-postanızı yandaki linke tıklayarak onaylayabilirsiniz. " + Session["ConfirmationUrl"].ToString(), "Üyelik Onayı");
                 }
-                ViewBag.Message = "CV Başarıyla Yüklendi";
+                ViewBag.Message = "Onaylama E-Postası Başarıyla Gönderildi.";
                 ViewBag.ReturnUrl = "/Account/Login";
             }
             catch (Exception ex)

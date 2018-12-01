@@ -33,7 +33,7 @@
                                             <a href="@Url.Action("GiveAuthorizeToUserForProject", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="dropdown-item">Projeyi Kimler Görsün?</a>
                                             <a href="@Url.Action("ProjectAuthorizedUser", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="dropdown-item">Projeyi Görenleri Düzenle</a>
                                             <a href="@Url.Action("ApproveProject", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="dropdown-item">Projeyi Onayla</a>
-                                            <button type="button" class="btn dropdown-item" data-toggle="modal" data-target="#rejectProject" data-id="@item.ProjectId">Projeyi Reddet</button>
+                                            <button type="button" class="dropdown-item btn" data-toggle="modal" data-target="#approveProject" data-id="@item.ProjectId">Projeyi Reddet</button>
                                         </div>
                                     </div>
                                     <button type="button" class="btn btn-icon btn-pure btn-default" title="" data-tag="project-delete">
@@ -93,7 +93,7 @@
 
 @using (Html.BeginForm("RejectProject", "Project", FormMethod.Post, FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    <div class="modal fade" id="rejectProject" tabindex="-1" role="dialog" aria-labelledby="rejectProject" aria-hidden="true">
+    <div class="modal fade" id="approveProject" tabindex="-1" role="dialog" aria-labelledby="approveProject" aria-hidden="true">
         <div class="modal-dialog modal-center modal-simple" role="document">
             <div class="modal-content">
                 <div class="modal-header">

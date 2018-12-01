@@ -7,36 +7,38 @@
 }
 
 <div class="container text-center">
-    <section class="text-dark" id="mycv">
+    <section class="text-dark">
+        <div class="ribbon ribbon-clip animation-slide-left animation-delay-400" style="min-width:200px">
+            <span class="ribbon-inner">Özgeçmişim</span>
+        </div>
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h2 class="section-heading">Özgeçmişim</h2>
-                    <hr class="my-4">
+                    <h2 class="section-heading"></h2>
                 </div>
             </div>
         </div>
         <div class="card mb-3">
             <div class="card-body">
-                <div class="table-responsive" style="max-height:240px">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <div class="table-responsive">
+                    <table class="table" id="dataTable" width="100%" cellspacing="0">
                         @if (Convert.ToBoolean(Session["UserIsCvUploaded"]) == true)
                         {
                             foreach (var item in Model)
                             {
                                 <thead>
                                     <tr>
-                                        <th>Görüntüle</th>
-                                        <th>Güncelle</th>
+                                        <th class="h5" style="max-width:50px">Görüntüle</th>
+                                        <th class="h5" style="max-width:50px">Güncelle</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td style="vertical-align:middle">
-                                            <a href="@Url.Action("Download", "User", new { id = item.UserCVId })" target="_blank" class="btn btn-info"><span class="fa fa-search"></span></a>
+                                        <td>
+                                            <a href="@Url.Action("Download", "User", new { id = item.UserCVId })" target="_blank" class="btn btn-info btn-block"><span class="fa fa-search"></span></a>
                                         </td>
                                         <td>
-                                            <a class="js-scroll-trigger btn btn-danger text-white" data-target="#uploadCv" data-toggle="modal"><span class="icon wb-download"></span></a>
+                                            <a class="js-scroll-trigger btn btn-danger btn-block text-white" data-target="#uploadCv" data-toggle="modal"><span class="fa fa-download"></span></a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -88,9 +90,6 @@
                                 </form>
                             </div>
                         </div>
-                        @*<div class="modal-footer">
-                                <button class="btn btn-secondary col-md-auto" type="button" data-dismiss="modal">Vazgeç</button>
-                            </div>*@
                     </div>
                 </div>
             </div>

@@ -36,21 +36,21 @@ namespace Planner.Controllers
         public static void SendEMail(string email, string email_body, string email_subject)
         {
             MailMessage msg = new MailMessage();
-            SmtpClient smtp = new SmtpClient("mail.citech.com.tr");
-            //SmtpClient smtp = new SmtpClient("smtp.gmail.com");
+            //SmtpClient smtp = new SmtpClient("mail.citech.com.tr");
+            SmtpClient smtp = new SmtpClient("smtp.gmail.com");
 
-            //smtp.Port = 587;
-            smtp.EnableSsl = false;
-            //smtp.Host = "smtp.gmail.com";
-            //smtp.EnableSsl = true;
+            smtp.Port = 587;
+            //smtp.EnableSsl = false;
+            smtp.Host = "smtp.gmail.com";
+            smtp.EnableSsl = true;
             smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
             smtp.UseDefaultCredentials = false;
             smtp.Credentials = null;
-            smtp.Credentials = new System.Net.NetworkCredential("projesepeti@citech.com.tr", "qwerty11");
-            //smtp.Credentials = new System.Net.NetworkCredential("dorukozudogru.oglog@gmail.com", "doruk.,.,23");
+            //smtp.Credentials = new System.Net.NetworkCredential("projesepeti@citech.com.tr", "qwerty11");
+            smtp.Credentials = new System.Net.NetworkCredential("dorukozudogru.oplog@gmail.com", "doruk.,.,23");
 
-            msg.From = new MailAddress("projesepeti@citech.com.tr", "Proje Sepeti");
-            //msg.From = new MailAddress("dorukozudogru@gmail.com", "Proje Sepeti");
+            //msg.From = new MailAddress("projesepeti@citech.com.tr", "Proje Sepeti");
+            msg.From = new MailAddress("dorukozudogru.oplog@gmail.com", "Proje Sepeti");
             msg.To.Add(email);
             msg.Subject = email_subject;
             msg.Body = email_body;

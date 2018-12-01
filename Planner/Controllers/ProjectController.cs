@@ -422,7 +422,8 @@ namespace Planner.Controllers
                                 IsApproved = pModel.IsApproved,
                                 IsSupported = pModel.IsSupported,
                                 ProjectDescription = pModel.Description,
-                                ProjectCreationDate = pModel.CreationDate
+                                ProjectCreationDate = pModel.CreationDate,
+                                SupportRequest = pModel.SupportRequest
                             });
                         }
                         else
