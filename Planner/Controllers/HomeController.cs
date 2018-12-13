@@ -59,9 +59,9 @@ namespace Planner.Controllers
 
         public static bool ControlCitizenshipNo(string citizenshipNo)
         {
-            bool returnvalue;
             try
             {
+                bool returnvalue;
                 if (citizenshipNo.Length == 11)
                 {
                     Int64 atcno, btcno, tcno;
@@ -91,12 +91,15 @@ namespace Planner.Controllers
                     q2 = ((10 - (((((c2 + c4 + c6 + c8) + q1) * 3) + (c1 + c3 + c5 + c7 + c9)) % 10)) % 10);
                     return returnvalue = ((btcno * 100) + (q1 * 10) + q2 == tcno);
                 }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception ex)
             {
-
+                return false;
             }
-            return false;
         }
     }
 }

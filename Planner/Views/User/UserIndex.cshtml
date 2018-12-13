@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Planner.Models.User>
+﻿@model IEnumerable<Planner.DataAccess.Users>
 
 @{
     ViewBag.Title = "Tüm Kullanıcılar";
@@ -59,7 +59,7 @@
                             }
                             @if (item.IsAdmin != true)
                             {
-                                <td><a href="@Url.Action("ChangeUserToAdmin", "User", new { id = item.Id, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-warning">Admin Yap</a></td>
+                                <td><a href="@Url.Action("AssignUserAsAdmin", "User", new { id = item.Id, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-warning">Admin Yap</a></td>
                             }
                             else
                             {

@@ -8,9 +8,10 @@ namespace Planner.Enums
     public enum ProjectTypeChangeEnum
     {
         NotChanged = 0,
-        ChangeAsApproved = 1,
-        ChangeAsNotApproved = 2,
-        ChangeAsSupported = 3,
-        ChangeAsNotSupported = 4
+        ChangedAsApproved = 1,
+        ChangedAsNotApproved = 2,
+        ChangedAsSupported = 3,
+        ChangedAsNotSupported = 4,
+        ChangedAsClosed = 5
     }
 }

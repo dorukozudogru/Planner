@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Planner.Models.vwAuthorizedUserProject>
+﻿@model IEnumerable<Planner.DataAccess.vwAuthorizedUserProject>
 
 @{
     ViewBag.Title = "Projeyi Kimler Görebiliyor";
@@ -11,6 +11,7 @@
         <div class="panel-body">
             <div class="example-wrap">
                 <h4 class="example-title">Yetkili Kullanıcılar</h4>
+                <h6 class="note"><small>(Lütfen silmek istediklerinizi seçiniz)</small></h6>
                 <div>
                     <table class="table table-hover" data-plugin="selectable" data-row-selectable="true">
                         <thead>
@@ -50,7 +51,7 @@
                     </table>
                 </div>
                 <div>
-                    <input type="submit" class="btn btn-success" value="Seçili Olmayanları Sil" />
+                    <input type="submit" class="btn btn-success" value="Seçili Olanları Sil" />
                 </div>
             </div>
         </div>

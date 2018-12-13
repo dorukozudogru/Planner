@@ -3,15 +3,13 @@ using System.Linq;
 using System.Web.Mvc;
 using Planner.Enums;
 using Planner.Helpers;
-using Planner.Models;
+using Planner.DataAccess;
 
 namespace Planner.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
-        private DBContext db = new DBContext();
-
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
@@ -22,7 +20,7 @@ namespace Planner.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(User model)
+        public ActionResult Login(Users model)
         {
             if (string.IsNullOrEmpty(model.EMail) || string.IsNullOrEmpty(model.Password))
             {
@@ -32,12 +30,13 @@ namespace Planner.Controllers
             else
             {
                 string encPass = HomeController.Encrypt(model.Password);
-                var loginUser = db.User.FirstOrDefault(a => a.EMail == model.EMail);
+                //var loginUser = db.User.FirstOrDefault(a => a.EMail == model.EMail);
+                var loginUser = BasicRepository<Users>.FirstOrDefault("WHERE EMail = @0", model.EMail);
                 if (loginUser != null)
                 {
-                    if (loginUser.IsActive)
+                    if (loginUser.IsActive == true)
                     {
-                        if (loginUser.IsEmailVerified)
+                        if (loginUser.IsEmailVerified == true)
                         {
                             if (loginUser.EMail != model.EMail || loginUser.Password != encPass)
                             {
@@ -46,7 +45,8 @@ namespace Planner.Controllers
                             }
                             else
                             {
-                                var loginUserCV = db.UserCV.FirstOrDefault(a => a.UserId == loginUser.Id);
+                                //var loginUserCV = db.UserCV.FirstOrDefault(a => a.UserId == loginUser.Id);
+                                var loginUserCV = BasicRepository<UserCV>.FirstOrDefault("WHERE UserId = @0", loginUser.Id);
 
                                 if (loginUser.IsApproved == Convert.ToInt32(UserApproveEnum.WaitingToApprove))
                                 {
@@ -136,7 +136,7 @@ namespace Planner.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Register(User model)
+        public ActionResult Register(Users model)
         {
             try
             {
@@ -156,7 +156,9 @@ namespace Planner.Controllers
                 //}
 
                 //Yalnızca Kimlik No Kontrolü
-                User user = db.User.FirstOrDefault(a => a.EMail == model.EMail);
+                //User user = db.User.FirstOrDefault(a => a.EMail == model.EMail);
+                var user = BasicRepository<Users>.FirstOrDefault("WHERE EMail = @0", model.EMail);
+
                 if (user == null)
                 {
                     bool controlCitizenshipno = HomeController.ControlCitizenshipNo(model.CitizenshipNo);
@@ -188,10 +190,14 @@ namespace Planner.Controllers
                         {
                             model.School = "";
                         }
-                        db.User.Add(model);
-                        db.SaveChanges();
+                        model.Code = "";
+                        BasicRepository<Users>.Insert(model);
+                        //db.User.Add(model);
+                        //db.SaveChanges();
 
-                        var registeredUser = db.User.FirstOrDefault(a => a.EMail == model.EMail);
+                        //var registeredUser = db.User.FirstOrDefault(a => a.EMail == model.EMail);
+                        var registeredUser = BasicRepository<Users>.FirstOrDefault("WHERE EMail = @0", model.EMail);
+
                         Session["UserCitizenshipNo"] = registeredUser.CitizenshipNo.ToString();
                         if (Request.UrlReferrer.AbsoluteUri.ToString().Contains("UserIndex"))
                         {
@@ -228,7 +234,9 @@ namespace Planner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ForgotPassword(string email)
         {
-            var user = db.User.FirstOrDefault(a => a.EMail == email);
+            //var user = db.User.FirstOrDefault(a => a.EMail == email);
+            var user = BasicRepository<Users>.FirstOrDefault("WHERE EMail = @0", email);
+
             if (user == null)
             {
                 ViewBag.Message = "E-Postanızı Hatalı Girdiniz";
@@ -239,11 +247,16 @@ namespace Planner.Controllers
             var rngCrypto = new System.Security.Cryptography.RNGCryptoServiceProvider();
             rngCrypto.GetBytes(resetCode);
             string code = Convert.ToBase64String(resetCode); //Aslında kullanılmıyor ama link dolu görünsün :)
+            user.Code = code;
+            BasicRepository<Users>.Update(user);
 
             var callbackUrl = Url.Action("ResetPassword", "Account", new { code, userId = user.Id }, protocol: Request.Url.Scheme);
             HomeController.SendEMail(user.EMail, "Şifrenizi yandaki linke tıklayarak değiştirebilirsiniz. " + callbackUrl, "Şifre Sıfırlama");
             user.Password = HomeController.Encrypt(Guid.NewGuid().ToString()); // Şifreyi rastgele bir şey yaptı.
-            db.SaveChanges();
+
+            BasicRepository<Users>.Update(user);
+
+            //db.SaveChanges();
             ViewBag.Message = "Şifre Sıfırlama Kodu Gönderilmiştir";
             return View();
         }
@@ -257,16 +270,20 @@ namespace Planner.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult ResetPassword(string email, string password)
+        public ActionResult ResetPassword(string Code, string email, string password)
         {
-            var user = db.User.FirstOrDefault(a => a.EMail == email);
+            //var user = db.User.FirstOrDefault(a => a.EMail == email);
+            var user = BasicRepository<Users>.FirstOrDefault("WHERE EMail = @0", email);
+
             if (user == null)
             {
                 ViewBag.Message = "E-Postanızı Hatalı Girdiniz";
                 return View();
             }
             user.Password = HomeController.Encrypt(password);
-            db.SaveChanges();
+            BasicRepository<Users>.Update(user);
+
+            //db.SaveChanges();
             ViewBag.Message = "Şifreniz Değiştirilmiştir";
             return View();
         }
@@ -274,9 +291,13 @@ namespace Planner.Controllers
         [AllowAnonymous]
         public ActionResult VerifyEmail(string userId)
         {
-            var user = db.User.FirstOrDefault(a => a.Id == userId);
+            //var user = db.User.FirstOrDefault(a => a.Id == userId);
+            var user = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", userId);
+
             user.IsEmailVerified = true;
-            db.SaveChanges();
+            BasicRepository<Users>.Update(user);
+
+            //db.SaveChanges();
             return View();
         }
     }

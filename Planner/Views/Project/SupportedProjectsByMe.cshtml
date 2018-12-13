@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Planner.DataAccess.vwUsersProject>
 
 @{
-    ViewBag.Title = "Desteklenmiş Projeler";
+    ViewBag.Title = "Desteklediğim Projeler";
     if (Convert.ToBoolean(Session["UserIsAdmin"]) != true)
     {
         Layout = "~/Views/Shared/_LayoutLogged.cshtml";
@@ -10,13 +10,13 @@
     {
         Layout = "~/Views/Shared/_Layout.cshtml";
     }
-    ViewBag.ReturnUrl = "/Project/SupportedProjects";
+    ViewBag.ReturnUrl = "/Project/ApprovedProjects";
 }
 
 <div class="app-projects">
     <div class="projects-wrap">
         <div class="ribbon ribbon-clip animation-slide-left animation-delay-400" style="min-width:200px">
-            <span class="ribbon-inner">Desteklenmiş Projeler</span>
+            <span class="ribbon-inner">Desteklediğim Projeler</span>
         </div>
         <ul class="blocks blocks-100 blocks-lg-5 blocks-md-3 blocks-sm-2" data-plugin="animateList" data-child="li">
             @foreach (var item in Model)
@@ -37,6 +37,14 @@
                         <div class="text-truncate">@item.Name @item.Surname</div>
                         <hr />
                         <div class="text pre-scrollable" style="max-height:130px">@item.Description</div>
+                        <hr />
+                        <div class="text pre-scrollable" style="max-height:130px">@item.SupportRequest</div>
+                        <hr />
+                        <div class="text pre-scrollable" style="max-height:130px">@item.SupportDate</div>
+                        <hr />
+                        <div class="text pre-scrollable" style="max-height:130px">@item.SupportRequirements</div>
+                        <hr />
+                        <div class="text pre-scrollable" style="max-height:130px">@item.SupportValue</div>
                     </div>
                 </li>
             }

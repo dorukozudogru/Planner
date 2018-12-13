@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Planner.Models.vwUsersProjects>
+﻿@model IEnumerable<Planner.DataAccess.vwUsersProject>
 @{
     ViewBag.Title = "Firma";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -60,9 +60,9 @@
                             <div class="media">
                                 <img class="d-flex mr-3 rounded-circle" src="~/Content/Site/classic/iconbar/assets/images/pdf.png" style="max-height:45px;max-width:45px" />
                                 <div class="media-body">
-                                    <strong>@item.UserName @item.UserSurname</strong> yeni bir proje yükledi.
+                                    <strong>@item.Name @item.Surname</strong> yeni bir proje yükledi.
                                     <br />Proje adı: <strong>@item.ProjectName</strong>.
-                                    <div class="text-muted smaller">@item.ProjectCreationDate</div>
+                                    <div class="text-muted smaller">@item.CreationDate</div>
                                 </div>
                             </div>
                         </a>

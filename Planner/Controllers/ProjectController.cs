@@ -6,16 +6,14 @@ using System.Web.Mvc;
 using System.Linq;
 using Planner.Enums;
 using Planner.Helpers;
-using Planner.Models;
 using System.Net.Mime;
+using Planner.DataAccess;
 
 namespace Planner.Controllers
 {
     [UserAuthorize]
     public class ProjectController : Controller
     {
-        DBContext db = new DBContext();
-
         public ActionResult Index()
         {
             return View();
@@ -33,46 +31,46 @@ namespace Planner.Controllers
             {
                 try
                 {
-                    User userModel = new User();
-                    List<User> lstUser = new List<User>();
+                    Users userModel = new Users();
+                    List<Users> lstUser = new List<Users>();
 
                     Project pModel = new Project();
                     List<Project> lstProject = new List<Project>();
 
                     UserProject upModel = new UserProject();
-                    List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+                    List<vwUsersProject> vwLstUp = new List<vwUsersProject>();
 
                     bool userAuthorized = false;
 
-                    foreach (var item in db.UserProject)
+                    foreach (var item in BasicRepository<UserProject>.Fetch())
                     {
                         string _tempUserId = Session["UserId"].ToString();
-                        ProjectUserAuthorize authorize = db.ProjectUserAuthorize.FirstOrDefault(a => a.ProjectId == item.ProjectId);
+                        var authorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE ProjectId = @0", item.ProjectId);
                         if (authorize == null) //Authorize proje için null gelmişse herkes görebilmeli
                         {
                             int upId = item.Id;
-                            upModel = db.UserProject.First(z => z.Id == upId);
-                            pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                            userModel = db.User.First(z => z.Id == upModel.UserId);
-                            vwLstUp.Add(new vwUsersProjects
+                            upModel = BasicRepository<UserProject>.FirstOrDefault("WHERE Id = @0", upId);
+                            pModel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", upModel.ProjectId);
+                            userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", upModel.UserId);
+                            vwLstUp.Add(new vwUsersProject
                             {
-                                UserId = userModel.Id,
-                                UserName = userModel.Name,
-                                UserSurname = userModel.Surname,
-                                UserEMail = userModel.EMail,
-                                UserCitizenshipNo = userModel.CitizenshipNo,
+                                Id = userModel.Id,
+                                Name = userModel.Name,
+                                Surname = userModel.Surname,
+                                EMail = userModel.EMail,
+                                CitizenshipNo = userModel.CitizenshipNo,
                                 ProjectId = pModel.Id,
                                 ProjectName = pModel.Name,
+                                Description = pModel.Description,
                                 FileName = pModel.FileName,
+                                CreationDate = pModel.CreationDate,
                                 IsApproved = pModel.IsApproved,
-                                IsSupported = pModel.IsSupported,
-                                ProjectDescription = pModel.Description,
-                                ProjectCreationDate = pModel.CreationDate
+                                IsSupported = pModel.IsSupported
                             });
                         }
                         else //Authorize proje için null değilse kimlerin görebildiğine bakılmalı
                         {
-                            authorize = db.ProjectUserAuthorize.FirstOrDefault(a => a.AuthorizedUserId == _tempUserId && a.ProjectId == item.ProjectId);
+                            authorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE AuthorizedUserId = @0 AND ProjectId = @1", _tempUserId, item.ProjectId);
                             if (authorize == null)
                                 userAuthorized = false;
                             else if (authorize != null)
@@ -81,23 +79,23 @@ namespace Planner.Controllers
                             if (userAuthorized)
                             {
                                 int upId = item.Id;
-                                upModel = db.UserProject.First(z => z.Id == upId);
-                                pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                                userModel = db.User.First(z => z.Id == upModel.UserId);
-                                vwLstUp.Add(new vwUsersProjects
+                                upModel = BasicRepository<UserProject>.FirstOrDefault("WHERE Id = @0", upId);
+                                pModel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", upModel.ProjectId);
+                                userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", upModel.UserId);
+                                vwLstUp.Add(new vwUsersProject
                                 {
-                                    UserId = userModel.Id,
-                                    UserName = userModel.Name,
-                                    UserSurname = userModel.Surname,
-                                    UserEMail = userModel.EMail,
-                                    UserCitizenshipNo = userModel.CitizenshipNo,
+                                    Id = userModel.Id,
+                                    Name = userModel.Name,
+                                    Surname = userModel.Surname,
+                                    EMail = userModel.EMail,
+                                    CitizenshipNo = userModel.CitizenshipNo,
                                     ProjectId = pModel.Id,
                                     ProjectName = pModel.Name,
+                                    Description = pModel.Description,
                                     FileName = pModel.FileName,
+                                    CreationDate = pModel.CreationDate,
                                     IsApproved = pModel.IsApproved,
-                                    IsSupported = pModel.IsSupported,
-                                    ProjectDescription = pModel.Description,
-                                    ProjectCreationDate = pModel.CreationDate
+                                    IsSupported = pModel.IsSupported
                                 });
                             }
                         }
@@ -106,7 +104,7 @@ namespace Planner.Controllers
                 }
                 catch (Exception ex)
                 {
-                    List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+                    List<vwUsersProject> vwLstUp = new List<vwUsersProject>();
                     return View(vwLstUp);
                 }
             }
@@ -120,49 +118,49 @@ namespace Planner.Controllers
         {
             try
             {
-                User userModel = new User();
-                List<User> lstUser = new List<User>();
+                Users userModel = new Users();
+                List<Users> lstUser = new List<Users>();
 
                 Project pModel = new Project();
                 List<Project> lstProject = new List<Project>();
 
                 UserProject upModel = new UserProject();
-                List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+                List<vwUsersProject> vwLstUp = new List<vwUsersProject>();
 
                 bool userAuthorized = true;
 
-                foreach (var item in db.UserProject)
+                foreach (var item in BasicRepository<UserProject>.Fetch())
                 {
                     if (item.IsApproved == Convert.ToInt32(ProjectApproveEnum.Approved) &&
                         item.IsSupported == Convert.ToInt32(ProjectSupportEnum.NotSupported))
                     {
                         string _tempUserId = Session["UserId"].ToString();
-                        ProjectUserAuthorize authorize = db.ProjectUserAuthorize.FirstOrDefault(a => a.ProjectId == item.ProjectId);
+                        var authorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE ProjectId = @0", item.ProjectId);
                         if (authorize == null)
                         {
                             int upId = item.Id;
-                            upModel = db.UserProject.First(z => z.Id == upId);
-                            pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                            userModel = db.User.First(z => z.Id == upModel.UserId);
-                            vwLstUp.Add(new vwUsersProjects
+                            upModel = BasicRepository<UserProject>.FirstOrDefault("WHERE Id = @0", upId);
+                            pModel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", upModel.ProjectId);
+                            userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", upModel.UserId);
+                            vwLstUp.Add(new vwUsersProject
                             {
-                                UserId = userModel.Id,
-                                UserName = userModel.Name,
-                                UserSurname = userModel.Surname,
-                                UserEMail = userModel.EMail,
-                                UserCitizenshipNo = userModel.CitizenshipNo,
+                                Id = userModel.Id,
+                                Name = userModel.Name,
+                                Surname = userModel.Surname,
+                                EMail = userModel.EMail,
+                                CitizenshipNo = userModel.CitizenshipNo,
                                 ProjectId = pModel.Id,
                                 ProjectName = pModel.Name,
+                                Description = pModel.Description,
                                 FileName = pModel.FileName,
+                                CreationDate = pModel.CreationDate,
                                 IsApproved = pModel.IsApproved,
-                                IsSupported = pModel.IsSupported,
-                                ProjectDescription = pModel.Description,
-                                ProjectCreationDate = pModel.CreationDate
+                                IsSupported = pModel.IsSupported
                             });
                         }
                         else
                         {
-                            authorize = db.ProjectUserAuthorize.FirstOrDefault(a => a.AuthorizedUserId == _tempUserId && a.ProjectId == item.ProjectId);
+                            authorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE AuthorizedUserId = @0 AND ProjectId = @1", _tempUserId, item.ProjectId);
                             if (authorize == null)
                                 userAuthorized = false;
                             else if (authorize != null)
@@ -171,25 +169,24 @@ namespace Planner.Controllers
                             if (userAuthorized)
                             {
                                 int upId = item.Id;
-                                upModel = db.UserProject.First(z => z.Id == upId);
-                                pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                                userModel = db.User.First(z => z.Id == upModel.UserId);
-                                vwLstUp.Add(new vwUsersProjects
+                                upModel = BasicRepository<UserProject>.FirstOrDefault("WHERE Id = @0", upId);
+                                pModel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", upModel.ProjectId);
+                                userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", upModel.UserId);
+                                vwLstUp.Add(new vwUsersProject
                                 {
-                                    UserId = userModel.Id,
-                                    UserName = userModel.Name,
-                                    UserSurname = userModel.Surname,
-                                    UserEMail = userModel.EMail,
-                                    UserCitizenshipNo = userModel.CitizenshipNo,
+                                    Id = userModel.Id,
+                                    Name = userModel.Name,
+                                    Surname = userModel.Surname,
+                                    EMail = userModel.EMail,
+                                    CitizenshipNo = userModel.CitizenshipNo,
                                     ProjectId = pModel.Id,
                                     ProjectName = pModel.Name,
+                                    Description = pModel.Description,
                                     FileName = pModel.FileName,
+                                    CreationDate = pModel.CreationDate,
                                     IsApproved = pModel.IsApproved,
-                                    IsSupported = pModel.IsSupported,
-                                    ProjectDescription = pModel.Description,
-                                    ProjectCreationDate = pModel.CreationDate
+                                    IsSupported = pModel.IsSupported
                                 });
-
                             }
                         }
                     }
@@ -198,7 +195,7 @@ namespace Planner.Controllers
             }
             catch (Exception ex)
             {
-                List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+                List<vwUsersProject> vwLstUp = new List<vwUsersProject>();
                 return View(vwLstUp);
             }
         }
@@ -207,50 +204,50 @@ namespace Planner.Controllers
         {
             try
             {
-                User userModel = new User();
-                List<User> lstUser = new List<User>();
+                Users userModel = new Users();
+                List<Users> lstUser = new List<Users>();
 
                 Project pModel = new Project();
                 List<Project> lstProject = new List<Project>();
 
                 UserProject upModel = new UserProject();
-                List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+                List<vwUsersProject> vwLstUp = new List<vwUsersProject>();
 
                 bool userAuthorized = true;
 
-                foreach (var item in db.UserProject)
+                foreach (var item in BasicRepository<UserProject>.Fetch())
                 {
                     if (item.IsSupported == Convert.ToInt32(ProjectSupportEnum.Supported) &&
                         item.IsApproved == Convert.ToInt32(ProjectApproveEnum.Approved) &&
                         item.IsSupported != Convert.ToInt32(ProjectSupportEnum.Closed))
                     {
                         string _tempUserId = Session["UserId"].ToString();
-                        ProjectUserAuthorize authorize = db.ProjectUserAuthorize.FirstOrDefault(a => a.ProjectId == item.ProjectId);
+                        var authorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE ProjectId = @0", item.ProjectId);
                         if (authorize == null)
                         {
                             int upId = item.Id;
-                            upModel = db.UserProject.First(z => z.Id == upId);
-                            pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                            userModel = db.User.First(z => z.Id == upModel.UserId);
-                            vwLstUp.Add(new vwUsersProjects
+                            upModel = BasicRepository<UserProject>.FirstOrDefault("WHERE Id = @0", upId);
+                            pModel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", upModel.ProjectId);
+                            userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", upModel.UserId);
+                            vwLstUp.Add(new vwUsersProject
                             {
-                                UserId = userModel.Id,
-                                UserName = userModel.Name,
-                                UserSurname = userModel.Surname,
-                                UserEMail = userModel.EMail,
-                                UserCitizenshipNo = userModel.CitizenshipNo,
+                                Id = userModel.Id,
+                                Name = userModel.Name,
+                                Surname = userModel.Surname,
+                                EMail = userModel.EMail,
+                                CitizenshipNo = userModel.CitizenshipNo,
                                 ProjectId = pModel.Id,
                                 ProjectName = pModel.Name,
+                                Description = pModel.Description,
                                 FileName = pModel.FileName,
+                                CreationDate = pModel.CreationDate,
                                 IsApproved = pModel.IsApproved,
-                                IsSupported = pModel.IsSupported,
-                                ProjectDescription = pModel.Description,
-                                ProjectCreationDate = pModel.CreationDate
+                                IsSupported = pModel.IsSupported
                             });
                         }
                         else
                         {
-                            authorize = db.ProjectUserAuthorize.FirstOrDefault(a => a.AuthorizedUserId == _tempUserId && a.ProjectId == item.ProjectId);
+                            authorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE AuthorizedUserId = @0 AND ProjectId = @1", _tempUserId, item.ProjectId);
                             if (authorize == null)
                                 userAuthorized = false;
                             else if (authorize != null)
@@ -259,23 +256,23 @@ namespace Planner.Controllers
                             if (userAuthorized)
                             {
                                 int upId = item.Id;
-                                upModel = db.UserProject.First(z => z.Id == upId);
-                                pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                                userModel = db.User.First(z => z.Id == upModel.UserId);
-                                vwLstUp.Add(new vwUsersProjects
+                                upModel = BasicRepository<UserProject>.FirstOrDefault("WHERE Id = @0", upId);
+                                pModel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", upModel.ProjectId);
+                                userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", upModel.UserId);
+                                vwLstUp.Add(new vwUsersProject
                                 {
-                                    UserId = userModel.Id,
-                                    UserName = userModel.Name,
-                                    UserSurname = userModel.Surname,
-                                    UserEMail = userModel.EMail,
-                                    UserCitizenshipNo = userModel.CitizenshipNo,
+                                    Id = userModel.Id,
+                                    Name = userModel.Name,
+                                    Surname = userModel.Surname,
+                                    EMail = userModel.EMail,
+                                    CitizenshipNo = userModel.CitizenshipNo,
                                     ProjectId = pModel.Id,
                                     ProjectName = pModel.Name,
+                                    Description = pModel.Description,
                                     FileName = pModel.FileName,
+                                    CreationDate = pModel.CreationDate,
                                     IsApproved = pModel.IsApproved,
-                                    IsSupported = pModel.IsSupported,
-                                    ProjectDescription = pModel.Description,
-                                    ProjectCreationDate = pModel.CreationDate
+                                    IsSupported = pModel.IsSupported
                                 });
                             }
                         }
@@ -285,7 +282,7 @@ namespace Planner.Controllers
             }
             catch (Exception ex)
             {
-                List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+                List<vwUsersProject> vwLstUp = new List<vwUsersProject>();
                 return View(vwLstUp);
             }
         }
@@ -296,48 +293,48 @@ namespace Planner.Controllers
             {
                 try
                 {
-                    User userModel = new User();
-                    List<User> lstUser = new List<User>();
+                    Users userModel = new Users();
+                    List<Users> lstUser = new List<Users>();
 
                     Project pModel = new Project();
                     List<Project> lstProject = new List<Project>();
 
                     UserProject upModel = new UserProject();
-                    List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+                    List<vwUsersProject> vwLstUp = new List<vwUsersProject>();
 
                     bool userAuthorized = true;
 
-                    foreach (var item in db.UserProject)
+                    foreach (var item in BasicRepository<UserProject>.Fetch())
                     {
                         if (item.IsApproved == Convert.ToInt32(ProjectApproveEnum.WaitingToApprove))
                         {
                             string _tempUserId = Session["UserId"].ToString();
-                            ProjectUserAuthorize authorize = db.ProjectUserAuthorize.FirstOrDefault(a => a.ProjectId == item.ProjectId);
+                            var authorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE ProjectId = @0", item.ProjectId);
                             if (authorize == null)
                             {
                                 int upId = item.Id;
-                                upModel = db.UserProject.First(z => z.Id == upId);
-                                pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                                userModel = db.User.First(z => z.Id == upModel.UserId);
-                                vwLstUp.Add(new vwUsersProjects
+                                upModel = BasicRepository<UserProject>.FirstOrDefault("WHERE Id = @0", upId);
+                                pModel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", upModel.ProjectId);
+                                userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", upModel.UserId);
+                                vwLstUp.Add(new vwUsersProject
                                 {
-                                    UserId = userModel.Id,
-                                    UserName = userModel.Name,
-                                    UserSurname = userModel.Surname,
-                                    UserEMail = userModel.EMail,
-                                    UserCitizenshipNo = userModel.CitizenshipNo,
+                                    Id = userModel.Id,
+                                    Name = userModel.Name,
+                                    Surname = userModel.Surname,
+                                    EMail = userModel.EMail,
+                                    CitizenshipNo = userModel.CitizenshipNo,
                                     ProjectId = pModel.Id,
                                     ProjectName = pModel.Name,
+                                    Description = pModel.Description,
                                     FileName = pModel.FileName,
+                                    CreationDate = pModel.CreationDate,
                                     IsApproved = pModel.IsApproved,
-                                    IsSupported = pModel.IsSupported,
-                                    ProjectDescription = pModel.Description,
-                                    ProjectCreationDate = pModel.CreationDate
+                                    IsSupported = pModel.IsSupported
                                 });
                             }
                             else
                             {
-                                authorize = db.ProjectUserAuthorize.FirstOrDefault(a => a.AuthorizedUserId == _tempUserId && a.ProjectId == item.ProjectId);
+                                authorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE AuthorizedUserId = @0 AND ProjectId = @1", _tempUserId, item.ProjectId);
                                 if (authorize == null)
                                     userAuthorized = false;
                                 else if (authorize != null)
@@ -345,23 +342,23 @@ namespace Planner.Controllers
                                 if (userAuthorized)
                                 {
                                     int upId = item.Id;
-                                    upModel = db.UserProject.First(z => z.Id == upId);
-                                    pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                                    userModel = db.User.First(z => z.Id == upModel.UserId);
-                                    vwLstUp.Add(new vwUsersProjects
+                                    upModel = BasicRepository<UserProject>.FirstOrDefault("WHERE Id = @0", upId);
+                                    pModel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", upModel.ProjectId);
+                                    userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", upModel.UserId);
+                                    vwLstUp.Add(new vwUsersProject
                                     {
-                                        UserId = userModel.Id,
-                                        UserName = userModel.Name,
-                                        UserSurname = userModel.Surname,
-                                        UserEMail = userModel.EMail,
-                                        UserCitizenshipNo = userModel.CitizenshipNo,
+                                        Id = userModel.Id,
+                                        Name = userModel.Name,
+                                        Surname = userModel.Surname,
+                                        EMail = userModel.EMail,
+                                        CitizenshipNo = userModel.CitizenshipNo,
                                         ProjectId = pModel.Id,
                                         ProjectName = pModel.Name,
+                                        Description = pModel.Description,
                                         FileName = pModel.FileName,
+                                        CreationDate = pModel.CreationDate,
                                         IsApproved = pModel.IsApproved,
-                                        IsSupported = pModel.IsSupported,
-                                        ProjectDescription = pModel.Description,
-                                        ProjectCreationDate = pModel.CreationDate
+                                        IsSupported = pModel.IsSupported
                                     });
                                 }
                             }
@@ -371,7 +368,7 @@ namespace Planner.Controllers
                 }
                 catch (Exception ex)
                 {
-                    List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+                    List<vwUsersProject> vwLstUp = new List<vwUsersProject>();
                     return View(vwLstUp);
                 }
             }
@@ -385,50 +382,139 @@ namespace Planner.Controllers
         {
             try
             {
-                User userModel = new User();
-                List<User> lstUser = new List<User>();
+                Users userModel = new Users();
+                List<Users> lstUser = new List<Users>();
 
                 Project pModel = new Project();
                 List<Project> lstProject = new List<Project>();
 
                 UserProject upModel = new UserProject();
-                List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+                List<vwUsersProject> vwLstUp = new List<vwUsersProject>();
 
                 bool userAuthorized = true;
 
-                foreach (var item in db.UserProject)
+                foreach (var item in BasicRepository<UserProject>.Fetch())
                 {
                     if (item.IsSupported == Convert.ToInt32(ProjectSupportEnum.WaitingToSupport) &&
                         item.IsSupported != Convert.ToInt32(ProjectSupportEnum.Closed))
                     {
                         string _tempUserId = Session["UserId"].ToString();
-                        ProjectUserAuthorize authorize = db.ProjectUserAuthorize.FirstOrDefault(a => a.ProjectId == item.ProjectId);
+                        // Eğer daha önce desteklemişse burada göremez.
+                        if (BasicRepository<SupportedProject>.FirstOrDefault("WHERE SupportedProjectId = @0", _tempUserId) == null)
+                        {
+                            var authorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE ProjectId = @0", item.ProjectId);
+                            if (authorize == null)
+                            {
+                                int upId = item.Id;
+                                upModel = BasicRepository<UserProject>.FirstOrDefault("WHERE Id = @0", upId);
+                                pModel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", upModel.ProjectId);
+                                userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", upModel.UserId);
+                                vwLstUp.Add(new vwUsersProject
+                                {
+                                    Id = userModel.Id,
+                                    Name = userModel.Name,
+                                    Surname = userModel.Surname,
+                                    EMail = userModel.EMail,
+                                    CitizenshipNo = userModel.CitizenshipNo,
+                                    ProjectId = pModel.Id,
+                                    ProjectName = pModel.Name,
+                                    Description = pModel.Description,
+                                    FileName = pModel.FileName,
+                                    CreationDate = pModel.CreationDate,
+                                    IsApproved = pModel.IsApproved,
+                                    IsSupported = pModel.IsSupported
+                                });
+                            }
+                            else
+                            {
+                                authorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE AuthorizedUserId = @0 AND ProjectId = @1", _tempUserId, item.ProjectId);
+                                if (authorize == null)
+                                    userAuthorized = false;
+                                else if (authorize != null)
+                                    userAuthorized = true;
+
+                                if (userAuthorized)
+                                {
+                                    int upId = item.Id;
+                                    upModel = BasicRepository<UserProject>.FirstOrDefault("WHERE Id = @0", upId);
+                                    pModel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", upModel.ProjectId);
+                                    userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", upModel.UserId);
+                                    vwLstUp.Add(new vwUsersProject
+                                    {
+                                        Id = userModel.Id,
+                                        Name = userModel.Name,
+                                        Surname = userModel.Surname,
+                                        EMail = userModel.EMail,
+                                        CitizenshipNo = userModel.CitizenshipNo,
+                                        ProjectId = pModel.Id,
+                                        ProjectName = pModel.Name,
+                                        Description = pModel.Description,
+                                        FileName = pModel.FileName,
+                                        CreationDate = pModel.CreationDate,
+                                        IsApproved = pModel.IsApproved,
+                                        IsSupported = pModel.IsSupported
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+                return View(vwLstUp);
+            }
+            catch (Exception ex)
+            {
+                List<vwUsersProject> vwLstUp = new List<vwUsersProject>();
+                return View(vwLstUp);
+            }
+        }
+
+        public ActionResult ClosedProjects()
+        {
+            try
+            {
+                Users userModel = new Users();
+                List<Users> lstUser = new List<Users>();
+
+                Project pModel = new Project();
+                List<Project> lstProject = new List<Project>();
+
+                UserProject upModel = new UserProject();
+                List<vwUsersProject> vwLstUp = new List<vwUsersProject>();
+
+                bool userAuthorized = true;
+
+                foreach (var item in BasicRepository<UserProject>.Fetch())
+                {
+                    if (item.IsSupported == Convert.ToInt32(ProjectSupportEnum.Closed) &&
+                        item.IsApproved == Convert.ToInt32(ProjectApproveEnum.Approved))
+                    {
+                        string _tempUserId = Session["UserId"].ToString();
+                        var authorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE ProjectId = @0", item.ProjectId);
                         if (authorize == null)
                         {
                             int upId = item.Id;
-                            upModel = db.UserProject.First(z => z.Id == upId);
-                            pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                            userModel = db.User.First(z => z.Id == upModel.UserId);
-                            vwLstUp.Add(new vwUsersProjects
+                            upModel = BasicRepository<UserProject>.FirstOrDefault("WHERE Id = @0", upId);
+                            pModel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", upModel.ProjectId);
+                            userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", upModel.UserId);
+                            vwLstUp.Add(new vwUsersProject
                             {
-                                UserId = userModel.Id,
-                                UserName = userModel.Name,
-                                UserSurname = userModel.Surname,
-                                UserEMail = userModel.EMail,
-                                UserCitizenshipNo = userModel.CitizenshipNo,
+                                Id = userModel.Id,
+                                Name = userModel.Name,
+                                Surname = userModel.Surname,
+                                EMail = userModel.EMail,
+                                CitizenshipNo = userModel.CitizenshipNo,
                                 ProjectId = pModel.Id,
                                 ProjectName = pModel.Name,
+                                Description = pModel.Description,
                                 FileName = pModel.FileName,
+                                CreationDate = pModel.CreationDate,
                                 IsApproved = pModel.IsApproved,
-                                IsSupported = pModel.IsSupported,
-                                ProjectDescription = pModel.Description,
-                                ProjectCreationDate = pModel.CreationDate,
-                                SupportRequest = pModel.SupportRequest
+                                IsSupported = pModel.IsSupported
                             });
                         }
                         else
                         {
-                            authorize = db.ProjectUserAuthorize.FirstOrDefault(a => a.AuthorizedUserId == _tempUserId && a.ProjectId == item.ProjectId);
+                            authorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE AuthorizedUserId = @0 AND ProjectId = @1", _tempUserId, item.ProjectId);
                             if (authorize == null)
                                 userAuthorized = false;
                             else if (authorize != null)
@@ -437,23 +523,23 @@ namespace Planner.Controllers
                             if (userAuthorized)
                             {
                                 int upId = item.Id;
-                                upModel = db.UserProject.First(z => z.Id == upId);
-                                pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                                userModel = db.User.First(z => z.Id == upModel.UserId);
-                                vwLstUp.Add(new vwUsersProjects
+                                upModel = BasicRepository<UserProject>.FirstOrDefault("WHERE Id = @0", upId);
+                                pModel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", upModel.ProjectId);
+                                userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", upModel.UserId);
+                                vwLstUp.Add(new vwUsersProject
                                 {
-                                    UserId = userModel.Id,
-                                    UserName = userModel.Name,
-                                    UserSurname = userModel.Surname,
-                                    UserEMail = userModel.EMail,
-                                    UserCitizenshipNo = userModel.CitizenshipNo,
+                                    Id = userModel.Id,
+                                    Name = userModel.Name,
+                                    Surname = userModel.Surname,
+                                    EMail = userModel.EMail,
+                                    CitizenshipNo = userModel.CitizenshipNo,
                                     ProjectId = pModel.Id,
                                     ProjectName = pModel.Name,
+                                    Description = pModel.Description,
                                     FileName = pModel.FileName,
+                                    CreationDate = pModel.CreationDate,
                                     IsApproved = pModel.IsApproved,
-                                    IsSupported = pModel.IsSupported,
-                                    ProjectDescription = pModel.Description,
-                                    ProjectCreationDate = pModel.CreationDate
+                                    IsSupported = pModel.IsSupported
                                 });
                             }
                         }
@@ -463,7 +549,90 @@ namespace Planner.Controllers
             }
             catch (Exception ex)
             {
-                List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+                List<vwUsersProject> vwLstUp = new List<vwUsersProject>();
+                return View(vwLstUp);
+            }
+        }
+
+        public ActionResult SupportedProjectsByMe()
+        {
+            try
+            {
+                string _tempUserId = Session["UserId"].ToString();
+                var supportedProjects = BasicRepository<vwUsersProject>.Fetch("WHERE SupporterUserId = @0", _tempUserId);
+
+                Users userModel = new Users();
+                Project project = new Project();
+
+                UserProject userProject = new UserProject();
+                List<vwUsersProject> vwLstUp = new List<vwUsersProject>();
+
+                bool userAuthorized = true;
+
+                foreach (var item in supportedProjects)
+                {
+                    var authorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE ProjectId = @0", item.ProjectId);
+                    if (authorize == null)
+                    {
+                        userProject = BasicRepository<UserProject>.FirstOrDefault("WHERE ProjectId = @0", item.ProjectId);
+                        project = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", userProject.ProjectId);
+                        userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", userProject.UserId);
+                        vwLstUp.Add(new vwUsersProject
+                        {
+                            Id = userModel.Id,
+                            Name = userModel.Name,
+                            Surname = userModel.Surname,
+                            EMail = userModel.EMail,
+                            CitizenshipNo = userModel.CitizenshipNo,
+                            ProjectId = project.Id,
+                            ProjectName = project.Name,
+                            Description = project.Description,
+                            FileName = project.FileName,
+                            CreationDate = project.CreationDate,
+                            IsApproved = project.IsApproved,
+                            IsSupported = project.IsSupported,
+                            SupportDate = item.SupportDate,
+                            SupportRequest = item.SupportRequest,
+                            SupportRequirements = item.SupportRequirements,
+                            SupportValue = item.SupportValue
+                        });
+                    }
+                    else
+                    {
+                        authorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE AuthorizedUserId = @0 AND ProjectId = @1", _tempUserId, item.ProjectId);
+                        if (authorize == null)
+                            userAuthorized = false;
+                        else if (authorize != null)
+                            userAuthorized = true;
+
+                        if (userAuthorized)
+                        {
+                            userProject = BasicRepository<UserProject>.FirstOrDefault("WHERE ProjectId = @0", item.ProjectId);
+                            project = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", userProject.ProjectId);
+                            userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", userProject.UserId);
+                            vwLstUp.Add(new vwUsersProject
+                            {
+                                Id = userModel.Id,
+                                Name = userModel.Name,
+                                Surname = userModel.Surname,
+                                EMail = userModel.EMail,
+                                CitizenshipNo = userModel.CitizenshipNo,
+                                ProjectId = project.Id,
+                                ProjectName = project.Name,
+                                Description = project.Description,
+                                FileName = project.FileName,
+                                CreationDate = project.CreationDate,
+                                IsApproved = project.IsApproved,
+                                IsSupported = project.IsSupported
+                            });
+                        }
+                    }
+                }
+                return View(vwLstUp);
+            }
+            catch (Exception ex)
+            {
+                List<vwUsersProject> vwLstUp = new List<vwUsersProject>();
                 return View(vwLstUp);
             }
         }
@@ -476,18 +645,17 @@ namespace Planner.Controllers
             {
                 Project pmodel = new Project();
                 UserProject upmodel = new UserProject();
-                pmodel = db.Projects.FirstOrDefault(m => m.Id == Id);
-                upmodel = db.UserProject.FirstOrDefault(m => m.ProjectId == Id);
+                pmodel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", Id);
+                upmodel = BasicRepository<UserProject>.FirstOrDefault("WHERE ProjectId = @0", Id);
                 pmodel.IsApproved = Convert.ToInt32(ProjectApproveEnum.Approved);
                 upmodel.IsApproved = Convert.ToInt32(ProjectApproveEnum.Approved);
-                pmodel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangeAsApproved);
-                upmodel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangeAsApproved);
+                pmodel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangedAsApproved);
+                upmodel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangedAsApproved);
                 pmodel.LastEditDate = DateTime.Now;
                 pmodel.LastEditBy = Convert.ToString(Session["UserId"]);
-
-                db.SaveChanges();
-                User umodel = new User();
-                umodel = db.User.FirstOrDefault(m => m.Id == upmodel.UserId);
+                BasicRepository<Project>.Update(pmodel);
+                BasicRepository<UserProject>.Update(upmodel);
+                var umodel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", upmodel.UserId);
                 try
                 {
                     HomeController.SendEMail(umodel.EMail, "Projeniz Onaylanmıştır. Destek başvurusu yapmak için sisteme giriş yapınız.", "Proje Onayı");
@@ -510,14 +678,14 @@ namespace Planner.Controllers
             {
                 Project pmodel = new Project();
                 UserProject upmodel = new UserProject();
-                RejectedProjects rProjects = new RejectedProjects();
+                RejectedProject rProjects = new RejectedProject();
 
-                pmodel = db.Projects.FirstOrDefault(m => m.Id == Id);
-                upmodel = db.UserProject.FirstOrDefault(m => m.ProjectId == Id);
+                pmodel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", Id);
+                upmodel = BasicRepository<UserProject>.FirstOrDefault("WHERE ProjectId = @0", Id);
                 pmodel.IsApproved = Convert.ToInt32(ProjectApproveEnum.NotApproved);
                 upmodel.IsApproved = Convert.ToInt32(ProjectApproveEnum.NotApproved);
-                pmodel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangeAsNotApproved);
-                upmodel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangeAsNotApproved);
+                pmodel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangedAsNotApproved);
+                upmodel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangedAsNotApproved);
                 pmodel.LastEditDate = DateTime.Now;
                 pmodel.LastEditBy = Convert.ToString(Session["UserId"]);
 
@@ -525,10 +693,12 @@ namespace Planner.Controllers
                 rProjects.RejectUserId = Convert.ToString(Session["UserId"]);
                 rProjects.RejectCause = declineCause;
                 rProjects.RejectDate = DateTime.Now;
-                db.RejectedProjects.Add(rProjects);
-                db.SaveChanges();
-                User umodel = new User();
-                umodel = db.User.FirstOrDefault(m => m.Id == upmodel.UserId);
+
+                BasicRepository<RejectedProject>.Insert(rProjects);
+                BasicRepository<Project>.Update(pmodel);
+                BasicRepository<UserProject>.Update(upmodel);
+
+                var umodel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", upmodel.UserId);
                 try
                 {
                     HomeController.SendEMail(umodel.EMail, "Projeniz Onaylanmamıştır. Reddedilme Sebebi: '" + declineCause + "'", "Proje Onayı");
@@ -549,15 +719,16 @@ namespace Planner.Controllers
         {
             try
             {
-                UserProject upModel = db.UserProject.FirstOrDefault(a => a.ProjectId == Id);
-                User uModel = db.User.FirstOrDefault(a => a.Id == upModel.UserId);
-                Project pModel = db.Projects.FirstOrDefault(a => a.Id == upModel.ProjectId);
-                SupportedProjects sProjects = new SupportedProjects();
+                var upModel = BasicRepository<UserProject>.FirstOrDefault("WHERE ProjectId = @0", Id);
+                var uModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", upModel.UserId);
+
+                var pModel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", upModel.ProjectId);
+                SupportedProject sProjects = new SupportedProject();
 
                 if (pModel.IsApproved == Convert.ToInt32(ProjectApproveEnum.Approved))
                 {
-                    pModel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangeAsSupported);
-                    upModel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangeAsSupported);
+                    pModel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangedAsSupported);
+                    upModel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangedAsSupported);
                     pModel.LastEditDate = DateTime.Now;
                     pModel.LastEditBy = Convert.ToString(Session["UserId"]);
 
@@ -566,8 +737,11 @@ namespace Planner.Controllers
                     sProjects.SupporterUserId = Session["UserId"].ToString();
                     sProjects.SupportRequirements = supportRequirements;
                     sProjects.SupportValue = supportValue;
-                    db.SupportedProjects.Add(sProjects);
-                    db.SaveChanges();
+
+                    BasicRepository<SupportedProject>.Insert(sProjects);
+                    BasicRepository<Project>.Update(pModel);
+                    BasicRepository<UserProject>.Update(upModel);
+
                     try
                     {
                         HomeController.SendEMail(uModel.EMail, "Projenize Destek Verilmiştir. Detaylı Bilgi İçin Sisteminizi Kontrol Ediniz.", "Proje Desteği");
@@ -593,20 +767,26 @@ namespace Planner.Controllers
         {
             try
             {
-                Project pmodel = new Project();
-                UserProject upmodel = new UserProject();
-                pmodel = db.Projects.FirstOrDefault(m => m.Id == Id);
-                upmodel = db.UserProject.FirstOrDefault(m => m.ProjectId == Id);
+                var pmodel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", Id);
+                var upmodel = BasicRepository<UserProject>.FirstOrDefault("WHERE ProjectId = @0", Id);
                 pmodel.IsApproved = Convert.ToInt32(ProjectSupportEnum.NotSupported);
                 upmodel.IsApproved = Convert.ToInt32(ProjectSupportEnum.NotSupported);
-                pmodel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangeAsNotSupported);
-                upmodel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangeAsNotSupported);
+                pmodel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangedAsNotSupported);
+                upmodel.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangedAsNotSupported);
                 pmodel.LastEditDate = DateTime.Now;
                 pmodel.LastEditBy = Convert.ToString(Session["UserId"]);
-                db.SaveChanges();
-                User umodel = new User();
-                umodel = db.User.FirstOrDefault(m => m.Id == upmodel.UserId);
-                HomeController.SendEMail(umodel.EMail, "Projeniz Destek Sürecinde Onaylanmamıştır.", "Proje Desteği");
+                BasicRepository<Project>.Update(pmodel);
+                BasicRepository<UserProject>.Update(upmodel);
+
+                var umodel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", upmodel.UserId);
+                try
+                {
+                    HomeController.SendEMail(umodel.EMail, "Projeniz Destek Sürecinde Onaylanmamıştır.", "Proje Desteği");
+                }
+                catch (Exception ex)
+                {
+                    return RedirectToAction("MessageShow", "Home", new { messageBody = "Proje Desteği Reddedilmiştir Fakat Kullanıcıya E-Posta Gönderiminde Hata Oluşmuştur", returnUrl = Request.UrlReferrer.AbsoluteUri });
+                }
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Proje Desteği Reddedilmiştir", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
             catch (Exception ex)
@@ -617,16 +797,27 @@ namespace Planner.Controllers
 
         public ActionResult CloseSupportedProject(string Id)
         {
-            Project project = db.Projects.FirstOrDefault(a => a.Id == Id);
-            UserProject userProject = db.UserProject.FirstOrDefault(a => a.ProjectId == Id);
-            User user = db.User.FirstOrDefault(a => a.Id == userProject.UserId);
+            var project = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", Id);
+            var userProject = BasicRepository<UserProject>.FirstOrDefault("WHERE ProjectId = @0", Id);
+            var user = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", userProject.UserId);
 
-            //project.IsSupported = Convert.ToInt32(ProjectSupportEnum.Supported);
-            //userProject.IsSupported = Convert.ToInt32(ProjectSupportEnum.Supported);
             project.IsSupported = Convert.ToInt32(ProjectSupportEnum.Closed);
             userProject.IsSupported = Convert.ToInt32(ProjectSupportEnum.Closed);
-            db.SaveChanges();
-            HomeController.SendEMail(user.EMail, "Projenizin Destek Başvurusu Kapatılmıştır.", "Proje Desteği");
+
+            project.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangedAsClosed);
+            userProject.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.ChangedAsClosed);
+
+            BasicRepository<Project>.Update(project);
+            BasicRepository<UserProject>.Update(userProject);
+
+            try
+            {
+                HomeController.SendEMail(user.EMail, "Projenizin Destek Başvurusu Kapatılmıştır.", "Proje Desteği");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("MessageShow", "Home", new { messageBody = "Proje Desteği Kapatılmıştır Fakat Kullanıcıya E-Posta Gönderiminde Hata Oluşmuştur", returnUrl = Request.UrlReferrer.AbsoluteUri });
+            }
             return RedirectToAction("MessageShow", "Home", new { messageBody = "Proje Desteği Kapatılmıştır", returnUrl = Request.UrlReferrer.AbsoluteUri });
         }
         #endregion
@@ -635,7 +826,7 @@ namespace Planner.Controllers
         {
             try
             {
-                Project pmodel = db.Projects.FirstOrDefault(m => m.Id == Id);
+                var pmodel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", Id);
                 byte[] fileBytes = System.IO.File.ReadAllBytes(pmodel.FilePath);
                 var file = pmodel.FilePath;
                 var cd = new ContentDisposition
@@ -699,15 +890,14 @@ namespace Planner.Controllers
                 project.CreationDate = DateTime.Now;
                 project.LastEditDate = Convert.ToDateTime("1753-01-01");
                 project.LastEditBy = "00000000-0000-0000-0000-000000000000";
-                db.Projects.Add(project);
-                db.SaveChanges();
+                BasicRepository<Project>.Insert(project);
+
                 up.ProjectId = project.Id;
                 up.UserId = Convert.ToString(Session["UserId"]);
                 up.IsApproved = Convert.ToInt32(ProjectApproveEnum.NotApproved);
                 up.IsSupported = Convert.ToInt32(ProjectSupportEnum.NotSupported);
                 up.IsApproveChanged = Convert.ToInt32(ProjectTypeChangeEnum.NotChanged);
-                db.UserProject.Add(up);
-                db.SaveChanges();
+                BasicRepository<UserProject>.Insert(up);
             }
             catch (Exception ex)
             {
@@ -722,13 +912,14 @@ namespace Planner.Controllers
         {
             try
             {
-                Project projects = db.Projects.SingleOrDefault(m => m.Id == Id);
-                UserProject ups = db.UserProject.SingleOrDefault(m => m.ProjectId == Id);
+                var projects = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", Id);
+                var ups = BasicRepository<UserProject>.FirstOrDefault("WHERE ProjectId = @0", Id);
                 ups.IsApproved = Convert.ToInt32(ProjectApproveEnum.WaitingToApprove);
                 projects.IsApproved = Convert.ToInt32(ProjectApproveEnum.WaitingToApprove);
                 projects.LastEditDate = DateTime.Now;
                 projects.LastEditBy = Convert.ToString(Session["UserId"]);
-                db.SaveChanges();
+                BasicRepository<Project>.Update(projects);
+                BasicRepository<UserProject>.Update(ups);
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Proje Onaya Gönderilmiştir", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
             catch (Exception ex)
@@ -741,8 +932,8 @@ namespace Planner.Controllers
         {
             try
             {
-                Project projects = db.Projects.SingleOrDefault(m => m.Id == Id);
-                UserProject ups = db.UserProject.SingleOrDefault(m => m.ProjectId == Id);
+                var projects = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", Id);
+                var ups = BasicRepository<UserProject>.FirstOrDefault("WHERE ProjectId = @0", Id);
                 if (projects.IsApproved == Convert.ToInt32(ProjectApproveEnum.Approved))
                 {
                     ups.SupportRequest = supportRequest;
@@ -751,7 +942,8 @@ namespace Planner.Controllers
                     projects.IsSupported = Convert.ToInt32(ProjectSupportEnum.WaitingToSupport);
                     projects.LastEditDate = DateTime.Now;
                     projects.LastEditBy = Convert.ToString(Session["UserId"]);
-                    db.SaveChanges();
+                    BasicRepository<Project>.Update(projects);
+                    BasicRepository<UserProject>.Update(ups);
                 }
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Proje Destek Onayına Gönderilmiştir", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
@@ -766,13 +958,11 @@ namespace Planner.Controllers
         public ActionResult Edit(string id)
         {
             ViewBag.ReturnUrl = Request.UrlReferrer.AbsoluteUri;
-            Project project = db.Projects.Find(id);
-
+            var project = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", id);
             if (id == null || project == null)
             {
                 return View("UserMenu");
             }
-
             else
             {
                 return View(project);
@@ -794,7 +984,7 @@ namespace Planner.Controllers
                         var path = Path.Combine(Server.MapPath("~/Files/Project"), (sessionCitizenship + "_Güncel_Proje_" + fileName));
                         fileProject2.SaveAs(path);
 
-                        var _tempProject = db.Projects.FirstOrDefault(m => m.Id == project.Id);
+                        var _tempProject = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", project.Id);
 
                         _tempProject.Name = project.Name;
                         _tempProject.Description = project.Description;
@@ -809,7 +999,7 @@ namespace Planner.Controllers
                         _tempProject.LastEditBy = Convert.ToString(Session["UserId"]);
                         _tempProject.LastEditDate = DateTime.Now;
 
-                        db.SaveChanges();
+                        BasicRepository<Project>.Update(_tempProject);
                     }
                     return RedirectToAction("MessageShow", "Home", new { messageBody = "Proje Başarıyla Güncellendi", returnUrl = Request.UrlReferrer.AbsoluteUri });
                 }
@@ -831,15 +1021,14 @@ namespace Planner.Controllers
             try
             {
                 Session["ProjectId"] = id;
-                User userModel = new User();
-                List<User> User = new List<User>();
+                List<Users> User = new List<Users>();
 
-                foreach (var item in db.User)
+                foreach (var item in BasicRepository<Users>.Fetch("WHERE IsActive = @0", true))
                 {
-                    ProjectUserAuthorize userAuthorize = db.ProjectUserAuthorize.FirstOrDefault(a => a.ProjectId == id && a.AuthorizedUserId == item.Id);
+                    var userAuthorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE ProjectId = @0 AND AuthorizedUserId = @1", id, item.Id);
                     if (userAuthorize == null)
                     {
-                        User.Add(new User
+                        User.Add(new Users
                         {
                             BirthDate = item.BirthDate,
                             CitizenshipNo = item.CitizenshipNo,
@@ -867,7 +1056,7 @@ namespace Planner.Controllers
             }
             catch (Exception ex)
             {
-                List<User> lstUser = new List<User>();
+                List<Users> lstUser = new List<Users>();
                 return View(lstUser);
             }
         }
@@ -878,19 +1067,19 @@ namespace Planner.Controllers
             {
                 Session["ProjectId"] = id;
                 List<vwAuthorizedUserProject> authorizes = new List<vwAuthorizedUserProject>();
-                foreach (var item in db.User)
+                foreach (var item in BasicRepository<Users>.Fetch())
                 {
-                    ProjectUserAuthorize userAuthorize = db.ProjectUserAuthorize.FirstOrDefault(a => a.ProjectId == id && a.AuthorizedUserId == item.Id);
+                    var userAuthorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE ProjectId = @0 AND AuthorizedUserId = @1", id, item.Id);
                     if (userAuthorize != null)
                     {
                         authorizes.Add(new vwAuthorizedUserProject
                         {
                             ProjectId = userAuthorize.ProjectId,
-                            UserEMail = item.EMail,
                             UserId = item.Id,
-                            UserIsAdmin = item.IsAdmin,
                             UserName = item.Name,
-                            UserSurname = item.Surname
+                            UserSurname = item.Surname,
+                            UserEMail = item.EMail,
+                            UserIsAdmin = item.IsAdmin.ToString()
                         });
                     }
                 }
@@ -917,22 +1106,17 @@ namespace Planner.Controllers
                     userAuthorize.ProjectId = _projectId;
                     userAuthorize.LastEditBy = _sessionUserId;
                     userAuthorize.LastEditDate = DateTime.Now;
-                    db.ProjectUserAuthorize.Add(userAuthorize);
-                    db.SaveChanges();
+                    BasicRepository<ProjectUserAuthorize>.Insert(userAuthorize);
                 }
-
-                var adminUsers = db.User.Where(a => a.IsAdmin == true);
-                //Tüm Adminleri de Yetkili Yap
-                foreach (var item in adminUsers)
+                var adminUsers = BasicRepository<Users>.Fetch("WHERE IsAdmin = @0", true);
+                foreach (var item in adminUsers) //Tüm Adminleri de Yetkili Yap
                 {
                     userAuthorize.AuthorizedUserId = item.Id;
                     userAuthorize.ProjectId = _projectId;
                     userAuthorize.LastEditBy = _sessionUserId;
                     userAuthorize.LastEditDate = DateTime.Now;
-                    db.ProjectUserAuthorize.Add(userAuthorize);
-                    db.SaveChanges();
+                    BasicRepository<ProjectUserAuthorize>.Insert(userAuthorize);
                 }
-                //
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Projeyi Görmeye Yetkili Kullanıcılar Ayarlanmıştır.", returnUrl = "/Project/WaitingToApprove" });
             }
             catch (Exception ex)
@@ -942,21 +1126,19 @@ namespace Planner.Controllers
         }
 
         [HttpPost]
-        public ActionResult RemoveAuthorizeToUserForProject(List<string> User)
+        public ActionResult RemoveAuthorizeToUserForProject(List<string> Users)
         {
             try
             {
-                if (!User.Contains(Session["UserId"].ToString()))
+                if (!Users.Contains(Session["UserId"].ToString()))
                 {
                     string _projectId = Session["ProjectId"].ToString();
-                    List<ProjectUserAuthorize> userAuthorize = db.ProjectUserAuthorize.Where(a => a.ProjectId == _projectId).ToList();
-
+                    var userAuthorize = BasicRepository<ProjectUserAuthorize>.Fetch("WHERE ProjectId = @0", _projectId);
                     foreach (var item in userAuthorize)
                     {
-                        if (!User.Contains(item.AuthorizedUserId))
+                        if (Users.Contains(item.AuthorizedUserId))
                         {
-                            db.ProjectUserAuthorize.Remove(item);
-                            db.SaveChanges();
+                            BasicRepository<ProjectUserAuthorize>.Delete(item);
                         }
                     }
                     return RedirectToAction("MessageShow", "Home", new { messageBody = "Projeyi Görmeye Yetkili Kullanıcılar Düzenlenmiştir.", returnUrl = "/Project/WaitingToApprove" });

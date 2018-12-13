@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Planner.Models
 {
-    [Table("User")]
+    [Table("Users")]
     public partial class User
     {
         public string Id { get; set; }

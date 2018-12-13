@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Planner.Models.vwUsersProjects>
+﻿@model IEnumerable<Planner.DataAccess.vwUsersProject>
 
 @{
     ViewBag.Title = "Onay Bekleyen Projeler";
@@ -78,12 +78,12 @@
                                 </a>
                             </figcaption>
                         </figure>
-                        <div class="time float-right">@item.ProjectCreationDate</div>
+                        <div class="time float-right">@item.CreationDate</div>
                         <div class="text-truncate">@item.ProjectName</div>
                         <hr />
-                        <div class="text-truncate">@item.UserName @item.UserSurname</div>
+                        <div class="text-truncate">@item.Name @item.Surname</div>
                         <hr />
-                        <div class="text pre-scrollable" style="max-height:130px">@item.ProjectDescription</div>
+                        <div class="text pre-scrollable" style="max-height:130px">@item.Description</div>
                     </div>
                 </li>
             }

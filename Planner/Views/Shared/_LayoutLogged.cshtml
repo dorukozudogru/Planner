@@ -71,8 +71,17 @@
 <body class="animsition">
     <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega navbar-inverse bg-indigo-600" role="navigation">
         <div class="navbar-header">
+            <button type="button" class="navbar-toggler hamburger hamburger-close navbar-toggler-left hided"
+                    data-toggle="menubar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="hamburger-bar"></span>
+            </button>
+            <button type="button" class="navbar-toggler collapsed" data-target="#site-navbar-collapse"
+                    data-toggle="collapse">
+                <i class="icon wb-more-horizontal" aria-hidden="true"></i>
+            </button>
             <div class="navbar-brand navbar-brand-center">
-                <img class="navbar-brand-logo" src="~/Content/Site/classic/iconbar/assets/images/ci_tech.png" title="CI TECH">
+                <img class="navbar-brand-logo" src="~/Content/Site/classic/iconbar/assets/images/ci_tech.png">
                 <span class="navbar-brand-text hidden-xs-down">Proje Sepeti</span>
             </div>
         </div>
@@ -192,6 +201,11 @@
                                     <li class="site-menu-item">
                                         <a class="animsition-link" href="@Url.Action("WaitingForSupport", "Project")">
                                             <span class="site-menu-title">Destek Bekleyen Projeler</span>
+                                        </a>
+                                    </li>
+                                    <li class="site-menu-item">
+                                        <a class="animsition-link" href="@Url.Action("SupportedProjectsByMe", "Project")">
+                                            <span class="site-menu-title">Desteklediğim Projeler</span>
                                         </a>
                                     </li>
                                 </ul>

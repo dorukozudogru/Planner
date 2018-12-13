@@ -38,6 +38,8 @@ namespace Planner.Models
 
         public DateTime CreationDate { get; set; }
 
+        public string CreatedBy { get; set; }
+
         public DateTime LastEditDate { get; set; }
 
         public string LastEditBy { get; set; }

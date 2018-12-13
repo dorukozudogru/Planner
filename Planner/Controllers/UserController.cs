@@ -1,6 +1,6 @@
 ﻿using Planner.Enums;
 using Planner.Helpers;
-using Planner.Models;
+using Planner.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +14,6 @@ namespace Planner.Controllers
     [UserAuthorize]
     public class UserController : Controller
     {
-        private DBContext db = new DBContext();
         static string callbackUrl = "";
         static string userEmail = "";
 
@@ -22,7 +21,7 @@ namespace Planner.Controllers
         {
             if (Convert.ToBoolean(Session["UserIsAdmin"]) != false)
             {
-                return View(db.User.ToList());
+                return View(BasicRepository<Users>.Fetch());
             }
             return RedirectToAction("UserMenu");
         }
@@ -31,27 +30,26 @@ namespace Planner.Controllers
         {
             try
             {
-                User userModel = new User();
-                List<User> lstUser = new List<User>();
+                Users userModel = new Users();
+                List<Users> lstUser = new List<Users>();
 
                 UserCV ucModel = new UserCV();
-                List<vwUsersCVs> vwLstUc = new List<vwUsersCVs>();
+                List<vwUsersCV> vwLstUc = new List<vwUsersCV>();
 
-                foreach (var item in db.UserCV)
+                foreach (var item in BasicRepository<UserCV>.Fetch())
                 {
-                    int ucId = item.Id;
-                    ucModel = db.UserCV.First(z => z.Id == ucId);
-                    userModel = db.User.First(z => z.Id == ucModel.UserId);
-                    if (true)
+                    ucModel = BasicRepository<UserCV>.FirstOrDefault("WHERE Id = @0", item.Id);
+                    userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", ucModel.UserId);
+                    if (Convert.ToBoolean(Session["UserIsAdmin"]) != false)
                     {
-                        vwLstUc.Add(new vwUsersCVs { UserId = userModel.Id, EMail = userModel.EMail, Name = userModel.Name, Surname = userModel.Surname, CitizenshipNo = userModel.CitizenshipNo, UserCVId = ucModel.Id, FileName = ucModel.FileName, FilePath = ucModel.FilePath });
+                        vwLstUc.Add(new vwUsersCV { UserId = userModel.Id, EMail = userModel.EMail, Name = userModel.Name, Surname = userModel.Surname, CitizenshipNo = userModel.CitizenshipNo, UserCVId = ucModel.Id, FileName = ucModel.FileName, FilePath = ucModel.FilePath });
                     }
                 }
                 return View(vwLstUc);
             }
             catch (Exception ex)
             {
-                List<vwUsersCVs> vwLstUc = new List<vwUsersCVs>();
+                List<vwUsersCV> vwLstUc = new List<vwUsersCV>();
                 return View(vwLstUc);
             }
         }
@@ -60,30 +58,30 @@ namespace Planner.Controllers
         {
             try
             {
-                User userModel = new User();
-                List<User> lstUser = new List<User>();
+                Users userModel = new Users();
+                List<Users> lstUser = new List<Users>();
 
                 UserCV ucModel = new UserCV();
-                List<vwUsersCVs> vwLstUc = new List<vwUsersCVs>();
+                List<vwUsersCV> vwLstUc = new List<vwUsersCV>();
 
-                ucModel = db.UserCV.FirstOrDefault(z => z.UserId == loggedUserId);
-                userModel = db.User.FirstOrDefault(z => z.Id == loggedUserId);
+                ucModel = BasicRepository<UserCV>.FirstOrDefault("WHERE UserId = @0", loggedUserId);
+                userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", loggedUserId);
 
-                vwLstUc.Add(new vwUsersCVs { UserId = userModel.Id, EMail = userModel.EMail, Name = userModel.Name, Surname = userModel.Surname, CitizenshipNo = userModel.CitizenshipNo, UserCVId = ucModel.Id, FileName = ucModel.FileName, FilePath = ucModel.FilePath });
+                vwLstUc.Add(new vwUsersCV { UserId = userModel.Id, EMail = userModel.EMail, Name = userModel.Name, Surname = userModel.Surname, CitizenshipNo = userModel.CitizenshipNo, UserCVId = ucModel.Id, FileName = ucModel.FileName, FilePath = ucModel.FilePath });
                 return View(vwLstUc);
             }
             catch (Exception)
             {
-                List<vwUsersCVs> vwLstUp = new List<vwUsersCVs>();
+                List<vwUsersCV> vwLstUp = new List<vwUsersCV>();
                 return View(vwLstUp);
             }
         }
 
-        public ActionResult ChangeUserToAdmin(string Id)
+        public ActionResult AssignUserAsAdmin(string Id)
         {
-            User userModel = db.User.FirstOrDefault(a => a.Id == Id);
+            Users userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", Id);
             userModel.IsAdmin = true;
-            db.SaveChanges();
+            BasicRepository<Users>.Update(userModel);
             return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Admin Olarak Ayarlanmıştır.", returnUrl = Request.UrlReferrer.AbsoluteUri });
         }
 
@@ -114,46 +112,46 @@ namespace Planner.Controllers
             {
                 try
                 {
-                    User userModel = new User();
-                    List<User> lstUser = new List<User>();
+                    Users userModel = new Users();
+                    List<Users> lstUser = new List<Users>();
 
                     Project pModel = new Project();
                     List<Project> lstProject = new List<Project>();
 
                     UserProject upModel = new UserProject();
-                    List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+                    List<vwUsersProject> vwLstUp = new List<vwUsersProject>();
 
                     bool userAuthorized = false;
 
-                    foreach (var item in db.UserProject)
+                    foreach (var item in BasicRepository<UserProject>.Fetch())
                     {
                         string _tempUserId = Session["UserId"].ToString();
-                        ProjectUserAuthorize authorize = db.ProjectUserAuthorize.FirstOrDefault(a => a.ProjectId == item.ProjectId);
+                        ProjectUserAuthorize authorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE ProjectId = @0", item.ProjectId);
                         if (authorize == null) //Authorize proje için null gelmişse herkes görebilmeli
                         {
                             int upId = item.Id;
-                            upModel = db.UserProject.First(z => z.Id == upId);
-                            pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                            userModel = db.User.First(z => z.Id == upModel.UserId);
-                            vwLstUp.Add(new vwUsersProjects
+                            upModel = BasicRepository<UserProject>.FirstOrDefault("WHERE Id = @0", upId);
+                            pModel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", upModel.ProjectId);
+                            userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", upModel.UserId);
+                            vwLstUp.Add(new vwUsersProject
                             {
-                                UserId = userModel.Id,
-                                UserName = userModel.Name,
-                                UserSurname = userModel.Surname,
-                                UserEMail = userModel.EMail,
-                                UserCitizenshipNo = userModel.CitizenshipNo,
+                                Id = userModel.Id,
+                                Name = userModel.Name,
+                                Surname = userModel.Surname,
+                                EMail = userModel.EMail,
+                                CitizenshipNo = userModel.CitizenshipNo,
                                 ProjectId = pModel.Id,
                                 ProjectName = pModel.Name,
                                 FileName = pModel.FileName,
                                 IsApproved = pModel.IsApproved,
                                 IsSupported = pModel.IsSupported,
-                                ProjectDescription = pModel.Description,
-                                ProjectCreationDate = pModel.CreationDate
+                                Description = pModel.Description,
+                                CreationDate = pModel.CreationDate
                             });
                         }
                         else //Authorize proje için null değilse kimlerin görebildiğine bakılmalı
                         {
-                            authorize = db.ProjectUserAuthorize.FirstOrDefault(a => a.AuthorizedUserId == _tempUserId && a.ProjectId == item.ProjectId);
+                            authorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE AuthorizedUserId = @0 AND ProjectId = @1", _tempUserId, item.ProjectId);
                             if (authorize == null)
                                 userAuthorized = false;
                             else if (authorize != null)
@@ -161,35 +159,34 @@ namespace Planner.Controllers
 
                             if (userAuthorized)
                             {
-                                int upId = item.Id;
-                                upModel = db.UserProject.First(z => z.Id == upId);
-                                pModel = db.Projects.First(z => z.Id == upModel.ProjectId);
-                                userModel = db.User.First(z => z.Id == upModel.UserId);
-                                vwLstUp.Add(new vwUsersProjects
+                                upModel = BasicRepository<UserProject>.FirstOrDefault("WHERE Id = @0", item.Id);
+                                pModel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", upModel.ProjectId);
+                                userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", upModel.UserId);
+                                vwLstUp.Add(new vwUsersProject
                                 {
-                                    UserId = userModel.Id,
-                                    UserName = userModel.Name,
-                                    UserSurname = userModel.Surname,
-                                    UserEMail = userModel.EMail,
-                                    UserCitizenshipNo = userModel.CitizenshipNo,
+                                    Id = userModel.Id,
+                                    Name = userModel.Name,
+                                    Surname = userModel.Surname,
+                                    EMail = userModel.EMail,
+                                    CitizenshipNo = userModel.CitizenshipNo,
                                     ProjectId = pModel.Id,
                                     ProjectName = pModel.Name,
                                     FileName = pModel.FileName,
                                     IsApproved = pModel.IsApproved,
                                     IsSupported = pModel.IsSupported,
-                                    ProjectDescription = pModel.Description,
-                                    ProjectCreationDate = pModel.CreationDate
+                                    Description = pModel.Description,
+                                    CreationDate = pModel.CreationDate
                                 });
                             }
                         }
                     }
-                    vwLstUp = vwLstUp.OrderByDescending(x => x.ProjectCreationDate).ToList();
+                    vwLstUp = vwLstUp.OrderByDescending(x => x.CreationDate).ToList();
                     vwLstUp.RemoveRange(5, vwLstUp.Count - 5);
                     return View(vwLstUp);
                 }
                 catch (Exception ex)
                 {
-                    List<vwUsersProjects> vwLstUp = new List<vwUsersProjects>();
+                    List<vwUsersProject> vwLstUp = new List<vwUsersProject>();
                     return View(vwLstUp);
                 }
             }
@@ -209,7 +206,7 @@ namespace Planner.Controllers
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Id'si Bulunamadı", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
 
-            var user = db.User.SingleOrDefault(m => m.Id == id);
+            var user = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", id);
             if (user == null)
             {
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Bulunamadı", returnUrl = Request.UrlReferrer.AbsoluteUri });
@@ -220,7 +217,7 @@ namespace Planner.Controllers
                 user.IsApproved = Convert.ToInt32(UserApproveEnum.Approved);
                 user.LastEditDate = DateTime.Now;
                 user.LastEditBy = Convert.ToString(Session["UserId"]);
-                db.SaveChanges();
+                BasicRepository<Users>.Update(user);
                 try
                 {
                     HomeController.SendEMail(user.EMail, "Üyeliğiniz Onaylanmıştır.", "Üyelik Onayı");
@@ -241,7 +238,7 @@ namespace Planner.Controllers
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Id'si Bulunamadı", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
 
-            var user = db.User.SingleOrDefault(m => m.Id == id);
+            var user = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", id);
             if (user == null)
             {
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Bulunamadı", returnUrl = Request.UrlReferrer.AbsoluteUri });
@@ -251,7 +248,7 @@ namespace Planner.Controllers
                 user.IsApproved = Convert.ToInt32(UserApproveEnum.NotApproved);
                 user.LastEditDate = DateTime.Now;
                 user.LastEditBy = Convert.ToString(Session["UserId"]);
-                db.SaveChanges();
+                BasicRepository<Users>.Update(user);
                 try
                 {
                     HomeController.SendEMail(user.EMail, "Üyeliğiniz Reddedilmiştir.", "Üyelik Onayı");
@@ -272,7 +269,7 @@ namespace Planner.Controllers
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Id'si Bulunamadı", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
 
-            var user = db.User.SingleOrDefault(m => m.Id == id);
+            var user = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", id);
             if (user == null)
             {
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Bulunamadı", returnUrl = Request.UrlReferrer.AbsoluteUri });
@@ -283,7 +280,7 @@ namespace Planner.Controllers
                 user.IsApproved = Convert.ToInt32(UserApproveEnum.Blocked);
                 user.LastEditDate = DateTime.Now;
                 user.LastEditBy = Convert.ToString(Session["UserId"]);
-                db.SaveChanges();
+                BasicRepository<Users>.Update(user);
                 try
                 {
                     HomeController.SendEMail(user.EMail, "Üyeliğiniz Dondurulmuştur.", "Üyelik Onayı");
@@ -304,7 +301,7 @@ namespace Planner.Controllers
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Id'si Bulunamadı", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
 
-            var user = db.User.SingleOrDefault(m => m.Id == id);
+            var user = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", id);
             if (user == null)
             {
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Kullanıcı Bulunamadı", returnUrl = Request.UrlReferrer.AbsoluteUri });
@@ -315,7 +312,7 @@ namespace Planner.Controllers
                 user.IsApproved = Convert.ToInt32(UserApproveEnum.ApproveAfterBlock);
                 user.LastEditDate = DateTime.Now;
                 user.LastEditBy = Convert.ToString(Session["UserId"]);
-                db.SaveChanges();
+                BasicRepository<Users>.Update(user);
                 try
                 {
                     HomeController.SendEMail(user.EMail, "Üyeliğiniz Yeniden Aktif Edilmiştir.", "Üyelik Onayı");
@@ -337,14 +334,14 @@ namespace Planner.Controllers
             {
                 try
                 {
-                    User userModel = new User();
-                    List<User> lstUser = new List<User>();
+                    Users userModel = new Users();
+                    List<Users> lstUser = new List<Users>();
 
-                    foreach (var item in db.User)
+                    foreach (var item in BasicRepository<Users>.Fetch())
                     {
                         if (item.IsApproved == Convert.ToInt32(UserApproveEnum.Approved))
                         {
-                            lstUser.Add(new User
+                            lstUser.Add(new Users
                             {
                                 BirthDate = item.BirthDate,
                                 CitizenshipNo = item.CitizenshipNo,
@@ -367,7 +364,7 @@ namespace Planner.Controllers
                 }
                 catch (Exception ex)
                 {
-                    List<User> lstUser = new List<User>();
+                    List<Users> lstUser = new List<Users>();
                     lstUser.ToList();
                     return View(lstUser);
                 }
@@ -412,7 +409,7 @@ namespace Planner.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                Planner.DataAccess.DBContextDB.GetInstance().Dispose();
             }
             base.Dispose(disposing);
         }
@@ -423,15 +420,14 @@ namespace Planner.Controllers
             {
                 if (loggedUserId == Convert.ToString(Session["UserId"]))
                 {
-                    User userModel = db.User.First(a => a.Id == loggedUserId);
+                    Users userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", loggedUserId);
                     Project pModel = new Project();
                     List<Project> lstUp = new List<Project>();
-                    foreach (var item in db.UserProject)
+                    foreach (var item in BasicRepository<UserProject>.Fetch())
                     {
-                        if (userModel.Id == item.UserId && item.IsApproveChanged != Convert.ToInt32(ProjectTypeChangeEnum.ChangeAsNotApproved))
+                        if (userModel.Id == item.UserId && item.IsApproveChanged != Convert.ToInt32(ProjectTypeChangeEnum.ChangedAsNotApproved))
                         {
-                            string pId = item.ProjectId;
-                            pModel = db.Projects.First(z => z.Id == pId);
+                            pModel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", item.ProjectId);
                             lstUp.Add(new Project { Id = pModel.Id, Name = pModel.Name, Description = pModel.Description, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported });
                         }
                     }
@@ -456,17 +452,16 @@ namespace Planner.Controllers
             {
                 if (loggedUserId == Convert.ToString(Session["UserId"]))
                 {
-                    User userModel = db.User.First(a => a.Id == loggedUserId);
+                    Users userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", loggedUserId);
                     Project pModel = new Project();
-                    RejectedProjects rProjects = new RejectedProjects();
+                    RejectedProject rProjects = new RejectedProject();
                     List<vwRejectedProjects> lstUp = new List<vwRejectedProjects>();
-                    foreach (var item in db.UserProject)
+                    foreach (var item in BasicRepository<UserProject>.Fetch())
                     {
-                        if (userModel.Id == item.UserId && item.IsApproveChanged == Convert.ToInt32(ProjectTypeChangeEnum.ChangeAsNotApproved))
+                        if (userModel.Id == item.UserId && item.IsApproveChanged == Convert.ToInt32(ProjectTypeChangeEnum.ChangedAsNotApproved))
                         {
-                            string pId = item.ProjectId;
-                            pModel = db.Projects.First(z => z.Id == pId);
-                            rProjects = db.RejectedProjects.FirstOrDefault(z => z.RejectedProjectId == pModel.Id);
+                            pModel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", item.ProjectId);
+                            rProjects = BasicRepository<RejectedProject>.FirstOrDefault("WHERE RejectedProjectId = @0", pModel.Id);
                             lstUp.Add(new vwRejectedProjects { ProjectId = pModel.Id, ProjectName = pModel.Name, ProjectDescription = pModel.Description, RejectCause = rProjects.RejectCause, RejectDate = rProjects.RejectDate.Date });
                         }
                     }
@@ -506,15 +501,15 @@ namespace Planner.Controllers
 
                     UserCV cv = new UserCV();
 
-                    var userControl = db.User.SingleOrDefault(m => m.CitizenshipNo == citizenshipNo);
+                    var userControl = BasicRepository<Users>.FirstOrDefault("WHERE CitizenshipNo = @0", citizenshipNo);
 
                     if (userControl.IsCvUploaded != false)
                     {
-                        cv = db.UserCV.SingleOrDefault(m => m.UserId == userControl.Id);
+                        cv = BasicRepository<UserCV>.FirstOrDefault("WHERE UserId = @0", userControl.Id);
                         cv.FileName = fileName;
                         cv.FilePath = path;
                         cv.CreationDate = DateTime.Now;
-                        db.SaveChanges();
+                        BasicRepository<UserCV>.Update(cv);
                         return RedirectToAction("MessageShow", "Home", new { messageBody = "CV Başarıyla Güncellendi", returnUrl = Request.UrlReferrer.AbsoluteUri });
                     }
                     else
@@ -523,11 +518,11 @@ namespace Planner.Controllers
                         cv.FileName = fileName;
                         cv.FilePath = path;
                         cv.CreationDate = DateTime.Now;
-                        db.UserCV.Add(cv);
+                        BasicRepository<UserCV>.Insert(cv);
 
-                        var user = db.User.SingleOrDefault(m => m.Id == cv.UserId);
+                        var user = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", cv.UserId);
                         user.IsCvUploaded = true;
-                        db.SaveChanges();
+                        BasicRepository<Users>.Update(user);
                         ViewBag.Message = "CV Başarıyla Yüklendi";
                         Session["UserIsCvUploaded"] = true;
                         userEmail = user.EMail;
@@ -565,7 +560,7 @@ namespace Planner.Controllers
         {
             try
             {
-                UserCV ucmodel = db.UserCV.FirstOrDefault(m => m.Id == Id);
+                UserCV ucmodel = BasicRepository<UserCV>.FirstOrDefault("WHERE Id = @0", Id);
                 byte[] fileBytes = System.IO.File.ReadAllBytes(ucmodel.FilePath);
                 var file = ucmodel.FilePath;
                 var cd = new ContentDisposition
@@ -587,7 +582,7 @@ namespace Planner.Controllers
         {
             try
             {
-                User userModel = db.User.FirstOrDefault(z => z.Id == loggedUserId);
+                Users userModel = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", loggedUserId);
                 return View(userModel);
             }
             catch (Exception ex)
@@ -597,11 +592,11 @@ namespace Planner.Controllers
         }
 
         [HttpPost]
-        public ActionResult EditProfile(User user)
+        public ActionResult EditProfile(Users user)
         {
             if (HomeController.ControlCitizenshipNo(user.CitizenshipNo))
             {
-                User model = db.User.FirstOrDefault(a => a.EMail == user.EMail);
+                Users model = BasicRepository<Users>.FirstOrDefault("WHERE EMail = @0", user.EMail);
                 model.Name = user.Name;
                 model.Surname = user.Surname;
                 model.EMail = user.EMail;
@@ -615,7 +610,7 @@ namespace Planner.Controllers
                 model.Job = user.Job;
                 model.LastEditBy = user.Id;
                 model.LastEditDate = DateTime.Now;
-                db.SaveChanges();
+                BasicRepository<Users>.Update(model);
                 return RedirectToAction("MessageShow", "Home", new { messageBody = "Bilgileriniz Güncellenmiştir", returnUrl = Request.UrlReferrer.AbsoluteUri });
             }
             else
@@ -652,7 +647,6 @@ namespace Planner.Controllers
 
         public ActionResult AssignUserRole()
         {
-
             return View();
         }
     }

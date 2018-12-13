@@ -67,6 +67,15 @@
 <body>
     <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega navbar-inverse bg-indigo-600" role="navigation">
         <div class="navbar-header">
+            <button type="button" class="navbar-toggler hamburger hamburger-close navbar-toggler-left hided"
+                    data-toggle="menubar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="hamburger-bar"></span>
+            </button>
+            <button type="button" class="navbar-toggler collapsed" data-target="#site-navbar-collapse"
+                    data-toggle="collapse">
+                <i class="icon wb-more-horizontal" aria-hidden="true"></i>
+            </button>
             <div class="navbar-brand navbar-brand-center">
                 <img class="navbar-brand-logo" src="~/Content/Site/classic/iconbar/assets/images/ci_tech.png" title="CI TECH">
                 <span class="navbar-brand-text hidden-xs-down">Proje Sepeti</span>
@@ -340,8 +349,18 @@
                             </a>
                         </li>
                         <li class="site-menu-item">
+                            <a class="animsition-link" href="@Url.Action("WaitingToApprove", "Project")">
+                                <span class="site-menu-title">Onayda Bekleyen Projeler</span>
+                            </a>
+                        </li>
+                        <li class="site-menu-item">
                             <a class="animsition-link" href="@Url.Action("ApprovedProjects", "Project")">
                                 <span class="site-menu-title">Onaylanmış Projeler</span>
+                            </a>
+                        </li>
+                        <li class="site-menu-item">
+                            <a class="animsition-link" href="@Url.Action("WaitingForSupport", "Project")">
+                                <span class="site-menu-title">Destek Bekleyen Projeler</span>
                             </a>
                         </li>
                         <li class="site-menu-item">
@@ -350,13 +369,13 @@
                             </a>
                         </li>
                         <li class="site-menu-item">
-                            <a class="animsition-link" href="@Url.Action("WaitingToApprove", "Project")">
-                                <span class="site-menu-title">Onayda Bekleyen Projeler</span>
+                            <a class="animsition-link" href="@Url.Action("SupportedProjectsByMe", "Project")">
+                                <span class="site-menu-title">Desteklediğim Projeler</span>
                             </a>
                         </li>
                         <li class="site-menu-item">
-                            <a class="animsition-link" href="@Url.Action("WaitingForSupport", "Project")">
-                                <span class="site-menu-title">Destek Bekleyen Projeler</span>
+                            <a class="animsition-link" href="@Url.Action("ClosedProjects", "Project")">
+                                <span class="site-menu-title">Kapatılmış Projeler</span>
                             </a>
                         </li>
                     </ul>
@@ -482,7 +501,7 @@
     <script src="~/Content/Site/classic/iconbar/assets/examples/js/dashboard/v1.js"></script>
     <script src="~/Content/Site/classic/iconbar/assets/examples/js/advanced/scrollable.js"></script>
     <script src="~/Content/Site/classic/iconbar/assets/js/App/Projects.js"></script>
-    
+
     <script>
         (function (document, window, $) {
             'use strict';

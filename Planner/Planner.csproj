@@ -6250,7 +6250,6 @@
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\_Approvement.cshtml" />
-    <Content Include="Views\Account\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Account\_RemoveAccountPartial.cshtml" />
     <Content Include="Views\Account\_SetPasswordPartial.cshtml" />
     <Content Include="Views\Home\MessageShow.cshtml" />
@@ -6295,6 +6294,8 @@
     <Content Include="Views\Account\VerifyEmail.cshtml" />
     <Content Include="Views\User\UserRejectedProjectIndex.cshtml" />
     <Content Include="Views\User\ResendEmail.cshtml" />
+    <Content Include="Views\Project\ClosedProjects.cshtml" />
+    <Content Include="Views\Project\SupportedProjectsByMe.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -6314,6 +6315,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Planner.DataAccess\Planner.DataAccess.csproj">
+      <Project>{f99dedd4-6a54-4c36-809c-902a57eea42c}</Project>
+      <Name>Planner.DataAccess</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
