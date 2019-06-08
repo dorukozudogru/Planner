@@ -20,7 +20,7 @@ namespace Planner.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(Users model)
+        public ActionResult Login(Users model, string ReturnUrl)
         {
             if (string.IsNullOrEmpty(model.EMail) || string.IsNullOrEmpty(model.Password))
             {

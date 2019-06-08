@@ -170,21 +170,8 @@
     </Compile>
     <Compile Include="Helpers\SessionWrapper.cs" />
     <Compile Include="Helpers\UserAuthorizeAttribute.cs" />
-    <Compile Include="Models\DBContext.cs" />
-    <Compile Include="Models\Project.cs" />
-    <Compile Include="Models\ProjectUserAuthorize.cs" />
-    <Compile Include="Models\RejectedProjects.cs" />
-    <Compile Include="Models\Role.cs" />
-    <Compile Include="Models\SupportedProjects.cs" />
-    <Compile Include="Models\User.cs" />
-    <Compile Include="Models\UserCV.cs" />
-    <Compile Include="Models\UserProject.cs" />
-    <Compile Include="Models\UserRole.cs" />
+    <Compile Include="ViewModels\SupportListViewModel.cs" />
     <Compile Include="Models\UserSession.cs" />
-    <Compile Include="Models\vwAuthorizedUserProject.cs" />
-    <Compile Include="Models\vwRejectedProjects.cs" />
-    <Compile Include="Models\vwUsersCVs.cs" />
-    <Compile Include="Models\vwUsersProjects.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -6296,6 +6283,7 @@
     <Content Include="Views\User\ResendEmail.cshtml" />
     <Content Include="Views\Project\ClosedProjects.cshtml" />
     <Content Include="Views\Project\SupportedProjectsByMe.cshtml" />
+    <Content Include="Views\Project\SupportList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

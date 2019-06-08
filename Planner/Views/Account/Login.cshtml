@@ -22,6 +22,7 @@
                 {
                     @Html.AntiForgeryToken()
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
                     <div class="form-group">
                         @Html.LabelFor(m => m.EMail, new { @class = "sr-only" })
                         @Html.TextBoxFor(m => m.EMail, new { @class = "form-control", placeholder = "E-Postanızı Giriniz" })

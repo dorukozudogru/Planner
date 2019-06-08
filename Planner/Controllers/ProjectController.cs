@@ -8,6 +8,7 @@ using Planner.Enums;
 using Planner.Helpers;
 using System.Net.Mime;
 using Planner.DataAccess;
+using Planner.ViewModels;
 
 namespace Planner.Controllers
 {
@@ -400,7 +401,7 @@ namespace Planner.Controllers
                     {
                         string _tempUserId = Session["UserId"].ToString();
                         // Eğer daha önce desteklemişse burada göremez.
-                        if (BasicRepository<SupportedProject>.FirstOrDefault("WHERE SupportedProjectId = @0", _tempUserId) == null)
+                        if (BasicRepository<SupportedProject>.FirstOrDefault("WHERE SupporterUserId = @0", _tempUserId) == null)
                         {
                             var authorize = BasicRepository<ProjectUserAuthorize>.FirstOrDefault("WHERE ProjectId = @0", item.ProjectId);
                             if (authorize == null)
@@ -422,7 +423,8 @@ namespace Planner.Controllers
                                     FileName = pModel.FileName,
                                     CreationDate = pModel.CreationDate,
                                     IsApproved = pModel.IsApproved,
-                                    IsSupported = pModel.IsSupported
+                                    IsSupported = pModel.IsSupported,
+                                    SupportRequest = pModel.SupportRequest
                                 });
                             }
                             else
@@ -452,7 +454,8 @@ namespace Planner.Controllers
                                         FileName = pModel.FileName,
                                         CreationDate = pModel.CreationDate,
                                         IsApproved = pModel.IsApproved,
-                                        IsSupported = pModel.IsSupported
+                                        IsSupported = pModel.IsSupported,
+                                        SupportRequest = pModel.SupportRequest
                                     });
                                 }
                             }
@@ -1154,5 +1157,26 @@ namespace Planner.Controllers
             }
         }
         #endregion
+
+        public ActionResult SupportList(string projectId)
+        {
+            var supportList = BasicRepository<SupportedProject>.Fetch("WHERE SupportedProjectId = @0", projectId);
+            List<SupportListViewModel> supportListVM = new List<SupportListViewModel>();
+
+            foreach (var item in supportList)
+            {
+                var supporterUser = BasicRepository<Users>.FirstOrDefault("WHERE Id = @0", item.SupporterUserId);
+                supportListVM.Add(new SupportListViewModel
+                {
+                    Name = supporterUser.Name,
+                    Surname = supporterUser.Surname,
+                    SupportDate = item.SupportDate,
+                    SupportRequirements = item.SupportRequirements,
+                    SupportValue = item.SupportValue
+                });
+            }
+            ViewBag.PreviousUrl = Request.UrlReferrer.AbsoluteUri;
+            return View(supportListVM);
+        }
     }
 }

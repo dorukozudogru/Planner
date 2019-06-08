@@ -181,7 +181,10 @@ namespace Planner.Controllers
                         }
                     }
                     vwLstUp = vwLstUp.OrderByDescending(x => x.CreationDate).ToList();
-                    vwLstUp.RemoveRange(5, vwLstUp.Count - 5);
+                    if (vwLstUp.Count > 5)
+                    {
+                        vwLstUp.RemoveRange(5, vwLstUp.Count - 5);
+                    }
                     return View(vwLstUp);
                 }
                 catch (Exception ex)
@@ -428,7 +431,7 @@ namespace Planner.Controllers
                         if (userModel.Id == item.UserId && item.IsApproveChanged != Convert.ToInt32(ProjectTypeChangeEnum.ChangedAsNotApproved))
                         {
                             pModel = BasicRepository<Project>.FirstOrDefault("WHERE Id = @0", item.ProjectId);
-                            lstUp.Add(new Project { Id = pModel.Id, Name = pModel.Name, Description = pModel.Description, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported });
+                            lstUp.Add(new Project { Id = pModel.Id, Name = pModel.Name, Description = pModel.Description, FileName = pModel.FileName, IsApproved = pModel.IsApproved, IsSupported = pModel.IsSupported, CreationDate = pModel.CreationDate });
                         }
                     }
                     return View(lstUp);

@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Planner.ViewModels.SupportListViewModel>
+
+@{
+    ViewBag.Title = "Proje Destekçileri";
+    if (Convert.ToBoolean(Session["UserIsAdmin"]) != true)
+    {
+        Layout = "~/Views/Shared/_LayoutLogged.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    ViewBag.ReturnUrl = "/Project/SupportList";
+}
+
+<div>
+    <div class="ribbon ribbon-clip animation-slide-left animation-delay-400" style="min-width:200px">
+        <span class="ribbon-inner">Projemi Destekleyenler</span>
+    </div>
+</div>
+<div class="page-content">
+    <div class="panel">
+        <div class="panel-body">
+            <div class="dataTables_wrapper container-fluid dt-bootstrap4">
+                <div class="col-sm-12">
+                    <table class="table table-hover dataTable table-striped w-full dtr-inline" data-plugin="dataTable" role="grid">
+                        <thead>
+                            <tr>
+                                <th>Adı Soyadı</th>
+                                <th>Destek Neyin Karşılığında Yapılıyor?</th>
+                                <th>Verilen Destek</th>
+                                <th>Destekleme Tarihi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.Name @item.Surname
+                                    </td>
+                                    <td>
+                                        @item.SupportRequirements
+                                    </td>
+                                    <td>
+                                        @item.SupportValue
+                                    </td>
+                                    <td>
+                                        @item.SupportDate
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <a href="@ViewBag.PreviousUrl" class="btn btn-info">Geri Dön</a>
+    </div>
+</div>

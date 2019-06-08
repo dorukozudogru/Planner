@@ -74,7 +74,7 @@ namespace Planner
             {
                 var returnUrl = System.Web.HttpContext.Current.Request.RawUrl.ToString();
                 Response.ClearContent();
-                Response.Redirect("~/Account/Login");
+                Response.Redirect("~/Account/Login?returnUrl=" + returnUrl);
             }
         }
     }

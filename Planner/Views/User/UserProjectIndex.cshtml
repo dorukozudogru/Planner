@@ -48,7 +48,7 @@
                                                 }
                                                 if (item.IsSupported == 1 && (item.IsApproveChanged != 2 || item.IsApproveChanged != 4))
                                                 {
-                                                    <a class="dropdown-item">Destek Bekliyor</a>
+                                                    <a href="@Url.Action("SupportList", "Project", new { projectId = item.Id })" class="dropdown-item">Destekler</a>
                                                 }
                                                 if (item.IsSupported == 2)
                                                 {
