@@ -1,0 +1,135 @@
+﻿@model IEnumerable<Planner.DataAccess.Users>
+
+@{
+    ViewBag.Title = "Tüm Kullanıcılar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.ReturnUrl = "/User/UserIndex";
+}
+@if (Convert.ToBoolean(Session["UserIsAdmin"]) == true)
+{
+    <div class="panel">
+        <header class="panel-heading">
+            <div class="ribbon ribbon-clip" style="min-width:200px">
+                <span class="ribbon-inner">Tüm Kullanıcılar</span>
+            </div>
+            <h3 class="panel-title">*</h3>
+        </header>
+        <div class="panel-body">
+            <table class="table table-hover dataTable table-striped w-full" data-plugin="dataTable">
+                <thead>
+                    <tr>
+                        <th>E-Posta</th>
+                        <th>Ad</th>
+                        <th>Soyad</th>
+                        <th>T.C. Kimlik No</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Onayla</th>
+                        <th>Reddet</th>
+                        <th>Admin Yap</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.EMail)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Surname)</td>
+                            <td>@Html.DisplayFor(modelItem => item.CitizenshipNo)</td>
+                            <td>@Html.DisplayFor(modelItem => item.RegisterDate)</td>
+                            @if (item.IsApproved == 4)
+                            {
+                                <td><a href="@Url.Action("BlockUser", "User", new { id = item.Id, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-dark">Kullanıcıyı Dondur</a></td>
+                                <td></td>
+                            }
+                            @if (item.IsApproved == 3)
+                            {
+                                <td><a href="@Url.Action("ApproveAfterBlockUser", "User", new { id = item.Id, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-info">Kullanıcı Engelini Aç</a></td>
+                                <td></td>
+                            }
+                            @if (item.IsApproved == 2)
+                            {
+                                <td><a href="@Url.Action("BlockUser", "User", new { id = item.Id, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-dark">Kullanıcıyı Dondur</a></td>
+                                <td></td>
+                            }
+                            @if (item.IsApproved == 1)
+                            {
+                                <td><a href="@Url.Action("ApproveUser", "User", new { id = item.Id, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-success">Onayla</a></td>
+                                <td><a href="@Url.Action("DeclineUser", "User", new { id = item.Id, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-danger">Reddet</a></td>
+                            }
+                            @if (item.IsAdmin != true)
+                            {
+                                <td><a href="@Url.Action("AssignUserAsAdmin", "User", new { id = item.Id, returnUrl = ViewBag.ReturnUrl })" class="btn btn-block btn-warning">Admin Yap</a></td>
+                            }
+                            else
+                            {
+                                <td style="text-align:center">Admin Kullanıcı</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+<div class="example-buttons" style="position:fixed;bottom:5px;right:30px">
+    <button type="button" class="btn-success js-scroll-trigger btn btn-floating" data-toggle="modal" data-target="#newUser"><i class="icon wb-plus" aria-hidden="true"></i></button>
+</div>
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-group", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="modal fade" id="newUser" tabindex="-1" role="dialog" aria-labelledby="newUser" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-center modal-simple" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-header">
+                        <h4>Kullanıcı Ekle</h4>
+                    </div>
+                    <button type="button" class="close" style="padding-right" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xl-6 form-group">
+                            <input type="email" class="form-control" name="EMail" placeholder="E-Posta" />
+                        </div>
+                        <div class="col-xl-6 form-group">
+                            <input type="password" class="form-control" name="Password" placeholder="Şifre" />
+                        </div>
+                        <div class="col-xl-4 form-group">
+                            <input type="text" class="form-control" name="Name" placeholder="Adı" />
+                        </div>
+                        <div class="col-xl-4 form-group">
+                            <input type="text" class="form-control" name="Surname" placeholder="Soyadı" />
+                        </div>
+                        <div class="col-xl-4 form-group">
+                            <input type="date" class="form-control" name="BirthDate" placeholder="Doğum Tarihi" />
+                        </div>
+                        <div class="col-xl-4 form-group">
+                            <input type="text" class="form-control" name="PhoneNumber" placeholder="Telefon Numarası" />
+                        </div>
+                        <div class="col-xl-4 form-group">
+                            <input type="text" class="form-control" name="CitizenshipNo" placeholder="T.C. Kimlik Numarası" />
+                        </div>
+                        <div class="col-xl-4 form-group">
+                            <input type="text" class="form-control" name="City" placeholder="Yaşadığı Şehir" />
+                        </div>
+                        <div class="col-xl-4 form-group">
+                            <input type="text" class="form-control" name="School" placeholder="Mezun Olduğu/Okuduğu Okul" />
+                        </div>
+                        <div class="col-xl-4 form-group">
+                            <input type="text" class="form-control" name="Department" placeholder="Mezun Olduğu/Okuduğu Bölüm" />
+                        </div>
+                        <div class="col-xl-4 form-group">
+                            <input type="text" class="form-control" name="Job" placeholder="Mesleği" />
+                        </div>
+                    </div>
+                    <input type="submit" value="Kaydet" class="btn btn-success btn-block" formaction="/Account/Register" />
+                </div>
+            </div>
+        </div>
+    </div>
+}

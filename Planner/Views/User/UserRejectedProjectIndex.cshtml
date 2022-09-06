@@ -1,0 +1,69 @@
+﻿@model IEnumerable<Planner.DataAccess.vwRejectedProjects>
+
+@{
+    ViewBag.Title = "Reddedilen Projelerim";
+    Layout = "~/views/Shared/_LayoutLogged.cshtml";
+}
+
+<div class="app-projects">
+    <div class="projects-wrap">
+        <div class="ribbon ribbon-clip animation-slide-left animation-delay-400" style="min-width:200px">
+            <span class="ribbon-inner">Reddedilen Projelerim</span>
+        </div>
+        <ul class="blocks blocks-100 blocks-lg-5 blocks-md-3 blocks-sm-2" data-plugin="animateList" data-child="li">
+            @foreach (var item in Model)
+            {
+                <li>
+                    <div class="panel" style="min-height:460px">
+                        <figure class="overlay overlay-hover animation-hover">
+                            <img class="caption-figure overlay-figure" src="~/Content/Site/classic/global/photos/placeholder.png" />
+                            <figcaption class="overlay-panel overlay-background overlay-fade text-center vertical-align">
+                                <a href="@Url.Action("Download", "Project", new { id = item.ProjectId })" target="_blank">
+                                    <button type="button" class="btn btn-outline btn-default project-button">Görüntüle</button>
+                                </a>
+                            </figcaption>
+                        </figure>
+                        <div class="text-truncate">@item.ProjectName</div>
+                        <hr />
+                        <div class="text pre-scrollable" style="max-height:130px">@item.ProjectDescription</div>
+                        <hr />
+                        <div class="time float-right">@item.RejectDate</div>
+                        <div class="text-truncate">@item.RejectCause</div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+@*<div class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions"></div>
+        <h3 class="panel-title">Reddedilen Projelerim</h3>
+    </header>
+    <div class="panel-body">
+        <table class="table table-hover dataTable table-striped w-full" data-plugin="dataTable">
+            <thead>
+                <tr>
+                    <th>Adı</th>
+                    <th>Açıklama</th>
+                    <th>Ret Sebebi</th>
+                    <th>Ret Tarihi</th>
+                    <th>Görüntüle</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr style="text-align:center">
+                        <td style="vertical-align:middle">@Html.DisplayFor(modelItem => item.ProjectName)</td>
+                        <td style="vertical-align:middle"><textarea placeholder="@item.ProjectDescription" readonly class="form-control text-center"></textarea></td>
+                        <td style="vertical-align:middle"><textarea placeholder="@item.RejectCause" readonly class="form-control text-center"></textarea></td>
+                        <td style="vertical-align:middle">@Html.DisplayFor(modelItem => item.RejectDate)</td>
+                        <td style="vertical-align:middle"><a href="@Url.Action("Download", "Project", new { id = item.ProjectId })" target="_blank" class="btn btn-info"><span class="fa fa-search"></span></a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>*@

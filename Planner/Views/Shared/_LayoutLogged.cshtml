@@ -1,0 +1,344 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" lang="tr" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @*<title>@ViewBag.Title</title>*@
+    <title>Proje Sepeti</title>
+
+    <link rel="apple-touch-icon" href="~/Content/Site/classic/iconbar/assets/images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="~/Content/Site/classic/iconbar/assets/images/favicon.ico">
+
+    <!-- Stylesheets -->
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Content/Site/classic/global/css/bootstrap-extend.min.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/css/site.min.css">
+
+    <!-- Plugins -->
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/animsition/animsition.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/asscrollable/asScrollable.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/switchery/switchery.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/intro-js/introjs.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/slidepanel/slidePanel.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/flag-icon-css/flag-icon.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/chartist/chartist.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/jvectormap/jquery-jvectormap.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/chartist-plugin-tooltip/chartist-plugin-tooltip.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/dashboard/v1.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/datatables.net-bs4/dataTables.bootstrap4.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/datatables.net-fixedheader-bs4/dataTables.fixedheader.bootstrap4.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/datatables.net-fixedcolumns-bs4/dataTables.fixedcolumns.bootstrap4.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/datatables.net-rowgroup-bs4/dataTables.rowgroup.bootstrap4.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/datatables.net-scroller-bs4/dataTables.scroller.bootstrap4.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/datatables.net-select-bs4/dataTables.select.bootstrap4.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/datatables.net-responsive-bs4/dataTables.responsive.bootstrap4.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/datatables.net-buttons-bs4/dataTables.buttons.bootstrap4.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/tables/datatable.css" />
+    <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/uikit/modals.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/formvalidation/formValidation.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/forms/validation.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/forms/layouts.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/bootstrap-datepicker/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/asscrollable/asScrollable.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/advanced/scrollable.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/pages/errors.css">
+
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/jquery-selective/jquery-selective.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/iconbar/assets/examples/css/apps/projects.css">
+
+    <!-- Fonts -->
+    <link href="~/Content/Site/classic/global/fonts/font-awesome/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Content/Site/classic/global/fonts/weather-icons/weather-icons.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/fonts/web-icons/web-icons.min.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/fonts/brand-icons/brand-icons.min.css">
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
+
+    <!--[if lt IE 9]>
+    <script src="~/Content/Site/classic/global/vendor/html5shiv/html5shiv.min.js"></script>
+    <![endif]-->
+    <!--[if lt IE 10]>
+    <script src="~/Content/Site/classic/global/vendor/media-match/media.match.min.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/respond/respond.min.js"></script>
+    <![endif]-->
+    <!-- Scripts -->
+    <script src="~/Content/Site/classic/global/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+    <script src="~/Content/Site/classic/global/js/Plugin/jquery-placeholder.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/breakpoints/breakpoints.js"></script>
+    <script>
+        Breakpoints();
+    </script>
+</head>
+<body class="animsition">
+    <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega navbar-inverse bg-indigo-600" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggler hamburger hamburger-close navbar-toggler-left hided"
+                    data-toggle="menubar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="hamburger-bar"></span>
+            </button>
+            <button type="button" class="navbar-toggler collapsed" data-target="#site-navbar-collapse"
+                    data-toggle="collapse">
+                <i class="icon wb-more-horizontal" aria-hidden="true"></i>
+            </button>
+            <div class="navbar-brand navbar-brand-center">
+                <img class="navbar-brand-logo" src="~/Content/Site/classic/iconbar/assets/images/ci_tech.png">
+                <span class="navbar-brand-text hidden-xs-down">Proje Sepeti</span>
+            </div>
+        </div>
+        <div class="navbar-container container-fluid">
+            <div class="collapse navbar-collapse navbar-collapse-toolbar" id="site-navbar-collapse">
+                <ul class="nav navbar-toolbar navbar-right navbar-toolbar-right">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link">
+                            <span class="flag-icon flag-icon-tr"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link navbar-avatar" data-toggle="dropdown" href="#" aria-expanded="false"
+                           data-animation="scale-up" role="button">
+                            <span class="avatar avatar-online">
+                                <img src="~/Content/Site/classic/global/portraits/user.png" alt="PROJE SEPETİ">
+                                <i></i>
+                            </span>
+                        </a>
+                        <div class="dropdown-menu" role="menu">
+                            <a class="dropdown-item" role="menuitem"><strong>@Session["UserName"] @Session["UserSurname"]</strong><br><small>(@Session["UserEMail"])</small></a>
+                            <div class="dropdown-divider" role="presentation"></div>
+                            <a class="dropdown-item" href="@Url.Action("UserProfile", "User", new { loggedUserId = Session["UserId"] })" role="menuitem"><i class="icon wb-user" aria-hidden="true"></i> Profil</a>
+                            <div class="dropdown-divider" role="presentation"></div>
+                            <a class="dropdown-item" href="~/Account/Logout" role="menuitem"><i class="icon wb-power" aria-hidden="true"></i> Çıkış Yap</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="collapse navbar-search-overlap" id="site-navbar-search">
+                <form role="search">
+                    <div class="form-group">
+                        <div class="input-search">
+                            <i class="input-search-icon wb-search" aria-hidden="true"></i>
+                            <input type="text" class="form-control" name="site-search" placeholder="Search...">
+                            <button type="button" class="input-search-close icon wb-close" data-target="#site-navbar-search"
+                                    data-toggle="collapse" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <!-------------------------------------------------------------------------------------------------------->
+    @if (Convert.ToString(Session["UserId"]) != "")
+    {
+        if (Session["UserEMail"] != null)
+        {
+            var itemId = Session["UserId"];
+            if (!Convert.ToBoolean(Session["UserIsCvUploaded"]))
+            {
+                <div class="site-menubar site-menubar-light" style="position:fixed">
+                    <div class="site-menubar-body">
+                        <ul class="site-menu" data-plugin="menu">
+                            <li class="site-menu-item has-sub">
+                                <a href="@Url.Action("UserCV", "User", new { loggedUserId = itemId })">
+                                    <i class="site-menu-icon fa-file-text" aria-hidden="true"></i>
+                                    <span class="site-menu-title">CV Yükle</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="site-menubar site-menubar-light" style="position:fixed">
+                    <div class="site-menubar-body">
+                        <ul class="site-menu" data-plugin="menu">
+                            <li class="site-menu-item">
+                                <a href="/User/UserMenu">
+                                    <i class="site-menu-icon fa-home" aria-hidden="true"></i>
+                                    <span class="site-menu-title">Ana Sayfa</span>
+                                </a>
+                            </li>
+                            <li class="site-menu-item has-sub">
+                                <a href="javascript:void(0)">
+                                    <i class="site-menu-icon fa-file-text" aria-hidden="true"></i>
+                                    <span class="site-menu-title">Projelerim</span>
+                                </a>
+                                <ul class="site-menu-sub">
+                                    <li class="site-menu-item active">
+                                        <a class="animsition-link" href="@Url.Action("UserProjectIndex", "User", new { loggedUserId = itemId })">
+                                            <span class="site-menu-title">Onay Sürecindeki Projelerim</span>
+                                        </a>
+                                    </li>
+                                    <li class="site-menu-item">
+                                        <a class="animsition-link" href="@Url.Action("UserRejectedProjectIndex", "User", new { loggedUserId = itemId })">
+                                            <span class="site-menu-title">Reddedilmiş Projelerim</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="site-menu-item has-sub">
+                                <a href="~/Project/CreateProject">
+                                    <i class="site-menu-icon wb-user" aria-hidden="true"></i>
+                                    <span class="site-menu-title">Proje Yükle</span>
+                                </a>
+                            </li>
+                            <li class="site-menu-item has-sub">
+                                <a href="@Url.Action("UserCV", "User", new { loggedUserId = itemId })">
+                                    <i class="site-menu-icon wb-library" aria-hidden="true"></i>
+                                    <span class="site-menu-title">CV</span>
+                                </a>
+                            </li>
+                            <li class="site-menu-item has-sub">
+                                <a href="javascript:void(0)">
+                                    <i class="site-menu-icon fa-file-text" aria-hidden="true"></i>
+                                    <span class="site-menu-title">Projeler</span>
+                                </a>
+                                <ul class="site-menu-sub">
+                                    <li class="site-menu-item">
+                                        <a class="animsition-link" href="@Url.Action("ApprovedProjects", "Project")">
+                                            <span class="site-menu-title">Onaylanmış Projeler</span>
+                                        </a>
+                                    </li>
+                                    <li class="site-menu-item">
+                                        <a class="animsition-link" href="@Url.Action("WaitingForSupport", "Project")">
+                                            <span class="site-menu-title">Destek Bekleyen Projeler</span>
+                                        </a>
+                                    </li>
+                                    <li class="site-menu-item">
+                                        <a class="animsition-link" href="@Url.Action("SupportedProjectsByMe", "Project")">
+                                            <span class="site-menu-title">Desteklediğim Projeler</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            }
+        }
+    }
+    <!-------------------------------------------------------------------------------------------------------->
+    <div class="page">
+        <div class="page-content">
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/Content/Site/classic/global/vendor/babel-external-helpers/babel-external-helpers.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/jquery/jquery.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/popper-js/umd/popper.min.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/bootstrap/bootstrap.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/animsition/animsition.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/mousewheel/jquery.mousewheel.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/asscrollbar/jquery-asScrollbar.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/asscrollable/jquery-asScrollable.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/ashoverscroll/jquery-asHoverScroll.js"></script>
+
+    <!-- Plugins -->
+    <script src="~/Content/Site/classic/global/vendor/switchery/switchery.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/intro-js/intro.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/screenfull/screenfull.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/slidepanel/jquery-slidePanel.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/skycons/skycons.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/chartist/chartist.min.js"></script>
+    @*<script src="~/Content/Site/classic/global/vendor/chartist-plugin-tooltip/chartist-plugin-tooltip.js"></script>*@
+    <script src="~/Content/Site/classic/global/vendor/aspieprogress/jquery-asPieProgress.min.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/jvectormap/jquery-jvectormap.min.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/jvectormap/maps/jquery-jvectormap-au-mill-en.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/matchheight/jquery.matchHeight-min.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/datatables.net/jquery.dataTables.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/datatables.net-fixedheader/dataTables.fixedHeader.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/datatables.net-fixedcolumns/dataTables.fixedColumns.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/datatables.net-rowgroup/dataTables.rowGroup.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/datatables.net-scroller/dataTables.scroller.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/datatables.net-responsive/dataTables.responsive.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/datatables.net-responsive-bs4/responsive.bootstrap4.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/datatables.net-buttons/dataTables.buttons.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/datatables.net-buttons/buttons.html5.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/datatables.net-buttons/buttons.flash.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/datatables.net-buttons/buttons.print.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/datatables.net-buttons/buttons.colVis.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/datatables.net-buttons-bs4/buttons.bootstrap4.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/asrange/jquery-asRange.min.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/bootbox/bootbox.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/formvalidation/formValidation.min.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/formvalidation/framework/bootstrap4.min.js"></script>
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/blueimp-file-upload/jquery.fileupload.css">
+    <link rel="stylesheet" href="~/Content/Site/classic/global/vendor/dropify/dropify.css">
+    <script src="~/Content/Site/classic/global/vendor/jquery-ui/jquery-ui.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/blueimp-tmpl/tmpl.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/blueimp-canvas-to-blob/canvas-to-blob.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/blueimp-load-image/load-image.all.min.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/blueimp-file-upload/jquery.fileupload.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/blueimp-file-upload/jquery.fileupload-process.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/blueimp-file-upload/jquery.fileupload-image.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/blueimp-file-upload/jquery.fileupload-audio.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/blueimp-file-upload/jquery.fileupload-video.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/blueimp-file-upload/jquery.fileupload-validate.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/blueimp-file-upload/jquery.fileupload-ui.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/dropify/dropify.min.js"></script>
+    <script src="~/Content/Site/classic/global/vendor/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+
+    <!-- Scripts -->
+    <script src="~/Content/Site/classic/global/js/Component.js"></script>
+    <script src="~/Content/Site/classic/global/js/Plugin.js"></script>
+    <script src="~/Content/Site/classic/global/js/Base.js"></script>
+    <script src="~/Content/Site/classic/global/js/Config.js"></script>
+
+    <script src="~/Content/Site/classic/iconbar/assets/js/Section/Menubar.js"></script>
+    <script src="~/Content/Site/classic/iconbar/assets/js/Section/Sidebar.js"></script>
+    <script src="~/Content/Site/classic/iconbar/assets/js/Section/PageAside.js"></script>
+    <script src="~/Content/Site/classic/iconbar/assets/js/Plugin/menu.js"></script>
+
+    <!-- Config -->
+    <script src="~/Content/Site/classic/global/js/config/colors.js"></script>
+    <script src="~/Content/Site/classic/iconbar/assets/js/config/tour.js"></script>
+
+    <!-- Page -->
+    <script src="~/Content/Site/classic/iconbar/assets/js/Site.js"></script>
+    <script src="~/Content/Site/classic/global/js/Plugin/asscrollable.js"></script>
+    <script src="~/Content/Site/classic/global/js/Plugin/slidepanel.js"></script>
+    <script src="~/Content/Site/classic/global/js/Plugin/switchery.js"></script>
+    <script src="~/Content/Site/classic/global/js/Plugin/matchheight.js"></script>
+    <script src="~/Content/Site/classic/global/js/Plugin/jvectormap.js"></script>
+    <script src="~/Content/Site/classic/global/js/Plugin/datatables.js"></script>
+    <script src="~/Content/Site/classic/global/js/Plugin/bootstrap-datepicker.js"></script>
+
+    <script src="~/Content/Site/classic/iconbar/assets/examples/js/tables/datatable.js"></script>
+    <script src="~/Content/Site/classic/iconbar/assets/examples/js/dashboard/v1.js"></script>
+    <script src="~/Content/Site/classic/iconbar/assets/examples/js/forms/validation.js"></script>
+    <script src="~/Content/Site/classic/global/js/Plugin/dropify.js"></script>
+    <script src="~/Content/Site/classic/iconbar/assets/examples/js/forms/uploads.js"></script>
+    <script src="~/Content/Site/classic/global/js/Plugin/asscrollable.js"></script>
+    <script src="~/Content/Site/classic/iconbar/assets/js/App/Projects.js"></script>
+
+    <script src="~/Content/Site/classic/iconbar/assets/examples/js/advanced/scrollable.js"></script>
+
+    <script>
+        (function (document, window, $) {
+            'use strict';
+
+            var Site = window.Site;
+            $(document).ready(function () {
+                Site.run();
+            });
+        })(document, window, jQuery);
+    </script>
+    <script>
+        $('#sendProject').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)
+            var projectId = button.data('id')
+            var modal = $(this)
+            modal.find('.form-group input').val(projectId)
+        })
+    </script>
+    <script>
+        $('#approveProject').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)
+            var projectId = button.data('id')
+            var modal = $(this)
+            modal.find('.form-group input').val(projectId)
+        })
+    </script>
+</body>
+</html>

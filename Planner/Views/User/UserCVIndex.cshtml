@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Planner.DataAccess.vwUsersCV>
+
+@{
+    ViewBag.Title = "Tüm Özgeçmişler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.ReturnUrl = "/User/UserCVIndex";
+}
+@if (Convert.ToBoolean(Session["UserIsAdmin"]) == true)
+{
+    <div class="panel">
+        <header class="panel-heading">
+            <div class="ribbon ribbon-clip" style="min-width:200px">
+                <span class="ribbon-inner">Tüm Özgeçmişler</span>
+            </div>
+            <h3 class="panel-title">*</h3>
+        </header>
+        <div class="panel-body">
+            <table class="table table-hover dataTable table-striped w-full" data-plugin="dataTable">
+                <thead>
+                    <tr>
+                        <th>E-Posta</th>
+                        <th>Ad</th>
+                        <th>Soyad</th>
+                        <th>T.C. Kimlik No</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.EMail)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Surname)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CitizenshipNo)</td>
+                        <td style="vertical-align:middle"><a href="@Url.Action("Download", "User", new { id = item.UserCVId })" target="_blank" class="btn btn-info"><span class="fa fa-search"></span></a></td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

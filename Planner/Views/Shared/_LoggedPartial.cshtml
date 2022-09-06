@@ -1,0 +1,14 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+
+<ul class="navbar-nav ml-auto">
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger">@Session["UserName"].ToString() @Session["UserSurname"].ToString()</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="~/User/UserMenu"><span class="fa fa-user-circle-o"> Hesabım</span> </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link js-scroll-trigger" href="~/Account/Logout"><span class="fa fa-sign-out"> Çıkış Yap</span> </a>
+    </li>
+</ul>

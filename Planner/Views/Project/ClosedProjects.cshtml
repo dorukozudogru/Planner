@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Planner.DataAccess.vwUsersProject>
+
+@{
+    ViewBag.Title = "Kapatılmış Projeler";
+    if (Convert.ToBoolean(Session["UserIsAdmin"]) != true)
+    {
+        Layout = "~/Views/Shared/_LayoutLogged.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    ViewBag.ReturnUrl = "/Project/ClosedProjects";
+}
+
+<div class="app-projects">
+    <div class="projects-wrap">
+        <div class="ribbon ribbon-clip animation-slide-left animation-delay-400" style="min-width:200px">
+            <span class="ribbon-inner">Kapatılmış Projeler</span>
+        </div>
+        <ul class="blocks blocks-100 blocks-lg-5 blocks-md-3 blocks-sm-2" data-plugin="animateList" data-child="li">
+            @foreach (var item in Model)
+            {
+                <li>
+                    <div class="panel" style="min-height:460px">
+                        <figure class="overlay overlay-hover animation-hover">
+                            <img class="caption-figure overlay-figure" src="~/Content/Site/classic/global/photos/placeholder.png" />
+                            <figcaption class="overlay-panel overlay-background overlay-fade text-center vertical-align">
+                                <a href="@Url.Action("Download", "Project", new { id = item.ProjectId })" target="_blank">
+                                    <button type="button" class="btn btn-outline btn-default project-button">Görüntüle</button>
+                                </a>
+                            </figcaption>
+                        </figure>
+                        <div class="time float-right">@item.CreationDate</div>
+                        <div class="text-truncate">@item.ProjectName</div>
+                        <hr />
+                        <div class="text-truncate">@item.Name @item.Surname</div>
+                        <hr />
+                        <div class="text pre-scrollable" style="max-height:130px">@item.Description</div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

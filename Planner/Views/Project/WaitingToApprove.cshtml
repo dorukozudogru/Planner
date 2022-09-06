@@ -1,0 +1,127 @@
+﻿@model IEnumerable<Planner.DataAccess.vwUsersProject>
+
+@{
+    ViewBag.Title = "Onay Bekleyen Projeler";
+    if (Convert.ToBoolean(Session["UserIsAdmin"]) != true)
+    {
+        Layout = "~/Views/Shared/_LayoutLogged.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    ViewBag.ReturnUrl = "/Project/ApprovedProjects";
+}
+
+<div class="app-projects">
+    <div class="projects-wrap">
+        <div class="ribbon ribbon-clip animation-slide-left animation-delay-400" style="min-width:200px">
+            <span class="ribbon-inner">Onay Bekleyen Projeler</span>
+        </div>
+        <ul class="blocks blocks-100 blocks-lg-5 blocks-md-3 blocks-sm-2" data-plugin="animateList" data-child="li">
+            @foreach (var item in Model)
+            {
+                <li>
+                    <div class="panel" style="min-height:460px">
+                        <figure class="overlay overlay-hover animation-hover">
+                            <img class="caption-figure overlay-figure" src="~/Content/Site/classic/global/photos/placeholder.png" />
+                            <figcaption class="overlay-panel overlay-background overlay-fade text-center vertical-align">
+                                <div class="btn-group">
+                                    <div class="dropdown float-left">
+                                        <button type="button" class="btn btn-icon btn-pure btn-default" title="Setting"><i class="icon wb-settings" aria-hidden="true"></i></button>
+                                        <div class="dropdown-menu" role="menu">
+                                            <a href="@Url.Action("GiveAuthorizeToUserForProject", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="dropdown-item">Projeyi Kimler Görsün?</a>
+                                            <a href="@Url.Action("ProjectAuthorizedUser", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="dropdown-item">Projeyi Görenleri Düzenle</a>
+                                            <a href="@Url.Action("ApproveProject", "Project", new { id = item.ProjectId, returnUrl = ViewBag.ReturnUrl })" class="dropdown-item">Projeyi Onayla</a>
+                                            <button type="button" class="dropdown-item btn" data-toggle="modal" data-target="#approveProject" data-id="@item.ProjectId">Projeyi Reddet</button>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-icon btn-pure btn-default" title="" data-tag="project-delete">
+                                        <i hidden class="icon wb-trash" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-icon btn-pure btn-default" title="" data-tag="project-delete">
+                                        <i hidden class="icon wb-trash" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-icon btn-pure btn-default" title="" data-tag="project-delete">
+                                        <i hidden class="icon wb-trash" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-icon btn-pure btn-default" title="" data-tag="project-delete">
+                                        <i hidden class="icon wb-trash" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-icon btn-pure btn-default" title="" data-tag="project-delete">
+                                        <i hidden class="icon wb-trash" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-icon btn-pure btn-default" title="" data-tag="project-delete">
+                                        <i hidden class="icon wb-trash" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-icon btn-pure btn-default" title="" data-tag="project-delete">
+                                        <i hidden class="icon wb-trash" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-icon btn-pure btn-default" title="" data-tag="project-delete">
+                                        <i hidden class="icon wb-trash" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-icon btn-pure btn-default" title="" data-tag="project-delete">
+                                        <i hidden class="icon wb-trash" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-icon btn-pure btn-default" title="" data-tag="project-delete">
+                                        <i hidden class="icon wb-trash" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-icon btn-pure btn-default" title="" data-tag="project-delete">
+                                        <i hidden class="icon wb-trash" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-icon btn-pure btn-default" title="" data-tag="project-delete">
+                                        <i hidden class="icon wb-trash" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                <a href="@Url.Action("Download", "Project", new { id = item.ProjectId })" target="_blank">
+                                    <button type="button" class="btn btn-outline btn-default project-button">Görüntüle</button>
+                                </a>
+                            </figcaption>
+                        </figure>
+                        <div class="time float-right">@item.CreationDate</div>
+                        <div class="text-truncate">@item.ProjectName</div>
+                        <hr />
+                        <div class="text-truncate">@item.Name @item.Surname</div>
+                        <hr />
+                        <div class="text pre-scrollable" style="max-height:130px">@item.Description</div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+@using (Html.BeginForm("RejectProject", "Project", FormMethod.Post, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="modal fade" id="approveProject" tabindex="-1" role="dialog" aria-labelledby="approveProject" aria-hidden="true">
+        <div class="modal-dialog modal-center modal-simple" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="container">
+                        <div class="card card-login mx-auto mt-5">
+                            <div class="modal-header">
+                                <h4>Projeyi Reddet</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="form-group">
+                                        <input type="hidden" name="Id" id="form-id" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        Neden Reddediyorsunuz?
+                                        <textarea id="declineCause" name="declineCause" class="form-control" rows="2" cols="20" style="max-height:400px"></textarea>
+                                        <br />
+                                        <button type="submit" class="btn btn-danger">Reddet</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,92 @@
+﻿@model IEnumerable<Planner.DataAccess.vwUsersProject>
+@{
+    ViewBag.Title = "Firma";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row col-md-auto md-block">
+        <div class="col-xl-4 col-md-6 info-panel animation-scale-up animation-delay-400">
+            <div class="card card-shadow">
+                <div class="card-block bg-info p-20">
+                    <button type="button" class="btn btn-floating btn-sm btn-dark">
+                        <i class="icon fa-file-text"></i>
+                    </button>
+                    <a href="~/Project/AllProjects">
+                        <span class="ml-15 font-weight-400 font-weight-bold">TÜM PROJELER</span>
+                    </a>
+                    <div class="content-text text-right mb-0">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6 info-panel animation-scale-up animation-delay-400">
+            <div class="card card-shadow">
+                <div class="card-block bg-info p-20">
+                    <button type="button" class="btn btn-floating btn-sm btn-dark">
+                        <i class="icon wb-users"></i>
+                    </button>
+                    <a href="~/User/UserIndex">
+                        <span class="ml-15 font-weight-400 font-weight-bold">KULLANICILAR</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6 info-panel animation-scale-up animation-delay-400">
+            <div class="card card-shadow">
+                <div class="card-block bg-info p-20">
+                    <button type="button" class="btn btn-floating btn-sm btn-dark">
+                        <i class="icon wb-library"></i>
+                    </button>
+                    <a href="~/User/UserCVIndex">
+                        <span class="ml-15 font-weight-400 font-weight-bold">ÖZGEÇMİŞLER</span>
+                    </a>
+                    @*<div class="content-text text-right mb-0">
+                    </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="panel-title-icon icon wb-bell" aria-hidden="true"></i>Son Yüklenen Projeler</h3>
+        </div>
+        <div class="panel-body h-460" data-plugin="scrollable">
+            <div data-role="container">
+                <div data-role="content">
+                    @foreach (var item in Model)
+                    {
+                        <a class="list-group-item list-group-item-action animation-scale-up animation-delay-400" href="@Url.Action("Download", "Project", new { id = item.ProjectId })" target="_blank">
+                            <div class="media">
+                                <img class="d-flex mr-3 rounded-circle" src="~/Content/Site/classic/iconbar/assets/images/pdf.png" style="max-height:45px;max-width:45px" />
+                                <div class="media-body">
+                                    <strong>@item.Name @item.Surname</strong> yeni bir proje yükledi.
+                                    <br />Proje adı: <strong>@item.ProjectName</strong>.
+                                    <div class="text-muted smaller">@item.CreationDate</div>
+                                </div>
+                            </div>
+                        </a>
+                        @*<ul class="list-group list-group-dividered list-group-full">
+                                <li class="list-group-item">
+                                    <div class="media">
+                                        <div class="pr-20">
+                                            <a class="avatar avatar-online" href="@Url.Action("Download", "Project", new { id = item.ProjectId })" target="_blank">
+                                                <img src="~/Content/Site/classic/iconbar/assets/images/pdf.png">
+                                            </a>
+                                        </div>
+                                        <div class="media-body">
+                                            <small class="float-right">@item.ProjectCreationDate</small>
+                                            <h5 class="mt-0 mb-5">@item.ProjectName</h5>
+                                            <small>
+                                                @item.UserName @item.UserSurname
+                                            </small>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>*@
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
